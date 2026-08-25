@@ -1941,6 +1941,45 @@ textarea {
   .parts-catalog-copy>a{width:100%;justify-content:center}
 }
 
+/* Light green electric mobility banner */
+.ev-highlight-promo{display:block;padding-block:clamp(34px,4vw,72px) clamp(42px,4.5vw,84px)}
+.ev-highlight-banner{
+  position:relative;
+  display:grid;
+  min-height:clamp(360px,27vw,470px);
+  grid-template-columns:minmax(0,.9fr) minmax(440px,1.1fr);
+  overflow:hidden;
+  border:1px solid #cfe9dc;
+  border-radius:clamp(22px,2vw,34px);
+  background:
+    radial-gradient(circle at 9% 15%,rgba(30,165,105,.1),transparent 27%),
+    linear-gradient(118deg,#fbfffd 0%,#f3fcf7 46%,#e7f8ef 100%);
+  box-shadow:0 22px 55px rgba(19,93,65,.1);
+}
+.ev-highlight-banner::before,.ev-highlight-banner::after{position:absolute;border:1px solid rgba(40,155,108,.12);border-radius:50%;content:'';pointer-events:none}
+.ev-highlight-banner::before{top:-110px;left:-90px;width:250px;height:250px}
+.ev-highlight-banner::after{right:34%;bottom:-150px;width:300px;height:300px}
+.ev-highlight-copy{position:relative;z-index:2;align-self:center;padding:clamp(34px,4.5vw,72px)}
+.ev-highlight-copy>p{display:inline-flex;margin:0 0 16px;border:1px solid #bfe7d2;border-radius:999px;background:#e9f9f0;padding:7px 11px;color:#128257;font-size:10px;font-weight:700;letter-spacing:.14em}
+.ev-highlight-copy>h2{max-width:620px;margin:0 0 15px;color:#123c2d;font-size:clamp(30px,3vw,50px);line-height:1.04;letter-spacing:-.045em}
+.ev-highlight-copy>span{display:block;max-width:590px;color:#547064;font-size:clamp(13px,1vw,16px);line-height:1.65}
+.ev-banner-benefits{display:flex;flex-wrap:wrap;gap:9px;margin-top:23px}
+.ev-highlight-copy .ev-banner-benefits>span{display:inline-flex;align-items:center;gap:7px;max-width:none;border:1px solid #d6ebe0;border-radius:999px;background:rgba(255,255,255,.82);padding:8px 11px;color:#285846;font-size:10px;font-weight:600;box-shadow:0 6px 16px rgba(23,102,72,.05)}
+.ev-banner-benefits .icon{width:16px;height:16px;color:#149466}
+.ev-highlight-copy>a{display:inline-flex;min-height:47px;align-items:center;gap:11px;margin-top:28px;border-radius:10px;background:#13895e;padding:11px 18px;color:#fff;font-size:13px;font-weight:600;box-shadow:0 12px 26px rgba(19,137,94,.22);transition:background .25s ease,transform .25s ease,box-shadow .25s ease}
+.ev-highlight-copy>a:hover{background:#0f7550;transform:translateY(-2px);box-shadow:0 16px 32px rgba(19,137,94,.27)}
+.ev-highlight-copy>a .icon{width:17px;height:17px}
+.ev-highlight-visual{position:relative;z-index:1;display:grid;min-height:clamp(360px,27vw,470px);place-items:center;overflow:hidden;background:radial-gradient(circle at 52% 48%,rgba(255,255,255,.95) 0%,rgba(222,246,233,.68) 54%,transparent 78%);padding:clamp(10px,1.5vw,24px)}
+.ev-highlight-visual>img{display:block;width:100%;height:100%;object-fit:contain;object-position:center;filter:saturate(.96) contrast(1.02)}
+.ev-highlight-badge{position:absolute;right:clamp(16px,2vw,30px);bottom:clamp(16px,2vw,28px);display:flex;align-items:center;gap:10px;border:1px solid rgba(185,229,207,.9);border-radius:13px;background:rgba(255,255,255,.9);padding:11px 14px;color:#157a56;box-shadow:0 12px 28px rgba(25,99,72,.14);backdrop-filter:blur(10px)}
+.ev-highlight-badge>.icon{width:20px;height:20px}
+.ev-highlight-badge span,.ev-highlight-badge b,.ev-highlight-badge small{display:block}
+.ev-highlight-badge b{color:#174c38;font-size:12px}
+.ev-highlight-badge small{margin-top:2px;color:#6b8178;font-size:9px}
+@media(max-width:920px){.ev-highlight-banner{grid-template-columns:minmax(0,.95fr) minmax(360px,1.05fr)}.ev-highlight-copy{padding:34px 28px}}
+@media(max-width:700px){.ev-highlight-banner{grid-template-columns:1fr}.ev-highlight-copy{padding:30px 24px 32px}.ev-highlight-visual{min-height:clamp(270px,74vw,390px);order:-1}.ev-highlight-copy>h2{font-size:clamp(28px,8vw,40px)}}
+@media(max-width:420px){.ev-highlight-copy{padding:27px 20px 29px}.ev-banner-benefits{display:grid}.ev-highlight-copy .ev-banner-benefits>span{width:max-content}.ev-highlight-copy>a{width:100%;justify-content:center}.ev-highlight-badge{right:12px;bottom:12px}}
+
 /* One-click admin access */
 .utility-location{display:inline-flex;align-items:center;gap:5px}
 @media(max-width:560px){.utility-bar{display:block}.utility-inner{min-height:30px;justify-content:center}.utility-inner>span{display:none}.utility-inner div{width:100%;justify-content:space-between;gap:12px;font-size:10px}.utility-inner .icon{width:12px;height:12px}}

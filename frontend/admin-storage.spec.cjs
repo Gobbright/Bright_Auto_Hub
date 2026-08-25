@@ -35,3 +35,13 @@ test('mobile Storage & Collections remains accessible and responsive', async ({ 
   await expect(page.locator('.storage-usage-cards article')).toHaveCount(6)
   await expect(page.locator('.asset-usage-grid article')).toHaveCount(3)
 })
+
+test('every admin brand has a reachable GridFS image', async ({ request }) => {
+  const response = await request.get('http://localhost:5000/api/brands')
+  expect(response.ok()).toBeTruthy()
+  const brands = await response.json()
+  expect(brands).toHaveLength(74)
+  expect(brands.every((brand) => brand.logoUrl?.startsWith('/api/storage/files/'))).toBeTruthy()
+  const imageResponses = await Promise.all(brands.map((brand) => request.get(`http://localhost:5000${brand.logoUrl}`)))
+  expect(imageResponses.every((imageResponse) => imageResponse.ok() && imageResponse.headers()['content-type']?.startsWith('image/'))).toBeTruthy()
+})
