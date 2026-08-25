@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+:root {
+  --font-body: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --app-font: var(--font-body);
+  --public-font: var(--app-font);
+}
+
+@theme {
+  --breakpoint-xs: 30rem;
+  --breakpoint-3xl: 120rem;
+  --breakpoint-4k: 160rem;
+}
+
+html{overflow-x:clip;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{overflow-x:clip}
+img,svg,video,canvas{max-width:100%}
+button,input,select,textarea{max-width:100%}
+.auth-page *,.auth-page *::before,.auth-page *::after{box-shadow:none!important;text-shadow:none!important}
+
+@media(max-width:480px){.auth-page{align-items:flex-start;padding:18px 12px}.auth-page .login-panel,.auth-page .register-panel{border-radius:12px}.auth-page .auth-banner,.auth-page .auth-form{padding:24px 20px}.auth-page .register-panel{padding:20px}.auth-page .auth-banner h1,.auth-page .form-heading h1{font-size:clamp(25px,8vw,32px)}.auth-page .form-group input{font-size:16px}}
+@media(min-width:1920px){.auth-page .login-panel{width:min(1100px,100%)}.auth-page .register-panel{width:min(500px,100%)}.auth-page .auth-banner,.auth-page .auth-form{padding:56px}}
+
+html,body,#app,.app-shell{font-family:var(--app-font)}
+button,input,select,textarea{font-family:inherit}
+*{box-sizing:border-box}html,body,#app{min-width:320px;min-height:100%;margin:0}body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f6f8;color:#17202a}a{color:inherit;text-decoration:none}.app-shell{min-height:100vh}.auth-page{display:flex;min-height:100vh;align-items:center;justify-content:center;padding:32px 16px;background:radial-gradient(circle at 12% 10%,#ffe9e9 0,transparent 34%),linear-gradient(135deg,#f8f9fa,#eef0f3)}.login-panel,.register-panel{overflow:hidden;border:1px solid #e2e5e8;border-radius:16px;background:#fff;box-shadow:0 24px 70px #17202a1c}.login-panel{display:grid;width:min(940px,100%);grid-template-columns:.9fr 1.1fr}.register-panel{width:min(440px,100%);padding:28px}.auth-banner{display:flex;min-height:520px;flex-direction:column;justify-content:center;background:linear-gradient(145deg,#191e24,#2d343c);padding:45px;color:#fff}.auth-banner h1,.form-heading h1{margin:9px 0 0;font-size:clamp(28px,4vw,42px);line-height:1.08;letter-spacing:-1px}.auth-banner>p:not(.eyebrow){margin:15px 0 0;color:#c9ced4;font-size:14px;line-height:1.7}.eyebrow{margin:0;color:#dc2d2d;font-size:10px;font-weight:850;letter-spacing:1.25px;text-transform:uppercase}.auth-banner .eyebrow{color:#ff7777}.auth-form{display:grid;align-content:center;gap:18px;padding:45px}.compact-form{padding:0;gap:14px}.form-heading{margin-bottom:18px}.form-heading h1{font-size:28px}.form-heading p:not(.eyebrow){margin:7px 0 0;color:#7b8490;font-size:12px;line-height:1.55}.form-group label{display:block;margin-bottom:6px;color:#46505b;font-size:11px;font-weight:750}.form-group input{width:100%;height:43px;border:1px solid #dce0e4;border-radius:9px;outline:0;background:#fafbfb;padding:0 12px;color:#242b33;font-size:12px;transition:.15s}.form-group input:focus{border-color:#747d87;background:#fff;box-shadow:0 0 0 3px #2228300f}.password-field{position:relative}.password-field input{padding-right:44px}.password-toggle{position:absolute;top:50%;right:6px;display:grid;width:31px;height:31px;place-items:center;border:0;border-radius:7px;background:transparent;color:#7e8791;cursor:pointer;transform:translateY(-50%)}.password-toggle:hover{background:#f0f1f2}.password-toggle svg{width:17px;height:17px}.form-error{margin:0;border:1px solid #f2c6c6;border-radius:8px;background:#fff3f3;padding:9px 11px;color:#b62c2c;font-size:10px;font-weight:700}.primary-btn{height:43px;border:0;border-radius:9px;background:#d92d2d;color:#fff;cursor:pointer;font-size:12px;font-weight:800;box-shadow:0 7px 18px #d92d2d33}.primary-btn:hover{background:#c72424}.auth-switch{margin:0;color:#818993;font-size:11px;text-align:center}.auth-switch a{color:#cf2929;font-weight:800}.auth-switch a:hover{text-decoration:underline}@media(max-width:700px){.login-panel{grid-template-columns:1fr}.auth-banner{min-height:auto;padding:30px}.auth-form{padding:30px}.register-panel{padding:22px}}
+body,#app,.app-shell,.auth-page{font-family:var(--app-font)}
+button,input,select,textarea{font-family:inherit}

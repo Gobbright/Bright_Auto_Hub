@@ -1,0 +1,27 @@
+{
+  "name": "goauto-admin-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "check": "node --check src/server.js",
+    "seed:spare-parts": "node scripts/seedSparePartsCatalog.js",
+    "seed:catalog": "node scripts/seedFullCatalog.js",
+    "seed:construction": "node scripts/seedFeaturedConstructionVehicles.js",
+    "sync:brand-logos": "node scripts/syncBrandLogos.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^5.1.0",
+    "mongoose": "^8.18.0",
+    "sharp": "^0.35.3"
+  },
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

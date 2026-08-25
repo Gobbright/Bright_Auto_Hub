@@ -1,0 +1,9 @@
+Fertigo Pro Regular
+Designed by Jos Buivenga (exljbris Font Foundry)
+
+The regular style is distributed as a free font. The exljbris license permits
+@font-face embedding for free fonts when the designer attribution is included
+next to the CSS font declaration.
+
+Official font page: https://www.exljbris.com/fertigo.html
+License: https://www.fontsquirrel.com/license/fertigo-pro
