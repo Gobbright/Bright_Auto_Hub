@@ -12,6 +12,8 @@ import FinanceInsurancePage from './pages/FinanceInsurancePage.jsx'
 import SearchPage from './pages/SearchPage.jsx'
 import LegalPage from './pages/LegalPage.jsx'
 import { api } from './lib/api.js'
+import EnquiryModal from './components/EnquiryModal.jsx'
+import { ui } from './lib/uiClasses.js'
 
 export default function App() {
   const { pathname } = useLocation()
@@ -40,7 +42,7 @@ export default function App() {
     localStorage.setItem('publicUserProfile', JSON.stringify(user))
     window.dispatchEvent(new CustomEvent('public-user-change', { detail: user }))
   }
-  return <div className="app-shell"><Routes>
+  return <div className={`app-shell ${ui.app}`}><Routes>
     <Route path="/" element={<Home />} />
     <Route path="/vehicles" element={<MarketplacePage kind="vehicles" />} />
     <Route path="/vehicles/:group" element={<VehicleCategoryPage />} />
@@ -49,6 +51,7 @@ export default function App() {
     <Route path="/calculators" element={<MarketplacePage kind="calculators" />} />
     <Route path="/used-cars" element={<MarketplacePage kind="used-cars" />} />
     <Route path="/spare-parts" element={<MarketplacePage kind="spare-parts" />} />
+    <Route path="/spare-parts/:categorySlug" element={<MarketplacePage kind="spare-parts" />} />
     <Route path="/services" element={<MarketplacePage kind="services" />} />
     <Route path="/contact" element={<MarketplacePage kind="contact" />} />
     <Route path="/login" element={<Login onAdminLogin={login} onUserLogin={userLogin} />} />
@@ -68,5 +71,5 @@ export default function App() {
     <Route path='/services/product/:identifier' element={<ProductDetailPage kind='services' />} />
     <Route path='/search' element={<SearchPage />} />
     <Route path='/legal/:slug' element={<LegalPage />} />
-  </Routes></div>
+  </Routes><EnquiryModal/></div>
 }

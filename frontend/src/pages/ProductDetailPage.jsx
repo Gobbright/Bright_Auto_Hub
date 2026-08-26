@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { api } from '../lib/api.js'
-import { MarketplaceShell } from './MarketplacePage.jsx'
+import { addVehicleToCompare, MarketplaceShell } from './MarketplacePage.jsx'
 import vehicleFallback from '../assets/Images/Home/Vehicle Category/4_Wheelers.png'
 import partFallback from '../assets/Images/Home/images/automobile-tyres-alloy-wheels-banner.png'
 import serviceFallback from '../assets/Images/service-spare-parts/expert-car-service-workshop.jpg'
@@ -58,6 +58,10 @@ export default function ProductDetailPage({ kind }) {
   const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const isEvProduct=kind==='vehicles'&&/(electric|\bev\b)/i.test([
+    product?.group,product?.vehicleType,product?.fuelType,product?.category?.name,product?.category?.slug,
+    product?.categoryId?.name,product?.categoryId?.slug,
+  ].filter(Boolean).join(' '))
 
   useEffect(() => {
     let active = true
@@ -90,8 +94,9 @@ export default function ProductDetailPage({ kind }) {
     page: typeof window === 'undefined' ? '' : window.location.pathname,
   }).toString() : config.backUrl
 
-  if (loading) return <MarketplaceShell><div className='product-detail-state'><span className='product-detail-loader'/><h1>Loading product...</h1></div></MarketplaceShell>
-  if (error || !product) return <MarketplaceShell><div className='product-detail-state error'><small>PRODUCT UNAVAILABLE</small><h1>We could not find this product.</h1><p>{error}</p><Link to={config.backUrl}>Back to {config.backLabel}</Link></div></MarketplaceShell>
+  const shellActive = kind === 'parts' ? 'spare-parts' : kind
+  if (loading) return <MarketplaceShell active={shellActive}><div className='product-detail-state'><span className='product-detail-loader'/><h1>Loading product...</h1></div></MarketplaceShell>
+  if (error || !product) return <MarketplaceShell active={shellActive}><div className='product-detail-state error'><small>PRODUCT UNAVAILABLE</small><h1>We could not find this product.</h1><p>{error}</p><Link to={config.backUrl}>Back to {config.backLabel}</Link></div></MarketplaceShell>
 
   const chips = kind === 'vehicles'
     ? [product.vehicleType, product.fuelType, product.transmission, product.condition]
@@ -99,8 +104,8 @@ export default function ProductDetailPage({ kind }) {
       ? [categoryName(product.categoryId) || product.category, product.brand, product.stock > 0 ? 'In stock' : 'Contact for stock']
       : [product.category, product.duration, ...(product.vehicleTypes || [])]
 
-  return <MarketplaceShell>
-    <main className='product-detail-page'>
+  return <MarketplaceShell active={shellActive}>
+    <main className={'product-detail-page'+(isEvProduct?' ev-product-detail-page':'')}>
       <nav className='market-wrap product-detail-wrap product-detail-breadcrumb' aria-label='Breadcrumb'>
         <Link to='/'>Home</Link><span>/</span><Link to={config.backUrl}>{config.backLabel}</Link><span>/</span><strong>{product.name}</strong>
       </nav>
@@ -108,7 +113,7 @@ export default function ProductDetailPage({ kind }) {
       <section className='market-wrap product-detail-wrap product-detail-hero'>
         <div className='product-detail-visual'>
           <span>{product.featured ? 'FEATURED' : kind === 'parts' ? 'GENUINE PRODUCT' : 'VERIFIED LISTING'}</span>
-          <img src={product.imageUrl || config.fallback} alt={product.name} />
+          <img src={product.imageUrl || config.fallback} alt={product.name} onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = config.fallback }} />
         </div>
         <div className='product-detail-summary'>
           <p className='product-detail-kicker'>{config.label.toUpperCase()} · LIVE FROM ADMIN</p>
@@ -122,6 +127,7 @@ export default function ProductDetailPage({ kind }) {
           </div>
           <div className='product-detail-actions'>
             <Link className='product-detail-primary' to={enquiryUrl}>Enquire Now</Link>
+            {kind === 'vehicles' && <Link className='product-detail-secondary' to='/compare' onClick={() => addVehicleToCompare(product)}>Compare Vehicle</Link>}
             <Link className='product-detail-secondary' to={config.backUrl}>View More {config.backLabel}</Link>
           </div>
           <div className='product-detail-trust'><span>✓ Verified details</span><span>✓ Expert support</span><span>✓ Transparent enquiry</span></div>

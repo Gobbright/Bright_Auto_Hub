@@ -168,7 +168,7 @@ export default function AdminLayout({ onLogout }) {
                   <button className={item.children.some((child) => child.id === activePage) ? 'active parent-active' : ''} type='button' data-label={item.label} aria-expanded={Boolean(openTrees[item.id])} onClick={() => setOpenTrees((current) => ({ ...current, [item.id]: !current[item.id] }))}>
                     <span><AdminIcon name={item.icon}/></span>{item.label}<em className='nav-count'>{countLabel(item.id)}</em><b className={openTrees[item.id] ? 'nav-caret open' : 'nav-caret'}>⌄</b>
                   </button>
-                  {openTrees[item.id] && <div className='nav-submenu'>{item.children.map((child) => <button className={activePage === child.id ? 'active' : ''} type='button' key={child.id} data-label={child.label} onClick={() => selectPage(child.id)}><span className='nav-sub-dot'/>{child.label}<em className='nav-count'>{countLabel(child.id)}</em>{activePage === child.id && <i/>}</button>)}</div>}
+                  {openTrees[item.id] && <div className='nav-submenu'>{item.children.map((child) => <button className={activePage === child.id ? 'active' : ''} type='button' key={child.id} data-label={child.label} onClick={() => selectPage(child.id)}>{child.label}<em className='nav-count'>{countLabel(child.id)}</em>{activePage === child.id && <i/>}</button>)}</div>}
                 </div>
               ) : (
                 <button className={activePage === item.id ? 'active' : ''} type="button" key={item.id} data-label={item.label} aria-label={item.label} onClick={() => selectPage(item.id)}>

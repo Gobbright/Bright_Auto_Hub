@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { api } from '../lib/api.js'
 import '../style.css'
+import { ui } from '../lib/uiClasses.js'
 import PublicFooter from '../components/PublicFooter.jsx'
 import bannerOne from '../assets/Images/Home/Banners/banner-1.png'
 import bannerTwo from '../assets/Images/Home/Banners/banner-2.png'
@@ -372,7 +373,7 @@ export function Header() {
   const [mobileOpen,setMobileOpen]=useState(false)
   const [openMenu,setOpenMenu]=useState('')
   const [partMenu,setPartMenu]=useState([])
-  const { pathname }=useLocation()
+  const { pathname, search }=useLocation()
   useEffect(()=>{let live=true;api.get('/public/part-categories').then((groups)=>{if(live&&groups.length)setPartMenu(groups.map((group)=>[group.name,...(group.children||[]).map((item)=>item.name)]))}).catch(()=>{});return()=>{live=false}},[])
   useEffect(()=>{setMobileOpen(false);setOpenMenu('')},[pathname])
   useEffect(()=>{
@@ -396,6 +397,30 @@ export function Header() {
     [evVehicleIcon,'EV Vehicles','/vehicles/ev-vehicles'],
     ...(pathname==='/'?[[serviceIcon,'Services','/services'],[sparePartIcon,'Spare Parts','/spare-parts'],[null,'EMI Calculator','/calculators','calculator']]:[]),
   ]
+  const sparePartsNav=[
+    [sparePartIcon,'Spare Parts','/spare-parts'],
+    [null,'Two Wheeler Parts','/spare-parts/two-wheeler-parts','parts'],
+    [null,'Car Parts','/spare-parts/car-parts','parts'],
+    [null,'Commercial Parts','/spare-parts/commercial-vehicle-parts','truck'],
+    [null,'Construction Parts','/spare-parts/construction-equipment-parts','tools'],
+    [null,'EV Parts','/spare-parts/ev-vehicle-parts','bolt'],
+    [null,'Farm Parts','/spare-parts/farm-vehicle-parts','tractor'],
+  ]
+  const servicesNav=[
+    [serviceIcon,'Services','/services'],
+    [null,'General Service','/services?category=General%20Service','tools'],
+    [null,'Periodic Maintenance','/services?category=Periodic%20Maintenance','calendar'],
+    [null,'Oil Change','/services?category=Oil%20Change','parts'],
+    [null,'Brake Service','/services?category=Brake%20Service','shield'],
+    [null,'AC Service','/services?category=AC%20Service','service'],
+    [null,'Breakdown Assistance','/services?category=Breakdown%20Assistance','tools'],
+  ]
+  const isSparePartsPage=pathname.startsWith('/spare-parts')
+  const isServicesPage=pathname.startsWith('/services')
+  const isEvPath=pathname.startsWith('/vehicles/ev-vehicles')||pathname.includes('/electric-cars')
+  const hideSecondaryNav=pathname.startsWith('/contact')||pathname.startsWith('/blog')
+  const secondaryNav=isSparePartsPage?vehicleNav:isServicesPage?servicesNav:vehicleNav
+  const selectedCategory=new URLSearchParams(search).get('category')||''
   return <>
     <div className='utility-bar'>
       <div className='site-container utility-inner'>
@@ -436,16 +461,27 @@ export function Header() {
       </div></nav>
       <div className='header-actions'><HeaderSearch/><Link className='red-button compact' to={homeEnquiryLink('General enquiry','Automotive requirement','header')}><Icon name='enquiry'/> Enquire Now</Link></div>
     </div></header>
-    <nav className='vehicle-nav' aria-label='Vehicle categories'>
-      <div className={`site-container vehicle-nav-inner ${pathname==='/'?'home-nav':''}`}>
-        {vehicleNav.map(([icon,label,url,fallbackIcon])=>{
-          const isActive=pathname===url||pathname.startsWith(url+'/')
-          return <Link className={`${isActive?'active':''}${label==='EV Vehicles'?' ev-nav-item':''}`.trim()} to={url} key={label}>
+    {!hideSecondaryNav&&<nav className={'vehicle-nav'+(isSparePartsPage?' parts-secondary-nav':'')+(isServicesPage?' services-secondary-nav':'')} aria-label={isSparePartsPage?'Vehicle categories':isServicesPage?'Vehicle service categories':'Vehicle categories'}>
+      <div className={'site-container vehicle-nav-inner '+(pathname==='/'?'home-nav':'')+(isSparePartsPage?' parts-nav':'')+(isServicesPage?' services-nav':'')}>
+        {secondaryNav.map(([icon,label,url,fallbackIcon])=>{
+          const urlCategory=new URLSearchParams(url.split('?')[1]||'').get('category')||''
+          const isActive=label==='EV Vehicles'&&isEvPath?true:isEvPath?false:urlCategory?selectedCategory===urlCategory:(selectedCategory===''&&(pathname===url||pathname.startsWith(url+'/')))
+          return <Link className={(isActive?'active ':'')+(label==='EV Vehicles'?'ev-nav-item':'')} to={url} key={label}>
             {icon?<img src={icon} alt='' aria-hidden='true'/>:<Icon name={fallbackIcon}/>}<span>{label}</span>
           </Link>
         })}
       </div>
-    </nav>
+    </nav>}
+    {isSparePartsPage&&<nav className='spare-parts-subnav' aria-label='Spare parts pages'>
+      <div className='site-container spare-parts-subnav-inner'>
+        {sparePartsNav.map(([icon,label,url,fallbackIcon])=>{
+          const isActive=pathname===url||(url==='/spare-parts'&&pathname.startsWith('/spare-parts/product/'))
+          return <Link className={isActive?'active':''} to={url} key={label}>
+            {icon?<img src={icon} alt='' aria-hidden='true'/>:<Icon name={fallbackIcon}/>}<span>{label}</span>
+          </Link>
+        })}
+      </div>
+    </nav>}
   </>
 }
 function HeroSlider({ page }) {
@@ -458,7 +494,6 @@ function HeroSlider({ page }) {
     {homeSlides.map(([image,kicker,title,copy,cta,alt,to],index)=><article className={`hero-slide ${index===active?'active':''}`} aria-hidden={index!==active} aria-label={`${index+1} of ${homeSlides.length}: ${title}`} key={`${image}-${index}`}>
       <img className='hero-banner-image' src={image} alt={alt} loading={index===0?'eager':'lazy'} fetchPriority={index===0?'high':'auto'} decoding='async'/>
       <div className='hero-overlay'>
-        <span className='hero-slide-count' aria-hidden='true'>{String(index+1).padStart(2,'0')} / {String(homeSlides.length).padStart(2,'0')}</span>
         <p className='red-kicker'>{kicker}</p>
         {index===0?<h1>{title}</h1>:<h2>{title}</h2>}
         <p className='hero-description'>{copy}</p>
@@ -529,7 +564,10 @@ function SectionHeading({eyebrow,title,link='View All',to='#vehicles',onPrevious
 function HomeVehicleCard({item,group,cardClassName='',imageClassName='',cta='Explore',to}) {
   const cardGroup=group||item.group
   const route=to||item.to||`/vehicles/${cardGroup}`
-  return <article className={`trending-vehicle-card ${cardClassName} ${item.visual==='lifestyle'?'is-lifestyle':''}`.trim()} data-category={cardGroup}>
+  const navigate=useNavigate()
+  const openProduct=(event)=>{if(event.target.closest('a,button'))return;navigate(route)}
+  const openProductFromKeyboard=(event)=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();navigate(route)}}
+  return <article className={`trending-vehicle-card ${cardClassName} ${item.visual==='lifestyle'?'is-lifestyle':''}`.trim()} data-category={cardGroup} role='link' tabIndex='0' onClick={openProduct} onKeyDown={openProductFromKeyboard}>
     <Link className={`trending-vehicle-image ${imageClassName}`.trim()} to={route} aria-label={`View ${item.name}`}>
       <span className='vehicle-category-pill'>{item.category}</span>
       <img src={item.image} alt={`${item.name} product`} loading='lazy'/>
@@ -682,7 +720,7 @@ function Home() {
     ['Essential Car Service and Spare Parts','Maintenance',carSparePartsServiceBanner,''],
     ['How to Choose the Right Tyres','Spare Parts',automobileTyresAlloyWheelsBanner,''],
   ]
-  return <div className='public-home' id='top'><Header/><main><HeroSlider page={homeData.page}/><Finder/>
+  return <div className={`public-home ${ui.publicPage}`} id='top'><Header/><main className={ui.main}><HeroSlider page={homeData.page}/><Finder/>
     <section
       className='content-section site-container explore-vehicle-slider'
       id='explore-vehicles'
@@ -695,7 +733,6 @@ function Home() {
     >
       <div className='explore-vehicle-stage'>
         <div className='explore-vehicle-intro'>
-          <p className='explore-slide-number'>/ 02</p>
           <h2 id='explore-vehicle-title'>Explore <span>Vehicles</span></h2>
           <i className='explore-title-line' aria-hidden='true'/>
           <p className='explore-vehicle-copy'>From city streets to demanding work sites, find the perfect vehicle for every journey.</p>
@@ -730,6 +767,19 @@ function Home() {
             {carProducts.map((item,index)=><HomeVehicleCard item={item} group='cars' cardClassName='explore-car-product-card' imageClassName='explore-car-product-image' key={item.id||`${item.name}-${index}`}/>)}
           </div>
         </div>
+      </div>
+    </section>
+    <section className='home-compare-section site-container' aria-labelledby='home-compare-title'>
+      <div className='home-compare-intro'>
+        <p className='home-compare-eyebrow'>COMPARE BEFORE YOU DECIDE</p>
+        <h2 id='home-compare-title'>Make a smarter vehicle choice.</h2>
+        <p>Compare cars, bikes, SUVs, electric vehicles and commercial models side by side. Review price, specifications, features, efficiency and ownership details in one clear view.</p>
+        <Link className='home-compare-cta' to='/compare'>Start Comparing <Icon name='arrow'/></Link>
+      </div>
+      <div className='home-compare-visuals' aria-label='Vehicle comparison options'>
+        <Link to='/compare' className='home-compare-card'><img src={tataNexonGreySuv} alt='Tata Nexon compact SUV for vehicle comparison'/><strong>Compare Cars</strong><small>Price, features & comfort</small></Link>
+        <Link to='/compare' className='home-compare-card featured'><img src={kiaSeltosWhiteSuv} alt='Kia Seltos SUV for vehicle comparison'/><strong>Compare SUVs</strong><small>Space, safety & performance</small></Link>
+        <Link to='/compare' className='home-compare-card'><img src={evCarsBanner} alt='Electric car for EV comparison'/><strong>Compare EVs</strong><small>Range, charging & running cost</small></Link>
       </div>
     </section>
     <section className='journey-banner'>

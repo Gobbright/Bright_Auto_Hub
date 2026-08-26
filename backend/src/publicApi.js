@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import { sendEnquiryEmails } from './enquiryMailer.js'
 import { randomBytes, scryptSync, timingSafeEqual } from 'node:crypto'
 
 const locationCache = new Map()
@@ -232,7 +233,23 @@ export const registerPublicApi = (app) => {
         accountEmail: cleanText(request.body.accountEmail, 180).toLowerCase(), context: cleanText(request.body.context, 3000),
         ip: cleanText(request.ip || request.socket?.remoteAddress, 100), userAgent: cleanText(request.get('user-agent'), 500),
       })
-      response.status(201).json({ message: 'Thanks! Our team will contact you shortly.', id: item._id })
+      let mailResult
+      try {
+        mailResult = await sendEnquiryEmails(item.toObject())
+      } catch (error) {
+        mailResult = { status: 'failed', error: cleanText(error?.message || 'Email delivery failed', 500) }
+      }
+      item.emailNotificationStatus = mailResult.status
+      item.emailNotificationError = mailResult.error || ''
+      item.emailNotificationMessageId = mailResult.messageId || ''
+      item.emailNotifiedAt = mailResult.notifiedAt || null
+      item.customerAcknowledgementSent = Boolean(mailResult.acknowledgementSent)
+      await item.save()
+      response.status(201).json({
+        message: 'Thanks! Our team will contact you shortly.',
+        id: item._id,
+        emailNotificationStatus: item.emailNotificationStatus,
+      })
     } catch (error) { next(error) }
   })
 
@@ -254,7 +271,7 @@ export const registerPublicApi = (app) => {
 
   app.get('/api/public/blogs', async (_request, response, next) => {
     try {
-      response.json(await Blog.find({ status: 'published' }).sort({ publishedAt: -1, updatedAt: -1 }).select('title slug excerpt imageUrl author tags publishedAt'))
+      response.json(await Blog.find({ status: 'published' }).sort({ publishedAt: -1, updatedAt: -1 }).select('title slug excerpt imageUrl imageAlt author tags readingTime publishedAt createdAt'))
     } catch (error) { next(error) }
   })
 

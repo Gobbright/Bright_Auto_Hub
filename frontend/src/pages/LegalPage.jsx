@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { MarketplaceShell } from './MarketplacePage.jsx'
-import legalHeroImage from '../assets/Images/contact us/contact-us-white-sports-car-banner.png'
 import './legal-page.css'
 
 const policies = {
@@ -71,9 +70,6 @@ export default function LegalPage() {
 
   return <MarketplaceShell>
     <main className='legal-page'>
-      <section className='legal-hero'>
-        <img src={legalHeroImage} alt='Bright Auto Hub automobile support' />
-      </section>
       <section className='market-wrap legal-heading'>
         <p>BRIGHT AUTO HUB · LEGAL</p>
         <h1>{policy.title}</h1>

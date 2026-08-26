@@ -26,10 +26,11 @@ import whiteRedCompare from '../assets/Images/compare vechicles/white-red-car-co
 import calculatorHero from '../assets/Images/Home/images/vehicle-price-search-interface.png'
 import contactHero from '../assets/Images/contact us/contact-us-white-sports-car-banner.png'
 import contactSupport from '../assets/Images/contact us/automotive-customer-support-headset.png'
-import { blogStories } from '../data/visualContent.js'
+import advertisementImage from '../assets/Images/img-123.png'
 import { PartsPage, ServicesPage } from './ServicePartsPages.jsx'
 import './marketplace.css'
 import './marketplace-extra.css'
+import { ui } from '../lib/uiClasses.js'
 
 const meta = {
   vehicles: ['Explore Vehicles','Find the right vehicle for every road and every ambition.'],
@@ -53,6 +54,22 @@ const fallbackCompareVehicles = [
   {_id:'compare-venue',name:'Hyundai Venue',fuelType:'Petrol',price:794000,imageUrl:venueCompare,modelYear:2026,specifications:{Mileage:'18 kmpl',Power:'118 bhp',Seats:'5'}},
   {_id:'compare-seltos',name:'Kia Seltos',fuelType:'Petrol',price:1119000,imageUrl:seltosCompare,modelYear:2026,specifications:{Mileage:'17 kmpl',Power:'158 bhp',Seats:'5'}},
 ]
+const COMPARE_STORAGE_KEY = 'bright-auto-compare-vehicles'
+export const readCompareVehicles = () => {
+  if (typeof window === 'undefined') return []
+  try { return JSON.parse(localStorage.getItem(COMPARE_STORAGE_KEY) || '[]') || [] } catch { return [] }
+}
+export const addVehicleToCompare = (vehicle) => {
+  if (typeof window === 'undefined' || !vehicle) return
+  const current = readCompareVehicles().filter((item) => item._id !== vehicle._id && item.slug !== vehicle.slug)
+  localStorage.setItem(COMPARE_STORAGE_KEY, JSON.stringify([vehicle, ...current].slice(0, 4)))
+  window.dispatchEvent(new CustomEvent('compare-vehicles-change'))
+}
+export const removeVehicleFromCompare = (vehicle) => {
+  if (typeof window === 'undefined' || !vehicle) return
+  localStorage.setItem(COMPARE_STORAGE_KEY, JSON.stringify(readCompareVehicles().filter((item) => item._id !== vehicle._id && item.slug !== vehicle.slug)))
+  window.dispatchEvent(new CustomEvent('compare-vehicles-change'))
+}
 const compareIdeas = [
   {image:compareSelector,alt:'Black and red SUVs in a vehicle comparison selector',title:'Compact SUV Showdown',copy:'Compare the essentials before you shortlist.'},
   {image:blackRedCompare,alt:'Black and red SUVs compared side by side',title:'Style vs Performance',copy:'See design, power and practical value together.'},
@@ -62,8 +79,16 @@ const compareIdeas = [
   {image:whiteRedCompare,alt:'White and red cars compared side by side',title:'Smart City Cars',copy:'Balance efficiency, convenience and budget.'},
 ]
 
-export function MarketplaceShell({ children }) {
-  return <div className='market-page public-home' id='top'><Header/>{children}<PublicFooter/></div>
+function PublicAdvertisement(){
+  return <aside className='market-wrap public-advertisement' aria-label='Advertisement space'>
+    <img src={advertisementImage} alt='Advertise your automotive business with Bright Auto Hub' loading='lazy'/>
+    <div><small>ADVERTISEMENT</small><h2>Place Your Ad Here</h2><p>Reach vehicle buyers, owners, workshops and automotive businesses across India.</p></div>
+    <Link to='/contact?subject=Advertisement+enquiry&item=Website+advertisement&source=advertisement'>For Advertisement Contact <Icon name='arrow'/></Link>
+  </aside>
+}
+
+export function MarketplaceShell({ children, active='' }) {
+  return <div className={`market-page public-home ${ui.publicPage}`} id='top'><Header/>{children}{active!=='spare-parts'&&<PublicAdvertisement/>}<PublicFooter/></div>
 }
 const money=(value)=>Number(value)>0?`₹${Number(value).toLocaleString('en-IN')}`:'Price on enquiry'
 const enquiryLink=(source,item,category='')=>{
@@ -73,7 +98,10 @@ const enquiryLink=(source,item,category='')=>{
 
 export function VehicleCards({ items, used=false }) {
   const list=items||[]
-  return <div className='market-cards'>{list.map((item)=><article className='market-card' key={item._id||item.name}><div><span>{used?'CERTIFIED':item.featured?'FEATURED':'VERIFIED'}</span><Link to={'/vehicles/product/'+(item.slug||item._id)}><img src={item.imageUrl||cars} alt={item.name}/></Link></div><Link className='market-card-title' to={'/vehicles/product/'+(item.slug||item._id)}><h3>{item.name}</h3></Link><p>{item.modelYear||new Date().getFullYear()} · {item.fuelType||'Petrol'} · {used?`${Number(item.mileage||0).toLocaleString('en-IN')} km`:'Latest model'}</p><strong>{money(item.price||0)}</strong><Link className='product-view-link' to={'/vehicles/product/'+(item.slug||item._id)}>View Details</Link><Link className='enquiry-button' to={enquiryLink('vehicle',item.name,item.category?.name||item.vehicleType||'')}>Enquire Now</Link></article>)}</div>
+  return <div className='market-cards'>{list.map((item)=>{
+    const mileage = used ? Number(item.mileage||0).toLocaleString('en-IN') + ' km' : 'Latest model'
+    return <article className='market-card' key={item._id||item.name}><div><span>{used?'CERTIFIED':item.featured?'FEATURED':'VERIFIED'}</span><Link to={'/vehicles/product/'+(item.slug||item._id)}><img src={item.imageUrl||cars} alt={item.name}/></Link></div><Link className='market-card-title' to={'/vehicles/product/'+(item.slug||item._id)}><h3>{item.name}</h3></Link><p>{item.modelYear||new Date().getFullYear()} · {item.fuelType||'Petrol'} · {mileage}</p><strong>{money(item.price||0)}</strong><Link className='product-view-link' to={'/vehicles/product/'+(item.slug||item._id)}>View Details</Link><div className='flex gap-2'><Link className='enquiry-button flex-1' to={enquiryLink('vehicle',item.name,item.category?.name||item.vehicleType||'')}>Enquire Now</Link>{!used&&<Link className='compare-button inline-flex items-center justify-center rounded-lg border border-slate-200 px-3 text-[10px] font-bold text-slate-600 transition hover:border-[#e5091a] hover:text-[#e5091a]' to='/compare' onClick={()=>addVehicleToCompare(item)}>Compare</Link>}</div></article>
+  })}</div>
 }
 
 function VehiclesPage({ data, used=false }) {
@@ -90,14 +118,47 @@ function VehiclesPage({ data, used=false }) {
 }
 
 function ComparePage({ data }) {
-  const liveVehicles=data.vehicles||[]
-  const list=liveVehicles.length>=2?liveVehicles:fallbackCompareVehicles
-  const [a,setA]=useState(0),[b,setB]=useState(1)
-  const page={...data.page,heroImage:data.page.heroImage||compareHero}
-  const one=list[a%list.length],two=list[b%list.length]
-  return <><Hero page={page} dark/><section className='market-wrap compare-picker'><CompareCar car={one}/><b>VS</b><CompareCar car={two}/></section><section className='market-wrap compare-banner-row'>{[[compareOutline,'Outlined cars facing a comparison symbol','Quick visual comparison'],[compareSpeed,'Car silhouettes with red and blue speed lights','Performance at a glance'],[compareDarkRoad,'Dark car on a road with red tail lights','Decide with confidence']].map(([image,alt,title])=><article key={title}><img src={image} alt={alt}/><strong>{title}</strong></article>)}</section><section className='market-wrap section-space'><div className='compare-selects'><select aria-label='Select first vehicle to compare' value={a} onChange={e=>setA(+e.target.value)}>{list.map((x,i)=><option value={i} key={x._id}>{x.name}</option>)}</select><select aria-label='Select second vehicle to compare' value={b} onChange={e=>setB(+e.target.value)}>{list.map((x,i)=><option value={i} key={x._id}>{x.name}</option>)}</select></div><Heading title='Detailed Comparison' text='Everything important, in one clear view.'/><table className='compare-table'><tbody>{['Price','Fuel Type','Model Year','Mileage','Power','Seats'].map(key=><tr key={key}><th>{key}</th><td>{key==='Price'?money(one.price):one.specifications?.[key]||one.fuelType||'—'}</td><td>{key==='Price'?money(two.price):two.specifications?.[key]||two.fuelType||'—'}</td></tr>)}</tbody></table></section><section className='market-wrap section-space compare-model-spotlight'><Heading title='Popular Models to Compare' text='Start with two of the most searched compact SUVs.'/><div><article><img src={venueCompare} alt='Black Hyundai Venue compact SUV'/><h3>Hyundai Venue</h3><p>Compact dimensions, connected features and city-friendly performance.</p></article><article><img src={seltosCompare} alt='Red Kia Seltos compact SUV'/><h3>Kia Seltos</h3><p>Strong road presence, a feature-rich cabin and versatile powertrains.</p></article></div></section><section className='market-wrap section-space'><Heading title='Popular Comparison Ideas' text='Explore the factors that matter for your driving needs.'/><div className='compare-idea-grid'>{compareIdeas.map(item=><article key={item.title}><img src={item.image} alt={item.alt} loading='lazy'/><div><h3>{item.title}</h3><p>{item.copy}</p><Link to={enquiryLink('vehicle',item.title)}>Ask an Expert →</Link></div></article>)}</div></section><section className='market-wrap compare-help-grid'><article><img src={compareSupport} alt='Automotive comparison chat support'/><div><small>EXPERT SUPPORT</small><h2>Need help understanding the differences?</h2><Link className='enquiry-button' to={enquiryLink('vehicle','Vehicle comparison support')}>Start an Enquiry</Link></div></article><article><img src={compareOffer} alt='Vehicle comparison offer and discount graphic'/><div><small>BEST VALUE</small><h2>Ask about current vehicle offers.</h2><Link className='enquiry-button' to={enquiryLink('vehicle','Current vehicle offers')}>Enquire About Offers</Link></div></article></section><Promo title='Still unsure? Let our experts help you decide.' /></>
+  const saved = readCompareVehicles()
+  const incoming = data.vehicles || []
+  const merged = [...saved, ...incoming, ...fallbackCompareVehicles].filter((item, index, all) => all.findIndex((candidate) => candidate._id === item._id || candidate.slug === item.slug || candidate.name === item.name) === index)
+  const list = merged.length >= 2 ? merged : [...merged, ...fallbackCompareVehicles]
+  const [a, setA] = useState(0)
+  const [b, setB] = useState(1)
+  const one = list[a % list.length]
+  const two = list[b % list.length]
+  const compareRows = ['Price', 'Fuel type', 'Model year', 'Mileage', 'Power', 'Seats', 'Range', 'Transmission']
+  const valueFor = (vehicle, key) => {
+    if (key === 'Price') return money(vehicle.price)
+    if (key === 'Fuel type') return vehicle.fuelType || vehicle.specifications?.['Fuel Type'] || '—'
+    if (key === 'Model year') return vehicle.modelYear || vehicle.specifications?.['Model Year'] || '—'
+    return vehicle.specifications?.[key] || vehicle[key.toLowerCase()] || '—'
+  }
+  useEffect(() => {
+    if (one && two) localStorage.setItem(COMPARE_STORAGE_KEY, JSON.stringify([one, two]))
+  }, [one, two])
+  const addSuggestion = (vehicle) => {
+    addVehicleToCompare(vehicle)
+    setB(list.findIndex((item) => item._id === vehicle._id || item.slug === vehicle.slug))
+  }
+  const suggestions = incoming.filter((vehicle) => vehicle._id !== one?._id && vehicle._id !== two?._id).slice(0, 8)
+  const pageTitle = data.page?.title || 'Compare Vehicles'
+  return <main className='compare-page min-h-screen overflow-hidden bg-[#f6f8fb] text-[#17202a]'>
+    <section className='relative overflow-hidden border-b border-slate-200 bg-white'><div className='absolute right-[-80px] top-[-130px] size-[420px] rounded-full border-[70px] border-red-50' /><div className='market-wrap relative grid items-center gap-8 py-[clamp(42px,7vw,92px)] lg:grid-cols-[1fr_430px]'><div><p className='mb-3 text-[10px] font-black tracking-[.18em] text-[#e5091a]'>COMPARE BEFORE YOU DECIDE</p><h1 className='max-w-[720px] text-[clamp(40px,5.5vw,76px)] font-bold leading-[.96] tracking-[-.065em]'>Compare vehicles with clarity.</h1><p className='mt-5 max-w-[650px] text-[clamp(14px,1.2vw,18px)] leading-7 text-slate-500'>Put price, performance, comfort and ownership details side by side before you shortlist your next vehicle.</p><div className='mt-6 flex flex-wrap gap-2 text-[10px] font-bold text-slate-600'><span className='rounded-full bg-red-50 px-3 py-2 text-[#d7081b]'>✓ Live catalogue data</span><span className='rounded-full bg-slate-100 px-3 py-2'>✓ Clear specifications</span><span className='rounded-full bg-slate-100 px-3 py-2'>✓ Expert support</span></div></div><img className='h-[260px] w-full rounded-[24px] object-cover shadow-[0_18px_45px_rgba(28,42,60,.15)] lg:h-[315px]' src={compareHero} alt='Vehicles ready for side-by-side comparison' /></div></section>
+
+    <section className='market-wrap relative z-10 -mt-8'><div className='rounded-[24px] border border-slate-200 bg-white p-[clamp(20px,3vw,34px)] shadow-[0_18px_50px_rgba(26,39,56,.10)]'><div className='mb-6 flex flex-wrap items-center justify-between gap-3'><div><small className='text-[10px] font-black tracking-[.16em] text-[#e5091a]'>YOUR COMPARISON</small><h2 className='mb-0 mt-1 text-[clamp(24px,3vw,36px)] font-bold tracking-[-.05em]'>Side-by-side shortlist</h2></div><button className='rounded-lg border border-slate-200 px-4 py-2 text-[10px] font-bold text-slate-600 transition hover:border-[#e5091a] hover:text-[#e5091a]' type='button' onClick={()=>{localStorage.removeItem(COMPARE_STORAGE_KEY);window.location.reload()}}>Clear selection</button></div><div className='grid items-stretch gap-4 lg:grid-cols-[1fr_70px_1fr]'><CompareSlot label='Vehicle 1' vehicle={one} list={list} value={a} onChange={setA} onRemove={()=>{removeVehicleFromCompare(one);window.location.reload()}} /><div className='flex items-center justify-center'><button className='grid size-12 place-items-center rounded-full bg-[#e5091a] text-sm font-black text-white shadow-lg transition hover:rotate-180' type='button' onClick={()=>{setA(b);setB(a)}} aria-label='Swap compared vehicles'>VS</button></div><CompareSlot label='Vehicle 2' vehicle={two} list={list} value={b} onChange={setB} onRemove={()=>{removeVehicleFromCompare(two);window.location.reload()}} /></div></div></section>
+
+    <section className='market-wrap py-[clamp(42px,6vw,78px)]'><div className='mb-5 flex items-end justify-between gap-4'><div><p className='mb-1 text-[10px] font-black tracking-[.16em] text-[#e5091a]'>THE DETAILS THAT MATTER</p><h2 className='mb-0 text-[clamp(27px,3vw,40px)] font-bold tracking-[-.055em]'>Compare specifications</h2></div><span className='text-xs text-slate-500'>Scroll horizontally on mobile</span></div><div className='overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm'><table className='min-w-[680px] w-full border-collapse text-left'><thead><tr className='bg-[#f7f9fb]'><th className='w-[28%] border-b border-slate-200 px-5 py-4 text-[10px] font-black uppercase tracking-[.12em] text-slate-500'>Specification</th><th className='border-b border-slate-200 px-5 py-4'><div className='text-sm font-bold'>{one.name}</div><small className='font-normal text-slate-500'>{one.fuelType || 'Vehicle'}</small></th><th className='border-b border-slate-200 px-5 py-4'><div className='text-sm font-bold'>{two.name}</div><small className='font-normal text-slate-500'>{two.fuelType || 'Vehicle'}</small></th></tr></thead><tbody>{compareRows.map((key, index)=><tr className={index % 2 ? 'bg-[#fbfcfd]' : ''} key={key}><th className='border-b border-slate-100 px-5 py-4 text-xs font-semibold text-slate-500'>{key}</th><td className='border-b border-slate-100 px-5 py-4 text-sm font-bold text-[#1d2a3a]'>{valueFor(one, key)}</td><td className='border-b border-slate-100 px-5 py-4 text-sm font-bold text-[#1d2a3a]'>{valueFor(two, key)}</td></tr>)}</tbody></table></div></section>
+
+    {suggestions.length > 0 && <section className='border-y border-slate-200 bg-white py-[clamp(40px,6vw,72px)]'><div className='market-wrap'><div className='mb-5 flex items-end justify-between gap-4'><div><p className='mb-1 text-[10px] font-black tracking-[.16em] text-[#e5091a]'>BUILD YOUR SHORTLIST</p><h2 className='mb-0 text-[clamp(27px,3vw,38px)] font-bold tracking-[-.05em]'>You may also compare</h2></div><Link className='text-[11px] font-bold text-[#e5091a]' to='/vehicles'>Explore all vehicles →</Link></div><div className='flex gap-4 overflow-x-auto pb-3 [scrollbar-width:thin]'>{suggestions.map((vehicle) => <article className='min-w-[255px] flex-1 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm' key={vehicle._id || vehicle.name}><div className='h-[145px] overflow-hidden rounded-xl bg-[#f5f7f9]'><img className='h-full w-full object-contain' src={vehicle.imageUrl || cars} alt={vehicle.name} /></div><h3 className='mb-1 mt-3 text-sm font-bold'>{vehicle.name}</h3><p className='m-0 text-[11px] text-slate-500'>{vehicle.fuelType || 'Vehicle'} · {money(vehicle.price)}</p><button className='mt-3 w-full rounded-lg border border-[#e5091a] py-2 text-[10px] font-bold text-[#e5091a] transition hover:bg-[#e5091a] hover:text-white' type='button' onClick={()=>addSuggestion(vehicle)}>Add to compare</button></article>)}</div></div></section>}
+
+    <section className='market-wrap py-[clamp(42px,6vw,78px)]'><div className='grid gap-4 md:grid-cols-3'>{[['Pick your priorities','Price, fuel type, space or performance—start with what matters to you.'],['Review the full picture','Use specifications and ownership context together before you shortlist.'],['Ask when you need clarity','Our team can help with availability, fitment and next steps.']].map(([title,copy],index)=><article className='rounded-2xl border border-slate-200 bg-white p-5' key={title}><span className='text-2xl font-black text-[#e5091a]'>0{index+1}</span><h3 className='mb-1 mt-3 text-base font-bold'>{title}</h3><p className='m-0 text-xs leading-5 text-slate-500'>{copy}</p></article>)}</div></section>
+    <section className='market-wrap mb-[clamp(40px,6vw,84px)] flex items-center justify-between gap-6 rounded-[24px] bg-[#e5091a] p-[clamp(25px,4vw,48px)] text-white max-md:flex-col max-md:items-start'><div><small className='text-[9px] font-black tracking-[.16em] text-red-100'>NEED A SECOND OPINION?</small><h2 className='mb-2 mt-2 max-w-[650px] text-[clamp(26px,3vw,40px)] font-bold leading-tight'>Let an automotive expert help you decide.</h2><p className='m-0 text-xs text-red-100'>Share your shortlist and we will guide you through the next step.</p></div><Link className='shrink-0 rounded-lg bg-white px-5 py-3 text-[11px] font-extrabold text-[#d7081b] transition hover:bg-red-50 max-md:w-full max-md:text-center' to={enquiryLink('vehicle','Vehicle comparison support')}>Ask an expert →</Link></section>
+  </main>
 }
-function CompareCar({car}){return <article><img src={car.imageUrl||cars} alt={car.name}/><h2>{car.name}</h2><strong>{money(car.price)}</strong></article>}
+
+function CompareSlot({ label, vehicle, list, value, onChange, onRemove }) {
+  return <article className='relative overflow-hidden rounded-2xl border border-slate-200 bg-[#fbfcfd] p-4'><button className='absolute right-3 top-3 grid size-7 place-items-center rounded-full border border-slate-200 bg-white text-xs text-slate-500 transition hover:border-red-200 hover:text-[#e5091a]' type='button' onClick={onRemove} aria-label={'Remove ' + label}>×</button><small className='text-[9px] font-black tracking-[.14em] text-[#e5091a]'>{label}</small><div className='mt-3 flex gap-4'><div className='grid h-[130px] w-[42%] shrink-0 place-items-center overflow-hidden rounded-xl bg-white'><img className='h-full w-full object-contain' src={vehicle.imageUrl || cars} alt={vehicle.name} /></div><div className='min-w-0 flex-1'><h3 className='pr-7 text-lg font-bold leading-tight'>{vehicle.name}</h3><strong className='mt-2 block text-xl text-[#e5091a]'>{money(vehicle.price)}</strong><p className='mt-1 text-[11px] text-slate-500'>{vehicle.modelYear || 'Latest model'} · {vehicle.fuelType || 'Vehicle'}</p></div></div><select className='mt-4 h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-700 outline-none focus:border-[#e5091a]' aria-label={'Select ' + label} value={value} onChange={(event)=>onChange(Number(event.target.value))}>{list.map((item, index)=><option value={index} key={item._id || item.name}>{item.name}</option>)}</select></article>
+}
 
 function CalculatorsPage({data}){
   const [price,setPrice]=useState(1000000)
@@ -145,8 +206,6 @@ function CalculatorsPage({data}){
   </>
 }
 
-function BlogPage({data}){const live=data.blogs||[];const posts=blogStories.map((story,index)=>live[index]?{...story,...live[index],imageUrl:story.image,alt:story.alt}:{...story,imageUrl:story.image}).concat(live.slice(blogStories.length).map((post,index)=>({...post,imageUrl:post.imageUrl||blogStories[index%blogStories.length].image,alt:post.title})));const page={...data.page,heroImage:data.page.heroImage||blogStories[0].image};return <><Hero page={page}/><section className='market-wrap section-space'><Heading title='Latest Stories' text={`${live.length} published articles plus our automotive guides.`}/><div className='blog-market-grid'>{posts.map(x=><article key={x._id||x.slug}><img src={x.imageUrl} alt={x.alt||x.title} loading='lazy'/><small>{x.tags?.[0]||x.tag||'AUTOMOTIVE'}</small><h2>{x.title}</h2><p>{x.excerpt}</p><Link to={`/blog/${x.slug}`}>Read article →</Link></article>)}</div></section></>}
-
 function ContactPage({data}){
   const [params]=useSearchParams()
   const enquiryItem=params.get('item')||''
@@ -177,40 +236,82 @@ export default function MarketplacePage({kind}) {
   const fallback=useMemo(()=>({page:{slug:kind,title:meta[kind][0],description:meta[kind][1]},vehicles:[],brands:[],parts:[],services:[],blogs:[],partCategories:[]}),[kind])
   useEffect(()=>{const [title,description]=meta[kind];document.title=`${title} | Bright Auto Hub`;document.querySelector('meta[name="description"]')?.setAttribute('content',description)},[kind])
   useEffect(()=>{let live=true;api.get(`/public/site/${kind}`).then(x=>live&&setData(x)).catch(()=>live&&setData(fallback));return()=>{live=false}},[kind,fallback])
-  if(!data)return <MarketplaceShell><div className='market-loading'>Loading Bright Auto Hub...</div></MarketplaceShell>
-  const body=kind==='vehicles'?<VehiclesPage data={data}/>:kind==='used-cars'?<VehiclesPage data={data} used/>:kind==='compare'?<ComparePage data={data}/>:kind==='calculators'?<CalculatorsPage data={data}/>:kind==='spare-parts'?<PartsPage data={data}/>:kind==='services'?<ServicesPage data={data}/>:kind==='blog'?<EditorialBlogPage data={data}/>:<ContactPage data={data}/>
+  if(!data)return <MarketplaceShell active={kind}><div className='market-loading'>Loading Bright Auto Hub...</div></MarketplaceShell>
+  const body=kind==='vehicles'?<VehiclesPage data={data}/>:kind==='used-cars'?<VehiclesPage data={data} used/>:kind==='compare'?<ComparePage data={data}/>:kind==='calculators'?<CalculatorsPage data={data}/>:kind==='spare-parts'?<PartsPage data={data}/>:kind==='services'?<ServicesPage data={data}/>:kind==='blog'?<ReferenceBlogPage data={data}/>:<ContactPage data={data}/>
   return <MarketplaceShell active={kind}>{body}</MarketplaceShell>
 }
 
 function EditorialBlogPage({data}) {
+  const [page,setPage]=useState(1)
   const live=data.blogs||[]
-  const posts=blogStories.map((story,index)=>live[index]?{...story,...live[index],imageUrl:live[index].imageUrl||story.image,alt:live[index].alt||story.alt}:{...story,imageUrl:story.image}).concat(live.slice(blogStories.length).map((post,index)=>({...post,imageUrl:post.imageUrl||blogStories[index%blogStories.length].image,alt:post.title})))
-  const featured=posts[0]
-  const latest=posts.slice(1)
+  const posts=live.filter((post)=>post.slug&&post.imageUrl)
+  const pageSize=20
+  const pageCount=Math.max(1,Math.ceil(posts.length/pageSize))
+  const currentPage=Math.min(page,pageCount)
+  const latest=posts.slice((currentPage-1)*pageSize,currentPage*pageSize)
   const tag=(post)=>post?.tags?.[0]||post?.tag||'AUTOMOTIVE'
+  const changePage=(nextPage)=>{setPage(nextPage);requestAnimationFrame(()=>document.getElementById('latest-stories')?.scrollIntoView({behavior:'smooth',block:'start'}))}
   return <>
-    <section className='blog-index-hero'>
-      <div className='market-wrap blog-index-intro'>
-        <div className='blog-index-copy'><p>BRIGHT AUTO HUB JOURNAL</p><h1>Auto stories,<br/><span>made simple.</span></h1><p>Useful guides, honest advice and the latest updates for every kind of vehicle owner.</p></div>
-        {featured&&<Link className='blog-simple-feature' to={`/blog/${featured.slug}`}>
-          <img src={featured.imageUrl} alt={featured.alt||featured.title}/>
-          <div><span>FEATURED / {tag(featured)}</span><h2>{featured.title}</h2><p>{featured.excerpt}</p><strong>Read story <Icon name='arrow'/></strong></div>
-        </Link>}
-      </div>
-    </section>
     <nav className='market-wrap blog-topic-strip' aria-label='Blog topics'>
       <strong>Explore topics</strong>{['Buying Guides','Reviews','Electric Vehicles','Maintenance','Ownership','Commercial'].map(topic=><a href='#latest-stories' key={topic}>{topic}</a>)}
     </nav>
     <section className='market-wrap blog-latest-section' id='latest-stories'>
       <header className='blog-section-heading'><div><small>THE LATEST</small><h2>Ideas, advice and inspiration</h2><p>Practical automotive knowledge for every kind of journey.</p></div><span>{String(latest.length).padStart(2,'0')} ARTICLES</span></header>
-      <div className='blog-editorial-grid'>{latest.map((post,index)=><article className={index===0?'blog-wide-card':''} key={post._id||post.slug}>
-        <Link className='blog-card-media' to={`/blog/${post.slug}`}><img src={post.imageUrl} alt={post.alt||post.title} loading='lazy'/><span>{tag(post)}</span></Link>
-        <div className='blog-card-copy'><small>BRIGHT AUTO HUB · 5 MIN READ</small><h3><Link to={`/blog/${post.slug}`}>{post.title}</Link></h3><p>{post.excerpt}</p><Link className='blog-read-link' to={`/blog/${post.slug}`}>Read article <Icon name='arrow'/></Link></div>
-      </article>)}</div>
-    </section>
-    <section className='market-wrap blog-expert-banner'>
-      <div><small>FROM READING TO THE RIGHT DECISION</small><h2>Need advice tailored to your vehicle?</h2><p>Tell our automobile experts what you are comparing, maintaining or planning.</p></div>
-      <Link to={enquiryLink('blog','Automotive expert guidance')}>Ask an Automotive Expert <Icon name='arrow'/></Link>
+      <div className='blog-latest-layout'><div className='blog-editorial-grid'>{latest.map((post)=><article key={post._id||post.slug}>
+        <Link className='blog-card-media' to={`/blog/${post.slug}`}><img src={post.imageUrl} alt={post.imageAlt||post.title} loading='lazy'/><span>{tag(post)}</span></Link>
+        <div className='blog-card-copy'><small>BRIGHT AUTO HUB · {post.readingTime||5} MIN READ</small><h3><Link to={`/blog/${post.slug}`}>{post.title}</Link></h3><p>{post.excerpt}</p><Link className='blog-read-link' to={`/blog/${post.slug}`}>Read article <Icon name='arrow'/></Link></div>
+      </article>)}</div><aside className='blog-image-ad' aria-label='Blog advertisement'><img src={advertisementImage} alt='Automotive advertisement on Bright Auto Hub' loading='lazy'/><div><small>ADVERTISEMENT</small><h3>Place Your Ad Here</h3><p>Connect your brand with people researching their next vehicle journey.</p><Link to='/contact?subject=Advertisement+enquiry&item=Blog+sidebar+advertisement&source=advertisement'>Advertise with us <Icon name='arrow'/></Link></div></aside></div>
+      <nav className='blog-pagination' aria-label='Blog pagination'><button type='button' disabled={currentPage===1} onClick={()=>changePage(currentPage-1)}>Previous</button><div>{Array.from({length:pageCount},(_,index)=>index+1).map(number=><button className={number===currentPage?'active':''} type='button' aria-current={number===currentPage?'page':undefined} onClick={()=>changePage(number)} key={number}>{number}</button>)}</div><button type='button' disabled={currentPage===pageCount} onClick={()=>changePage(currentPage+1)}>Next</button></nav>
     </section>
   </>
+}
+
+function ReferenceBlogPage({data}){
+  const [activeTopic,setActiveTopic]=useState('All')
+  const [page,setPage]=useState(1)
+  const [email,setEmail]=useState('')
+  const [subscribed,setSubscribed]=useState(false)
+  const live=data.blogs||[]
+  const posts=live.filter((post)=>post.slug&&post.imageUrl)
+  const topics=[
+    ['All','grid',/.*/i],['News','blog',/(news|launch)/i],['Reviews','car',/review/i],['Buying Guide','search',/(buying|guide|shortlist)/i],
+    ['Maintenance','tools',/(maintenance|service|engine|oil)/i],['Tips & Advice','shield',/(tips|advice|safety|ownership|driving|road.trip)/i],
+    ['EV & Green','bolt',/(electric|\bev\b|green|mobility|charging)/i],['Industry Trends','truck',/(industry|commercial|fleet|future)/i],['Technology','calculator',/(technology|connected|infotainment|tech)/i],
+  ]
+  const searchable=(post)=>[post.tags?.[0],post.tag,post.title,post.excerpt].filter(Boolean).join(' ')
+  const activeMatcher=topics.find(([label])=>label===activeTopic)?.[2]||/.*/i
+  const filtered=activeTopic==='All'?posts:posts.filter(post=>activeMatcher.test(searchable(post)))
+  const pageSize=20
+  const pageCount=Math.max(1,Math.ceil(filtered.length/pageSize))
+  const currentPage=Math.min(page,pageCount)
+  const pagePosts=filtered.slice((currentPage-1)*pageSize,currentPage*pageSize)
+  const featured=posts.slice(0,3)
+  const tag=(post)=>post?.tags?.[0]||post?.tag||'AUTOMOTIVE'
+  const dateLabel=(post,index)=>{const value=post.publishedAt||post.createdAt;if(value){const date=new Date(value);if(!Number.isNaN(date.getTime()))return new Intl.DateTimeFormat('en-IN',{day:'numeric',month:'short',year:'numeric'}).format(date)}return `${Math.max(1,26-index)} Aug, 2026`}
+  const selectTopic=(topic)=>{setActiveTopic(topic);setPage(1)}
+  const changePage=(nextPage)=>{setPage(nextPage);requestAnimationFrame(()=>document.getElementById('blog-stories')?.scrollIntoView({behavior:'smooth',block:'start'}))}
+  const subscribe=(event)=>{event.preventDefault();if(email.trim())setSubscribed(true)}
+  const heroImage=data.page?.heroImage||posts[0]?.imageUrl||cars
+  return <main className='editorial-blog-page'>
+    <section className='blog-reference-hero'>
+      <div className='market-wrap blog-reference-hero-copy'><nav aria-label='Breadcrumb'><Link to='/'>Home</Link><span>/</span><strong>Blog</strong></nav><h1>Blog</h1><p>Stay updated with the latest automotive news, expert reviews, maintenance tips, buying guides and industry insights.</p></div>
+      <img src={heroImage} alt='Bright Auto Hub automotive Blog' decoding='async'/>
+    </section>
+    <nav className='market-wrap blog-filter-pills' aria-label='Filter Blog articles'>{topics.map(([label,icon])=><button className={activeTopic===label?'active':''} type='button' aria-pressed={activeTopic===label} onClick={()=>selectTopic(label)} key={label}><Icon name={icon}/><span>{label}</span></button>)}<button className='blog-view-all' type='button' onClick={()=>selectTopic('All')}>View All Categories <Icon name='arrow'/></button></nav>
+    <section className='market-wrap blog-reference-layout' id='blog-stories'>
+      <div className='blog-reference-main'>
+        {pagePosts.length?<div className='blog-reference-grid'>{pagePosts.map((post,index)=><article className='blog-reference-card' key={post._id||post.slug}>
+          <Link className='blog-reference-media' to={`/blog/${post.slug}`}><img src={post.imageUrl} alt={post.imageAlt||post.title} loading='lazy'/></Link>
+          <div className='blog-reference-card-copy'><small>{tag(post)}</small><h2><Link to={`/blog/${post.slug}`}>{post.title}</Link></h2><p>{post.excerpt}</p><span><Icon name='calendar'/>{dateLabel(post,index)} <b>·</b> {post.readingTime||5} min read</span></div>
+        </article>)}</div>:<div className='market-empty'>No articles found in this category.</div>}
+        <nav className='blog-reference-pagination' aria-label='Blog pagination'><button type='button' disabled={currentPage===1} onClick={()=>changePage(currentPage-1)}>Previous</button><div>{Array.from({length:pageCount},(_,index)=>index+1).map(number=><button className={number===currentPage?'active':''} type='button' aria-current={number===currentPage?'page':undefined} onClick={()=>changePage(number)} key={number}>{number}</button>)}</div><button type='button' disabled={currentPage===pageCount} onClick={()=>changePage(currentPage+1)}>Next <Icon name='arrow'/></button></nav>
+      </div>
+      <aside className='blog-reference-sidebar'>
+        <section className='blog-sidebar-panel blog-featured-panel'><h2>Featured</h2>{featured.map((post,index)=><Link to={`/blog/${post.slug}`} key={post.slug||post._id}><img src={post.imageUrl} alt='' loading='lazy'/><div><small>{dateLabel(post,index)}</small><strong>{post.title}</strong></div></Link>)}</section>
+        <section className='blog-sidebar-panel blog-category-panel'><h2>Categories</h2>{topics.map(([label,icon,matcher])=><button className={activeTopic===label?'active':''} type='button' onClick={()=>selectTopic(label)} key={label}><span><Icon name={icon}/>{label}</span><b>{label==='All'?posts.length:posts.filter(post=>matcher.test(searchable(post))).length}</b></button>)}</section>
+        <section className='blog-newsletter-panel'><span>✉</span><h2>Stay Updated</h2><p>Get the latest automotive news and updates straight to your inbox.</p><form onSubmit={subscribe}><input type='email' value={email} onChange={event=>{setEmail(event.target.value);setSubscribed(false)}} placeholder='Enter your email' aria-label='Email for Blog updates' required/><button type='submit'>Subscribe</button></form>{subscribed&&<small role='status'>Thanks! You are on the update list.</small>}</section>
+        <section className='blog-sidebar-ad' aria-label='Advertisement'><img src={advertisementImage} alt='Automotive advertisement on Bright Auto Hub' loading='lazy'/><div><small>ADVERTISEMENT</small><h3>Place Your Ad Here</h3><Link to='/contact?subject=Advertisement+enquiry&item=Blog+sidebar+advertisement&source=advertisement'>Advertise with us <Icon name='arrow'/></Link></div></section>
+      </aside>
+    </section>
+  </main>
 }

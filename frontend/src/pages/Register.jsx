@@ -3,6 +3,7 @@ import { useState } from 'react'
 import PublicFooter from '../components/PublicFooter.jsx'
 import { Header } from './Home.jsx'
 import { api } from '../lib/api.js'
+import { ui } from '../lib/uiClasses.js'
 
 function Register({ onUserLogin }) {
   const navigate = useNavigate()
@@ -41,10 +42,10 @@ function Register({ onUserLogin }) {
   }
 
   return (
-    <div className="public-home">
+    <div className={`public-home ${ui.publicPage}`}>
     <Header />
-    <section className="auth-page">
-      <div className="register-panel">
+    <section className="auth-page flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_12%_10%,#ffe9e9_0,transparent_34%),linear-gradient(135deg,#f8f9fa,#eef0f3)] px-4 py-8">
+      <div className="register-panel w-full max-w-[440px] overflow-hidden rounded-2xl border border-slate-200 bg-white p-7 shadow-[0_24px_70px_#17202a1c]">
         <div className="form-heading">
           <p className="eyebrow">
             Create Account
@@ -57,8 +58,8 @@ function Register({ onUserLogin }) {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="auth-form compact-form">
-          <div className="form-group">
+        <form onSubmit={handleSubmit} className="auth-form compact-form grid gap-3.5">
+          <div className="form-group grid gap-1.5">
             <label htmlFor="name">
               Full Name
             </label>
@@ -70,7 +71,7 @@ function Register({ onUserLogin }) {
             />
           </div>
 
-          <div className="form-group">
+          <div className="form-group grid gap-1.5">
             <label htmlFor="email">
               Email
             </label>
@@ -82,12 +83,12 @@ function Register({ onUserLogin }) {
             />
           </div>
 
-          <div className="form-group">
+          <div className="form-group grid gap-1.5">
             <label htmlFor="phone">Phone</label>
             <input id="phone" name="phone" type="tel" autoComplete="tel" placeholder="Enter phone number" />
           </div>
 
-          <div className="form-group">
+          <div className="form-group grid gap-1.5">
             <label htmlFor="password">
               Password
             </label>
@@ -100,7 +101,7 @@ function Register({ onUserLogin }) {
               />
               <button
                 type="button"
-                className="password-toggle"
+                className="password-toggle grid size-[31px] place-items-center rounded-[7px] border-0 bg-transparent text-slate-500 transition hover:bg-slate-100"
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
                 onClick={() => setShowPassword((current) => !current)}
               >
@@ -139,7 +140,7 @@ function Register({ onUserLogin }) {
 
           {error && <p className="form-error">{error}</p>}
 
-          <button type="submit" className="primary-btn">
+          <button type="submit" className={`primary-btn ${ui.primaryButton} w-full`}>
             Register
           </button>
 

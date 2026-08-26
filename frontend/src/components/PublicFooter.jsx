@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import whiteLogo from '../assets/Images/Home/Banners/Logo/Logo-White.png'
+import { ui } from '../lib/uiClasses.js'
 
 const footerGroups = [
   ['Explore', ['Vehicles', '/vehicles'], ['Bikes', '/vehicles/bikes'], ['Cars', '/vehicles/cars'], ['Compare', '/compare'], ['Brands', '/#brands'], ['Offers', '/#offers']],
@@ -21,28 +22,28 @@ function SocialIcon({name}) {
 }
 
 export default function PublicFooter() {
-  return <footer className='site-footer' id='contact'>
-    <div className='site-container footer-grid'>
+  return <footer className={`site-footer ${ui.main} bg-[#111a25] text-white`} id='contact'>
+    <div className={`site-container footer-grid ${ui.container} grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-6`}>
       <div>
-        <Link className='auto-logo footer-logo' to='/' aria-label='Bright Auto Hub home'>
+        <Link className='auto-logo footer-logo inline-flex max-w-[180px]' to='/' aria-label='Bright Auto Hub home'>
           <img src={whiteLogo} alt='Bright Auto Hub'/>
         </Link>
-        <p>Discover the right vehicle, compare with confidence, and connect with trusted service and genuine spare-parts support—all in one dependable automotive hub.</p>
-        <div className='socials'>
-          <a href='#contact' aria-label='Facebook'><SocialIcon name='facebook'/></a>
-          <a href='#contact' aria-label='Instagram'><SocialIcon name='instagram'/></a>
-          <a href='#contact' aria-label='YouTube'><SocialIcon name='youtube'/></a>
-          <a href='#contact' aria-label='LinkedIn'><SocialIcon name='linkedin'/></a>
+        <p className='max-w-xs text-sm leading-6 text-slate-300'>Discover the right vehicle, compare with confidence, and connect with trusted service and genuine spare-parts support—all in one dependable automotive hub.</p>
+        <div className='socials mt-5 flex gap-2'>
+          <a className='grid size-9 place-items-center rounded-full border border-white/20 text-slate-300 transition hover:border-red-400 hover:text-white' href='#contact' aria-label='Facebook'><SocialIcon name='facebook'/></a>
+          <a className='grid size-9 place-items-center rounded-full border border-white/20 text-slate-300 transition hover:border-red-400 hover:text-white' href='#contact' aria-label='Instagram'><SocialIcon name='instagram'/></a>
+          <a className='grid size-9 place-items-center rounded-full border border-white/20 text-slate-300 transition hover:border-red-400 hover:text-white' href='#contact' aria-label='YouTube'><SocialIcon name='youtube'/></a>
+          <a className='grid size-9 place-items-center rounded-full border border-white/20 text-slate-300 transition hover:border-red-400 hover:text-white' href='#contact' aria-label='LinkedIn'><SocialIcon name='linkedin'/></a>
         </div>
       </div>
-      {footerGroups.map(([title, ...links]) => <div key={title}>
-        <h3>{title}</h3>
-        {links.map(([label, to]) => <Link to={to} key={label}>{label}</Link>)}
+      {footerGroups.map(([title, ...links]) => <div className='flex flex-col items-start gap-2' key={title}>
+        <h3 className='mb-2 text-xs font-bold uppercase tracking-[.12em] text-white'>{title}</h3>
+        {links.map(([label, to]) => <Link className='text-sm text-slate-300 transition hover:text-white' to={to} key={label}>{label}</Link>)}
       </div>)}
     </div>
-    <div className='footer-bottom site-container'>
+    <div className={`footer-bottom site-container ${ui.container} flex flex-wrap items-center justify-between gap-4 border-t border-white/10 py-5 text-xs text-slate-400`}>
       <span>&copy; 2026 Bright Auto Hub. All rights reserved.</span>
-      <nav className='footer-legal-links' aria-label='Legal information'><Link to='/legal/privacy-policy'>Privacy</Link><Link to='/legal/terms-and-conditions'>Terms</Link><Link to='/legal/cookie-policy'>Cookies</Link><Link to='/legal/disclaimer'>Disclaimer</Link></nav>
+      <nav className='footer-legal-links flex flex-wrap gap-4' aria-label='Legal information'><Link className='transition hover:text-white' to='/legal/privacy-policy'>Privacy</Link><Link className='transition hover:text-white' to='/legal/terms-and-conditions'>Terms</Link><Link className='transition hover:text-white' to='/legal/cookie-policy'>Cookies</Link><Link className='transition hover:text-white' to='/legal/disclaimer'>Disclaimer</Link></nav>
     </div>
   </footer>
 }

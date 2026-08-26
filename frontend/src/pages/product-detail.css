@@ -2,3 +2,16 @@
 
 @media(max-width:900px){.product-detail-hero{grid-template-columns:1fr}.product-detail-visual{min-height:390px}.product-detail-visual img{height:340px}.product-detail-summary{border-top:1px solid #edf0f2;border-left:0;padding:34px}.product-detail-content{grid-template-columns:1fr}}
 @media(max-width:600px){.market-page .product-detail-wrap{width:calc(100% - 24px)}.product-detail-breadcrumb{padding-block:13px}.product-detail-hero{border-radius:12px}.product-detail-visual{min-height:300px}.product-detail-visual img{height:270px}.product-detail-visual>span{top:14px;left:14px}.product-detail-summary{padding:24px 18px}.product-detail-summary h1{font-size:34px;letter-spacing:-1.3px}.product-detail-actions{grid-template-columns:1fr}.product-detail-content{padding-block:14px}.product-detail-content>article,.product-detail-content>aside{padding:20px 16px}.product-fact-grid{grid-template-columns:1fr}.product-detail-cta{align-items:flex-start;flex-direction:column;padding:24px 20px}.product-detail-cta>a{width:100%;text-align:center}}
+
+.ev-product-detail-page{--red:#159447;--ev-green:#159447;--ev-dark:#0b6d35;background:linear-gradient(180deg,#effaf3 0,#fff 42%)}
+.ev-product-detail-page .product-detail-hero{border-color:#cfe8d7;box-shadow:0 22px 65px rgba(21,148,71,.12)}
+.ev-product-detail-page .product-detail-visual{background:radial-gradient(circle at 50% 45%,#fff 0,#eaf8ee 75%)}
+.ev-product-detail-page .product-detail-visual>span{background:#159447}
+.ev-product-detail-page .product-detail-kicker{color:#159447}
+.ev-product-detail-page .product-detail-chips span{border-color:#bfe2c9;background:#f1fbf4;color:#0b6d35}
+.ev-product-detail-page .product-detail-price strong{color:#0b6d35}
+.ev-product-detail-page .product-detail-primary{background:#159447;box-shadow:0 10px 25px rgba(21,148,71,.25)}
+.ev-product-detail-page .product-detail-primary:hover{background:#0b6d35}
+.ev-product-detail-page .product-detail-cta{background:linear-gradient(110deg,#0d5730,#1a7e46)}
+.ev-product-detail-page .product-detail-cta small{color:#a9e7b9}
+.ev-product-detail-page .product-detail-cta>a{background:#159447}

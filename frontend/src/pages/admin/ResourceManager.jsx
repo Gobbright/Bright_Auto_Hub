@@ -51,6 +51,51 @@ function Field({ field, value, onChange, lookups, onUploadChange }) {
       })
     : field.options || []
 
+  if (field.type === 'files') {
+    const images = Array.isArray(value) ? value : []
+    const handleFiles = async (event) => {
+      const files = [...(event.target.files || [])]
+      if (!files.length) return
+      const invalid = files.find((file) => file.size > 2 * 1024 * 1024)
+      if (invalid) {
+        setUploadError(`${invalid.name} is larger than 2 MB.`)
+        event.target.value = ''
+        return
+      }
+      setUploadError('')
+      setUploading(true)
+      onUploadChange?.(1)
+      try {
+        const uploaded = []
+        for (const file of files) {
+          const dataUrl = await new Promise((resolve, reject) => {
+            const reader = new FileReader()
+            reader.onload = () => resolve(reader.result)
+            reader.onerror = () => reject(new Error(`Unable to read ${file.name}.`))
+            reader.readAsDataURL(file)
+          })
+          const stored = await api.post('/storage', { filename: file.name, dataUrl, title: file.name, alt: file.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' '), context: 'blog-content' })
+          uploaded.push({ url: stored.url, alt: stored.metadata?.alt || file.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ') })
+        }
+        onChange(field.name, [...images, ...uploaded])
+      } catch (error) { setUploadError(error.message) }
+      finally {
+        setUploading(false)
+        onUploadChange?.(-1)
+        event.target.value = ''
+      }
+    }
+    return (
+      <div className={`admin-field file-upload-field multi-image-field ${field.wide ? 'wide' : ''}`}>
+        <label htmlFor={inputId}>{field.label}{field.required && <b> *</b>}</label>
+        {images.length > 0 && <div className='multi-image-preview'>{images.map((image, index) => <figure key={`${image.url}-${index}`}><img src={image.url} alt={image.alt || `Article image ${index + 1}`} /><button type='button' aria-label={`Remove image ${index + 1}`} onClick={() => onChange(field.name, images.filter((_, imageIndex) => imageIndex !== index))}>×</button><input aria-label={`Alt text for image ${index + 1}`} value={image.alt || ''} placeholder='Image alt text' onChange={(event) => onChange(field.name, images.map((entry, imageIndex) => imageIndex === index ? { ...entry, alt: event.target.value } : entry))} /></figure>)}</div>}
+        <label className='multi-file-picker' htmlFor={inputId}><AdminIcon name='image' /><span><strong>{uploading ? 'Uploading images to MongoDB...' : 'Choose content images'}</strong><small>Multiple PNG, JPG, WEBP or SVG files · Max 2 MB each</small></span><input id={inputId} type='file' multiple accept={field.accept || 'image/*'} required={field.required && images.length === 0} disabled={uploading} onChange={handleFiles} /></label>
+        {uploadError && <small className='upload-error'>{uploadError}</small>}
+        {field.hint && <small>{field.hint}</small>}
+      </div>
+    )
+  }
+
   if (field.type === 'file') {
     const handleFile = (event) => {
       const file = event.target.files?.[0]
@@ -365,7 +410,8 @@ export default function ResourceManager({ config, openToken = 0, onDataChange })
             <header><div><p className='eyebrow'>{config.singular} details</p><h2 id='record-detail-title'>{viewing.name || viewing.title}</h2></div><button type='button' onClick={() => setViewing(null)} aria-label='Close'><AdminIcon name='close' /></button></header>
             {detailImage && <div className='detail-cover'><img src={detailImage} alt={viewing.name || viewing.title} /></div>}
             <div className='detail-grid'>
-              {fields.filter((field) => !['imageUrl', 'logoUrl'].includes(field.name)).map((field) => <div className={field.wide ? 'wide' : ''} key={field.name}><span>{field.label}</span><strong>{displayValue(valueAt(viewing, field.name), field)}</strong></div>)}
+              {fields.filter((field) => !['imageUrl', 'logoUrl', 'galleryImages'].includes(field.name)).map((field) => <div className={field.wide ? 'wide' : ''} key={field.name}><span>{field.label}</span><strong>{displayValue(valueAt(viewing, field.name), field)}</strong></div>)}
+              {viewing.galleryImages?.length > 0 && <div className='wide'><span>Article content images</span><div className='detail-gallery'>{viewing.galleryImages.map((image, index) => <img src={image.url} alt={image.alt || `Article image ${index + 1}`} key={`${image.url}-${index}`} />)}</div></div>}
             </div>
             <footer><button className='admin-secondary' type='button' onClick={() => setViewing(null)}>Close</button>{!config.noEdit && <button className='admin-primary' type='button' onClick={() => { const item = viewing; setViewing(null); openEdit(item) }}><AdminIcon name='edit' /> Edit {config.singular}</button>}</footer>
           </section>

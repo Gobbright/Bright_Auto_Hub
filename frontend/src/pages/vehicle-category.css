@@ -1,4 +1,19 @@
 .vehicle-category-page{min-height:55vh;background:#fff}
+.ev-category-page{--red:#159447;--ev-green:#159447;--ev-dark:#0b6d35;background:linear-gradient(180deg,#f2fbf5 0,#fff 36%)}
+.ev-category-page .category-route-tabs{border-bottom-color:#cfe8d7;background:#fbfffc}
+.ev-category-page .category-route-tabs a.active,.ev-category-page .category-route-tabs a:hover{border-color:#8ed0a3;background:#eaf8ee;color:#0b6d35}
+.ev-category-page .vehicle-category-heading{border-bottom-color:#cfe8d7}
+.ev-category-page .vehicle-category-heading small{color:#159447}
+.ev-category-page .vehicle-category-heading h1{color:#0b4f29}
+.ev-category-page .vehicle-category-heading p strong{color:#159447}
+.ev-category-page .market-card{border-color:#d3e9d9;box-shadow:0 8px 24px rgba(21,148,71,.08)}
+.ev-category-page .market-card:hover{border-color:#8ed0a3;box-shadow:0 16px 34px rgba(21,148,71,.14)}
+.ev-category-page .market-card>div{background:linear-gradient(145deg,#f6fdf8,#eaf8ee)}
+.ev-category-page .market-card>div span{background:#159447}
+.ev-category-page .market-card-title:hover{color:#159447}
+.ev-category-page .market-card>.product-view-link:hover{background:#159447}
+.ev-category-page .market-card .enquiry-button{border-color:#73bf8b;color:#0f7b3d}
+.ev-category-page .market-card .enquiry-button:hover{border-color:#159447;background:#eaf8ee}
 .vehicle-category-page .category-route-tabs{position:relative!important;z-index:4;display:flex;width:100%;max-width:none;gap:8px;overflow-x:auto;margin:0!important;border:0;border-bottom:1px solid #e1e4e8;border-radius:0;background:#fff;padding:12px 20px;white-space:nowrap;scrollbar-width:none}
 .vehicle-category-page .category-route-tabs::-webkit-scrollbar{display:none}
 .vehicle-category-page .category-route-tabs a{display:inline-flex;min-height:40px;flex:0 0 auto;align-items:center;border:1px solid #e1e4e8;border-radius:7px;background:#fff;padding:0 16px;color:#505966;font-size:10px;font-weight:800}

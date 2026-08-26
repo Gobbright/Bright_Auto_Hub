@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom'
+import { useEffect } from 'react'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import serviceHero from '../assets/Images/service-spare-parts/expert-car-service-workshop.jpg'
 import serviceCenter from '../assets/Images/service-spare-parts/certified-vehicle-service-center.jpg'
 import diagnosticsImage from '../assets/Images/service-spare-parts/automotive-engine-diagnostics.jpg'
@@ -14,6 +15,7 @@ import roadTyres from '../assets/Images/blog details/car-tyres-highway-safety.pn
 import cars from '../assets/Images/Home/Vehicle Category/4_Wheelers.png'
 import './service-parts.css'
 import './service-parts-extra.css'
+import { ui } from '../lib/uiClasses.js'
 
 const money=(value)=>Number(value)>0?'₹'+Number(value).toLocaleString('en-IN'):'Request quote'
 const enquiryLink=(source,item,category='')=>'/contact?'+new URLSearchParams({
@@ -33,7 +35,7 @@ const iconPaths={
 }
 function PageIcon({name='service'}){return <svg viewBox='0 0 24 24' aria-hidden='true'><path d={iconPaths[name]||iconPaths.service}/></svg>}
 function SectionHeading({title,copy,action='View all',to='/contact'}){
-  return <div className='sp-section-heading'><div><h2>{title}</h2>{copy&&<p>{copy}</p>}</div><Link to={to}>{action} <span>→</span></Link></div>
+  return <div className={`sp-section-heading flex items-end justify-between gap-5 ${ui.container}`}><div><h2>{title}</h2>{copy&&<p>{copy}</p>}</div><Link className='inline-flex items-center gap-2 font-semibold text-[#e5091a]' to={to}>{action} <span>→</span></Link></div>
 }
 
 const serviceCategories=[
@@ -81,11 +83,22 @@ const fallbackParts=[
   {name:'Synthetic Engine Oil',category:'Lubricants',price:2450,imageUrl:oilImage},
 ]
 const partProductVisuals=[oilCloseup,brakeImage,diagnosticsImage,engineImage,tyreImage,oilImage]
+const sparePartPages=[
+  {slug:'two-wheeler-parts',name:'Two Wheeler Parts',title:'Two Wheeler Spare Parts',description:'Explore genuine bike and scooter spare parts with model-specific fitment support for safer, smoother everyday rides.'},
+  {slug:'car-parts',name:'Car Parts',title:'Car Spare Parts',description:'Find genuine car components for maintenance, repair and replacement across popular hatchbacks, sedans, SUVs and MPVs.'},
+  {slug:'commercial-vehicle-parts',name:'Commercial Vehicle Parts',title:'Commercial Vehicle Spare Parts',description:'Source dependable parts for trucks, pickups, buses, vans and other commercial vehicles with expert compatibility guidance.'},
+  {slug:'construction-equipment-parts',name:'Construction Equipment Parts',title:'Construction Equipment Spare Parts',description:'Discover durable replacement components for excavators, loaders, cranes and heavy construction equipment.'},
+  {slug:'ev-vehicle-parts',name:'EV Vehicle Parts',title:'Electric Vehicle Spare Parts',description:'Browse electric vehicle parts for EV cars, bikes, scooters and commercial mobility with fitment and technical assistance.'},
+  {slug:'farm-vehicle-parts',name:'Farm Vehicle Parts',title:'Farm Vehicle Spare Parts',description:'Find reliable tractor and farm equipment parts designed to support productivity, uptime and demanding field work.'},
+]
 
 export function ServicesPage({data}){
+  const [searchParams]=useSearchParams()
+  const activeCategory=searchParams.get('category')||''
+  const visibleServiceCategories=activeCategory?serviceCategories.filter(([name])=>name.toLowerCase()===activeCategory.toLowerCase()):serviceCategories
   const liveItems=data.services||[]
   const displayServices=liveItems.length?liveItems:serviceCategories.slice(0,9).map(([name,description],index)=>({_id:'fallback-service-'+index,name,description,category:'Vehicle Care',price:[899,1499,1199,999][index%4]}))
-  return <main className='service-reference-page'>
+  return <main className='service-reference-page min-h-screen overflow-x-clip bg-white text-[#151c27]'>
     <section className='sp-hero service-page-hero'>
       <div className='sp-hero-copy'>
         <p className='sp-breadcrumb'>Home <span>›</span> Services</p><small>COMPLETE VEHICLE CARE</small>
@@ -109,7 +122,7 @@ export function ServicesPage({data}){
 
     <section className='market-wrap sp-section'>
       <SectionHeading title='Browse Services by Category' copy='Everything your vehicle needs, from routine maintenance to specialist repairs.' action='Enquire for a service' to={enquiryLink('service','Service category guidance')}/>
-      <div className='service-category-grid'>{serviceCategories.map(([name,copy,icon])=><Link to={enquiryLink('service',name)} key={name}><span><PageIcon name={icon}/></span><div><h3>{name}</h3><p>{copy}</p></div></Link>)}</div>
+      <div className='service-category-grid'>{visibleServiceCategories.map(([name,copy,icon])=><Link to={enquiryLink('service',name)} key={name}><span><PageIcon name={icon}/></span><div><h3>{name}</h3><p>{copy}</p></div></Link>)}</div>
     </section>
 
     <section className='market-wrap sp-section'>
@@ -155,63 +168,88 @@ export function ServicesPage({data}){
 }
 
 export function PartsPage({data}){
+  const {categorySlug=''}=useParams()
+  const [searchParams]=useSearchParams()
+  const legacyCategory=searchParams.get('category')||''
+  const selectedPage=sparePartPages.find(page=>page.slug===categorySlug||page.name.toLowerCase()===legacyCategory.toLowerCase())
+  const activeCategory=selectedPage?.name||legacyCategory
   const liveItems=data.parts||[]
   const products=liveItems.length?liveItems:fallbackParts
   const categoryGroups=data.partCategories?.length?data.partCategories:[{_id:'popular-parts',name:'Popular Parts',description:'Common service and replacement parts.',icon:brakeImage,children:partCategories.map((item,index)=>({...item,_id:'fallback-category-'+index,icon:item.image,description:item.count}))}]
-  const productsInCategory=(category)=>products.filter((item)=>item.categoryId===category._id||(!item.categoryId&&categoryName(item.category)===category.name)).length
-  return <main className='parts-reference-page'>
-    <section className='sp-hero parts-page-hero'>
-      <div className='sp-hero-copy'>
-        <p className='sp-breadcrumb'>Home <span>›</span> Spare Parts</p><small>GENUINE COMPONENTS</small>
-        <h1>Genuine Spare Parts.<em>Built for Performance.</em></h1>
-        <p>Find quality spare parts for every type of vehicle with expert fitment guidance and transparent quotations.</p>
-        <div className='sp-trust-pills'>{['100% Genuine Parts','Best Price Guidance','Easy Returns Support','Pan India Enquiries'].map((item,index)=><span key={item}><PageIcon name={['shield','part','calendar','location'][index]}/>{item}</span>)}</div>
-      </div>
-      <img src={partsHero} alt='Car with genuine spare parts and brake components'/>
+  const matchingGroups=activeCategory?categoryGroups.filter(group=>group.name?.toLowerCase()===activeCategory.toLowerCase()):categoryGroups
+  const visibleCategoryGroups=matchingGroups.length?matchingGroups:categoryGroups
+  const selectedGroup=categoryGroups.find(group=>group.name?.toLowerCase()===activeCategory.toLowerCase())
+  const selectedChildIds=new Set((selectedGroup?.children||[]).map(item=>String(item._id)))
+  const selectedChildNames=new Set((selectedGroup?.children||[]).map(item=>item.name?.toLowerCase()))
+  const visibleProducts=activeCategory?products.filter(item=>{
+    const categoryId=typeof item.categoryId==='object'?item.categoryId?._id:item.categoryId
+    const groupName=typeof item.categoryGroup==='object'?item.categoryGroup?.name:item.categoryGroup
+    const parentName=typeof item.category?.parentId==='object'?item.category?.parentId?.name:''
+    if(groupName)return groupName.toLowerCase()===activeCategory.toLowerCase()
+    if(parentName)return parentName.toLowerCase()===activeCategory.toLowerCase()
+    if(categoryId)return selectedChildIds.has(String(categoryId))
+    return selectedChildNames.has(categoryName(item.category).toLowerCase())
+  }):products
+  const productsInCategory=(category)=>products.filter(item=>{
+    const itemCategoryId=typeof item.categoryId==='object'?item.categoryId?._id:item.categoryId
+    return String(itemCategoryId)===String(category._id)||(!itemCategoryId&&categoryName(item.category)===category.name)
+  }).length
+  const pageTitle=selectedPage?.title||'Genuine Spare Parts for Every Vehicle'
+  const pageDescription=selectedPage?.description||'Browse genuine spare parts for two wheelers, cars, commercial vehicles, construction equipment, electric vehicles and farm vehicles.'
+
+  useEffect(()=>{
+    document.title=`${pageTitle} | Bright Auto Hub`
+    let description=document.querySelector('meta[name="description"]')
+    if(!description){
+      description=document.createElement('meta')
+      description.setAttribute('name','description')
+      document.head.appendChild(description)
+    }
+    description.setAttribute('content',pageDescription)
+  },[pageTitle,pageDescription])
+
+  return <main className='parts-reference-page min-h-screen overflow-x-clip bg-white text-[#151c27]'>
+    <section className='market-wrap parts-page-intro'>
+      <p className='parts-page-breadcrumb'><Link to='/'>Home</Link><span>/</span><Link to='/spare-parts'>Spare Parts</Link>{selectedPage&&<><span>/</span><b>{selectedPage.name}</b></>}</p>
+      <small>GENUINE COMPONENTS</small>
+      <h1>{pageTitle}</h1>
+      <p>{pageDescription}</p>
     </section>
 
     <section className='market-wrap sp-finder parts-finder-panel'>
-      <h2>Find Parts for Your Vehicle</h2>
+      <h2>{selectedPage?`Find ${selectedPage.name} for Your Vehicle`:'Find Parts for Your Vehicle'}</h2>
       <div className='sp-filter-grid four-fields'>
         {['Select Vehicle Type','Select Brand','Select Model','Select Variant'].map(label=><label key={label}><span>{label}</span><select aria-label={label}><option>{label}</option></select></label>)}
-        <Link to={enquiryLink('part','Vehicle-specific spare parts')}>Enquire Parts</Link>
+        <Link to={enquiryLink('part',selectedPage?.title||'Vehicle-specific spare parts',activeCategory)}>Enquire Parts</Link>
       </div>
       <p>Popular searches: <span>Oil Filter</span><span>Brake Pads</span><span>Headlight</span><span>Battery</span><span>Clutch Plate</span></p>
     </section>
 
     <section className='market-wrap sp-section'>
-      <SectionHeading title='Browse Every Spare Parts Category' copy='Database-driven parts for two wheelers, cars, commercial, construction, EV and farm vehicles.' action='Ask for any category' to={enquiryLink('part','Spare part category')}/>
-      <div className='parts-hierarchy'>{categoryGroups.map((group)=><article className='parts-category-group' key={group._id||group.name}>
+      <SectionHeading title={selectedPage?`${selectedPage.name} Categories`:'Browse Every Spare Parts Category'} copy={selectedPage?`Browse every available ${selectedPage.name.toLowerCase()} category.`:'Database-driven parts for two wheelers, cars, commercial, construction, EV and farm vehicles.'} action='Ask for any category' to={enquiryLink('part',selectedPage?.title||'Spare part category',activeCategory)}/>
+      <div className='parts-hierarchy'>{visibleCategoryGroups.map(group=><article className='parts-category-group' key={group._id||group.name}>
         <header><img src={group.icon||brakeImage} alt=''/><div><small>VEHICLE PARTS DIRECTORY</small><h2>{group.name}</h2><p>{group.description}</p></div><strong>{group.children?.length||0} Categories</strong></header>
-        <div className='parts-category-grid'>{(group.children||[]).map((item)=><Link to={enquiryLink('part',item.name)} key={item._id||item.name}><img src={item.icon||brakeImage} alt={item.name+' product category'}/><h3>{item.name}</h3><p>{item.description}</p><small>{productsInCategory(item)} Product{productsInCategory(item)===1?'':'s'} &rarr;</small></Link>)}</div>
+        <div className='parts-category-grid'>{(group.children||[]).map(item=><Link to={enquiryLink('part',item.name,group.name)} key={item._id||item.name}><img src={item.icon||brakeImage} alt={item.name+' product category'}/><h3>{item.name}</h3><p>{item.description}</p><small>{productsInCategory(item)} Product{productsInCategory(item)===1?'':'s'} &rarr;</small></Link>)}</div>
       </article>)}</div>
     </section>
 
-    <section className='market-wrap parts-quick-search'>
-      <div><small>CAN&apos;T FIND THE EXACT PART?</small><h2>Quick Search by Part Name or Number</h2><div><input aria-label='Part name or number' placeholder='Enter part name, number or keyword...'/><select aria-label='Part category'><option>All Categories</option></select><Link to={enquiryLink('part','Part number search')}>Get Quote</Link></div><p>Share the part number or a photo—our team will verify compatibility.</p></div>
-      <img src={brakeImage} alt='Genuine performance brake system parts'/>
-    </section>
-
-    <section className='market-wrap sp-section'>
-      <SectionHeading title='All Spare Parts' copy={liveItems.length+' active products live from the admin catalogue.'} action='Enquire for any part' to={enquiryLink('part','Spare parts catalogue')}/>
-      <div className='parts-product-grid'>{products.map((item,index)=><article key={item._id||item.name}><div><span>GENUINE</span><Link to={item.slug||item._id&&!String(item._id).startsWith('fallback-')?'/spare-parts/product/'+(item.slug||item._id):enquiryLink('part',item.name)}><img src={item.imageUrl||partProductVisuals[index%partProductVisuals.length]} alt={item.name}/></Link></div><small>{item.categoryGroup||categoryName(item.category)}</small><h3>{item.name}</h3><strong>{money(item.price||0)}</strong><p>{categoryName(item.category)} &middot; Fitment check available</p><Link to={item.slug||item._id&&!String(item._id).startsWith('fallback-')?'/spare-parts/product/'+(item.slug||item._id):enquiryLink('part',item.name)}>View Product</Link></article>)}</div>
+    <section className='market-wrap sp-section parts-catalogue-section'>
+      <SectionHeading title={selectedPage?`All ${selectedPage.name}`:'All Spare Parts'} copy={`${visibleProducts.length} active products available in this catalogue.`} action='Enquire for any part' to={enquiryLink('part',selectedPage?.title||'Spare parts catalogue',activeCategory)}/>
+      {visibleProducts.length?<div className='parts-product-grid'>{visibleProducts.map((item,index)=>{
+        const hasDetail=(item.slug||item._id)&&!String(item._id||'').startsWith('fallback-')
+        const target=hasDetail?'/spare-parts/product/'+(item.slug||item._id):enquiryLink('part',item.name,activeCategory)
+        const groupLabel=typeof item.categoryGroup==='object'?item.categoryGroup?.name:item.categoryGroup
+        return <article key={item._id||item.name}><div><span>GENUINE</span><Link to={target}><img src={item.imageUrl||partProductVisuals[index%partProductVisuals.length]} alt={item.name} onError={(event)=>{event.currentTarget.onerror=null;event.currentTarget.src=partProductVisuals[index%partProductVisuals.length]}}/></Link></div><small>{groupLabel||categoryName(item.category)}</small><h3>{item.name}</h3><strong>{money(item.price||0)}</strong><p>{categoryName(item.category)} &middot; Fitment check available</p><Link to={target}>View Product</Link></article>
+      })}</div>:<div className='market-empty'>No products are available in this category yet. Send an enquiry and our parts team will help you.</div>}
     </section>
 
     <section className='market-wrap sp-section compact-section'>
-      <SectionHeading title='Shop by Top Brands' copy='Tell us your preferred brand or ask for a compatible alternative.' action='Brand enquiry' to={enquiryLink('part','Preferred spare part brand')}/>
+      <SectionHeading title='Shop by Top Brands' copy='Tell us your preferred brand or ask for a compatible alternative.' action='Brand enquiry' to={enquiryLink('part','Preferred spare part brand',activeCategory)}/>
       <div className='sp-brand-row parts-brands'>{['BOSCH','MANN FILTER','EXIDE','brembo','DENSO','NGK','Valeo','LuK','Castrol','MRF'].map(brand=><span key={brand}>{brand}</span>)}</div>
     </section>
 
     <section className='market-wrap sp-section compact-section'>
       <div className='sp-benefit-row parts-benefits'>{[['shield','100% Genuine Parts'],['part','Best Price Guidance'],['calendar','Easy Returns Support'],['car','Fast Delivery Support'],['support','Expert Fitment Help']].map(([icon,label])=><article key={label}><span><PageIcon name={icon}/></span><h3>{label}</h3><p>Clear assistance from enquiry to delivery.</p></article>)}</div>
     </section>
-
-    <section className='market-wrap parts-visual-story'>
-      <img src={tyreImage} alt='Automobile tyres and alloy wheels'/>
-      <div><small>EVERY PART. THE RIGHT FIT.</small><h2>Get Compatibility Checked Before You Order.</h2><p>Share your vehicle make, model, year and part requirement. Our parts team will verify the fitment and send a clear quotation.</p><div><Link to={enquiryLink('part','Compatibility check')}>Check Compatibility</Link><Link to='/contact'>Talk to Parts Expert</Link></div></div>
-      <img src={oilImage} alt='Engine oil for vehicle maintenance'/>
-    </section>
-
-    <section className='market-wrap parts-deal-banner'><img src={brakeImage} alt='High performance brake parts'/><div><small>PARTS ENQUIRY DESK</small><h2>Get the Best Available Quote.</h2><p>No cart or checkout—send your requirement and receive expert guidance.</p></div><Link to={enquiryLink('part','Best available spare part quote')}>Request a Quote</Link></section>
   </main>
 }

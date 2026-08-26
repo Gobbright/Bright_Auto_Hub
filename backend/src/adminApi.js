@@ -67,7 +67,9 @@ const Content = mongoose.models.AdminContent || mongoose.model('AdminContent', n
 
 const Blog = mongoose.models.AdminBlog || mongoose.model('AdminBlog', new mongoose.Schema({
   title: { type: String, required: true, trim: true }, slug: { type: String, required: true, unique: true }, excerpt: { type: String, default: '' },
-  content: { type: String, default: '' }, imageUrl: { type: String, default: '' }, author: { type: String, default: 'GoAuto Team' }, tags: [String],
+  content: { type: String, default: '' }, imageUrl: { type: String, default: '' }, imageAlt: { type: String, default: '' },
+  galleryImages: { type: [{ url: { type: String, required: true }, alt: { type: String, default: '' } }], default: [] },
+  author: { type: String, default: 'GoAuto Team' }, tags: [String], readingTime: { type: Number, default: 5 },
   status: { type: String, enum: ['published', 'draft'], default: 'draft' }, publishedAt: { type: Date, default: null },
 }, options))
 
@@ -101,6 +103,9 @@ const Enquiry = mongoose.models.AdminEnquiry || mongoose.model('AdminEnquiry', n
   latitude: { type: Number, default: null }, longitude: { type: Number, default: null },
   accountId: { type: mongoose.Schema.Types.ObjectId, ref: 'PublicUser', default: null }, accountEmail: { type: String, default: '' },
   context: { type: String, default: '' }, ip: { type: String, default: '' }, userAgent: { type: String, default: '' },
+  emailNotificationStatus: { type: String, enum: ['pending', 'sent', 'skipped', 'failed'], default: 'pending' },
+  emailNotificationError: { type: String, default: '' }, emailNotificationMessageId: { type: String, default: '' },
+  emailNotifiedAt: { type: Date, default: null }, customerAcknowledgementSent: { type: Boolean, default: false },
   status: { type: String, enum: ['new', 'in-progress', 'resolved'], default: 'new' },
 }, options))
 
@@ -124,6 +129,11 @@ const payloadFor = (resource, payload, existing = {}) => {
   if ('title' in value && !value.slug) value.slug = slugify(value.title)
   if (resource === 'blogs') {
     if (typeof value.tags === 'string') value.tags = value.tags.split(',').map((tag) => tag.trim()).filter(Boolean)
+    if (typeof value.galleryImages === 'string') {
+      try { value.galleryImages = value.galleryImages.trim() ? JSON.parse(value.galleryImages) : [] } catch { throw new Error('Content images must be valid JSON.') }
+    }
+    if (!Array.isArray(value.galleryImages)) throw new Error('Content images must be an image list.')
+    value.galleryImages = value.galleryImages.map((image) => ({ url: String(image?.url || '').trim(), alt: String(image?.alt || '').trim() })).filter((image) => image.url)
     if (value.status === 'published' && !value.publishedAt && !existing.publishedAt) value.publishedAt = new Date()
   }
   if (resource === 'vehicles' && typeof value.specifications === 'string') {

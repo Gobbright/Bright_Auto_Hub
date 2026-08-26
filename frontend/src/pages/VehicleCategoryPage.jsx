@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { api } from '../lib/api.js'
 import { MarketplaceShell, VehicleCards } from './MarketplacePage.jsx'
 import './vehicle-category.css'
+import { ui } from '../lib/uiClasses.js'
 
 const groups={
   bikes:{name:'Bikes',copy:'Bikes, scooters and electric two-wheelers for every rider.',children:[['Bikes','bikes'],['Scooters','scooters'],['Electric Bikes','electric-bikes'],['Electric Scooters','electric-scooters']]},
@@ -20,6 +21,7 @@ export default function VehicleCategoryPage(){
   const info=groups[group]||groups.cars
   const [vehicles,setVehicles]=useState([])
   const pageTitle=category?titleFromSlug(category):info.name
+  const isEvPage=group==='ev-vehicles'||category==='electric-cars'||category?.startsWith('electric-')
 
   useEffect(()=>{
     let live=true
@@ -34,7 +36,7 @@ export default function VehicleCategoryPage(){
   },[category,info.copy,pageTitle])
 
   return <MarketplaceShell active='vehicles'>
-    <main className='vehicle-category-page'>
+    <main className={`vehicle-category-page ${ui.main} min-h-screen overflow-x-clip${isEvPage?' ev-category-page':''}`}>
       <nav className='market-wrap market-tabs category-route-tabs' aria-label={`${info.name} categories`}>
         <Link className={!category?'active':''} to={`/vehicles/${group}`}>All {info.name}</Link>
         {info.children.map(([name,slug])=><Link className={category===slug?'active':''} to={`/vehicles/${group}/${slug}`} key={slug}>{name}</Link>)}

@@ -1,0 +1,6 @@
+*** Begin Patch
+*** Update File: frontend/src/pages/Home.jsx
+@@
+-  const [mobileOpen,setMobileOpen]=useState(false)
++  
+*** End Patch

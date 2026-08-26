@@ -3,6 +3,7 @@ import { useState } from 'react'
 import PublicFooter from '../components/PublicFooter.jsx'
 import { Header } from './Home.jsx'
 import { api } from '../lib/api.js'
+import { ui } from '../lib/uiClasses.js'
 
 function Login({ onAdminLogin, onUserLogin }) {
   const navigate = useNavigate()
@@ -35,11 +36,11 @@ function Login({ onAdminLogin, onUserLogin }) {
   }
 
   return (
-    <div className="public-home">
+    <div className={`public-home ${ui.publicPage}`}>
     <Header />
-    <section className="auth-page">
-      <div className="login-panel">
-        <div className="auth-banner">
+    <section className="auth-page flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_12%_10%,#ffe9e9_0,transparent_34%),linear-gradient(135deg,#f8f9fa,#eef0f3)] px-4 py-8">
+      <div className="login-panel grid w-full max-w-[940px] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_24px_70px_#17202a1c] lg:grid-cols-[.9fr_1.1fr]">
+        <div className="auth-banner flex min-h-[520px] flex-col justify-center bg-gradient-to-br from-[#191e24] to-[#2d343c] p-11 text-white max-lg:min-h-auto max-md:p-8">
           <p className="eyebrow">
             Welcome Back
           </p>
@@ -51,8 +52,8 @@ function Login({ onAdminLogin, onUserLogin }) {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="auth-form">
-          <div className="form-group">
+        <form onSubmit={handleSubmit} className="auth-form grid content-center gap-[18px] p-11 max-md:p-8">
+          <div className="form-group grid gap-1.5">
             <label htmlFor="email">
               Email
             </label>
@@ -65,7 +66,7 @@ function Login({ onAdminLogin, onUserLogin }) {
             />
           </div>
 
-          <div className="form-group">
+          <div className="form-group grid gap-1.5">
             <label htmlFor="password">
               Password
             </label>
@@ -78,7 +79,7 @@ function Login({ onAdminLogin, onUserLogin }) {
               />
               <button
                 type="button"
-                className="password-toggle"
+                className="password-toggle grid size-[31px] place-items-center rounded-[7px] border-0 bg-transparent text-slate-500 transition hover:bg-slate-100"
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
                 onClick={() => setShowPassword((current) => !current)}
               >
@@ -117,7 +118,7 @@ function Login({ onAdminLogin, onUserLogin }) {
 
           {error && <p className="form-error">{error}</p>}
 
-          <button type="submit" className="primary-btn">
+          <button type="submit" className={`primary-btn ${ui.primaryButton} w-full`}>
             Customer Login
           </button>
 
