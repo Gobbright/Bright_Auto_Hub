@@ -54,7 +54,7 @@ const Vehicle = mongoose.models.AdminVehicle || mongoose.model('AdminVehicle', n
   variant: { type: String, default: '' }, registrationNumber: { type: String, default: '' }, color: { type: String, default: '' }, seatingCapacity: { type: Number, default: 0 },
   modelYear: { type: Number, default: () => new Date().getFullYear() }, fuelType: { type: String, default: 'Petrol' }, price: { type: Number, default: 0 },
   condition: { type: String, enum: ['new', 'used'], default: 'new' }, transmission: { type: String, default: 'Manual' }, mileage: { type: Number, default: 0 }, location: { type: String, default: '' },
-  imageUrl: { type: String, default: '' }, description: { type: String, default: '' }, specifications: { type: mongoose.Schema.Types.Mixed, default: {} },
+  imageUrl: { type: String, default: '' }, description: { type: String, default: '' }, specifications: { type: mongoose.Schema.Types.Mixed, default: {} }, details: { type: mongoose.Schema.Types.Mixed, default: {} },
   status: { type: String, enum: ['active', 'draft'], default: 'draft' }, featured: { type: Boolean, default: false },
 }, options))
 
@@ -78,14 +78,14 @@ const Part = mongoose.models.AdminPart || mongoose.model('AdminPart', new mongoo
   categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'AdminCategory', default: null },
   categoryGroup: { type: String, default: '' },
   partNumber: { type: String, default: '' }, brand: { type: String, default: '' }, price: { type: Number, default: 0 }, originalPrice: { type: Number, default: 0 },
-  imageUrl: { type: String, default: '' }, description: { type: String, default: '' }, compatibleVehicleTypes: [String], stock: { type: Number, default: 0 }, status: { type: String, enum: ['active', 'draft'], default: 'active' }, featured: { type: Boolean, default: false },
+  imageUrl: { type: String, default: '' }, description: { type: String, default: '' }, details: { type: mongoose.Schema.Types.Mixed, default: {} }, compatibleVehicleTypes: [String], stock: { type: Number, default: 0 }, status: { type: String, enum: ['active', 'draft'], default: 'active' }, featured: { type: Boolean, default: false },
 }, options))
 
 const Service = mongoose.models.AdminService || mongoose.model('AdminService', new mongoose.Schema({
   name: { type: String, required: true, trim: true }, slug: { type: String, required: true, unique: true }, category: { type: String, default: 'General Service' },
   categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'AdminCategory', default: null },
   price: { type: Number, default: 0 }, duration: { type: String, default: '' }, imageUrl: { type: String, default: '' }, description: { type: String, default: '' },
-  features: [String], vehicleTypes: [String], status: { type: String, enum: ['active', 'draft'], default: 'active' }, featured: { type: Boolean, default: false },
+  features: [String], vehicleTypes: [String], brands: [String], details: { type: mongoose.Schema.Types.Mixed, default: {} }, status: { type: String, enum: ['active', 'draft'], default: 'active' }, featured: { type: Boolean, default: false },
 }, options))
 
 const SitePage = mongoose.models.AdminSitePage || mongoose.model('AdminSitePage', new mongoose.Schema({
@@ -119,8 +119,23 @@ const Activity = mongoose.models.AdminActivity || mongoose.model('AdminActivity'
   userAgent: { type: String, default: '' },
   details: { type: String, default: '' },
 }, options))
+const WebsiteActivity = mongoose.models.AdminWebsiteActivity || mongoose.model('AdminWebsiteActivity', new mongoose.Schema({
+  event: { type: String, enum: ['pageview', 'click'], default: 'pageview' },
+  pageTitle: { type: String, default: '' },
+  pageUrl: { type: String, default: '' },
+  pagePath: { type: String, default: '' },
+  action: { type: String, default: '' },
+  target: { type: String, default: '' },
+  referrer: { type: String, default: '' },
+  source: { type: String, default: 'website' },
+  ip: { type: String, default: '' },
+  userAgent: { type: String, default: '' },
+  details: { type: String, default: '' },
+}, options))
 
-const resources = { categories: Category, brands: Brand, vehicles: Vehicle, content: Content, blogs: Blog, parts: Part, services: Service, pages: SitePage, enquiries: Enquiry, activities: Activity }
+const resources = { categories: Category, brands: Brand, vehicles: Vehicle, content: Content, blogs: Blog, parts: Part, services: Service, pages: SitePage, enquiries: Enquiry, activities: Activity, 'website-activities': WebsiteActivity }
+
+const cleanText = (value = '', limit = 180) => value.toString().trim().slice(0, limit)
 
 const payloadFor = (resource, payload, existing = {}) => {
   const { _id, createdAt, updatedAt, __v, ...safePayload } = payload
@@ -139,9 +154,13 @@ const payloadFor = (resource, payload, existing = {}) => {
   if (resource === 'vehicles' && typeof value.specifications === 'string') {
     try { value.specifications = value.specifications.trim() ? JSON.parse(value.specifications) : {} } catch { throw new Error('Specifications must be valid JSON.') }
   }
+  if (['vehicles', 'parts', 'services'].includes(resource) && typeof value.details === 'string') {
+    try { value.details = value.details.trim() ? JSON.parse(value.details) : {} } catch { throw new Error('More details must be valid JSON.') }
+  }
   if (resource === 'services') {
     if (typeof value.features === 'string') value.features = value.features.split(',').map((item) => item.trim()).filter(Boolean)
     if (typeof value.vehicleTypes === 'string') value.vehicleTypes = value.vehicleTypes.split(',').map((item) => item.trim()).filter(Boolean)
+    if (typeof value.brands === 'string') value.brands = value.brands.split(',').map((item) => item.trim()).filter(Boolean)
   }
   if (resource === 'parts' && typeof value.compatibleVehicleTypes === 'string') value.compatibleVehicleTypes = value.compatibleVehicleTypes.split(',').map((item) => item.trim()).filter(Boolean)
   if (resource === 'pages' && typeof value.sections === 'string') {
@@ -236,23 +255,45 @@ export const seedSparePartsCatalog = async () => {
 }
 
 export const seedAdminData = async () => {
-  const isNewDatabase = await Category.countDocuments() === 0
-  if (isNewDatabase) await walkCategoryTree(defaultCategoryTree)
+  await walkCategoryTree(defaultCategoryTree)
   const pageSeeds = [
-    ['home','Home Page','Vehicles, Parts & Service in One Place','India’s all-in-one automobile platform for vehicles, parts and trusted services.'],
-    ['vehicles','Vehicle Marketplace','Explore Vehicles','Find the right vehicle for every road and every ambition.'],
-    ['compare','Compare Vehicles','Compare. Decide. Drive.','Put specifications, features and prices side by side.'],
-    ['spare-parts','Spare Parts','Genuine Parts. Built to Perform.','Quality parts for bikes, cars, commercial and heavy vehicles.'],
-    ['services','Vehicle Services','Expert Vehicle Service. Trusted Care.','Book transparent, dependable service from trusted professionals.'],
-    ['used-cars','Used Cars','Great Cars. Better Prices.','Verified pre-owned cars with straightforward pricing.'],
-    ['blog','Automotive Journal','Stories for Smarter Journeys','News, reviews, buying guides and ownership advice.'],
-    ['contact','Contact Us',"We're Here to Help You",'Our support team is ready to help with every automotive need.'],
+    { slug: 'home', name: 'Home Page', title: 'Vehicles, Parts & Service in One Place', description: 'India all-in-one automobile platform for vehicles, parts and trusted services.', heroImage: '' },
+    { slug: 'vehicles', name: 'Vehicle Marketplace', title: 'Explore Vehicles', description: 'Find the right vehicle for every road and every ambition.', heroImage: '/images/catalog/vehicles/cars/suv/hyundai-creta.jpg' },
+    { slug: 'compare', name: 'Compare Vehicles', title: 'Compare. Decide. Drive.', description: 'Put specifications, features and prices side by side.', heroImage: '/images/catalog/vehicles/cars/suv/kia-seltos.jpg' },
+    { slug: 'calculators', name: 'Vehicle Calculators', title: 'Plan Your Vehicle Budget', description: 'Estimate EMI, fuel cost and ownership needs before you enquire.', heroImage: '/images/services/diagnostics-tools.jpg' },
+    { slug: 'spare-parts', name: 'Spare Parts', title: 'Genuine Parts. Built to Perform.', description: 'Quality parts for bikes, cars, commercial and heavy vehicles.', heroImage: '/images/spare-parts-catalog/brake-system-spare-parts.jpg' },
+    { slug: 'services', name: 'Vehicle Services', title: 'Expert Vehicle Service. Trusted Care.', description: 'Book transparent, dependable service from trusted professionals.', heroImage: '/images/services/car-service-workshop.jpg' },
+    { slug: 'used-cars', name: 'Used Cars', title: 'Great Cars. Better Prices.', description: 'Verified pre-owned cars with straightforward pricing.', heroImage: '/images/catalog/vehicles/cars/suv/tata-nexon.jpg' },
+    { slug: 'blog', name: 'Automotive Journal', title: 'Stories for Smarter Journeys', description: 'News, reviews, buying guides and ownership advice.', heroImage: '/images/services/premium-service-center.jpg' },
+    { slug: 'contact', name: 'Contact Us', title: "We're Here to Help You", description: 'Our support team is ready to help with every automotive need.', heroImage: '/images/services/general-vehicle-service.jpg' },
+    { slug: 'finance-insurance', name: 'Finance & Insurance', title: 'Vehicle Finance and Insurance Support', description: 'Get guided support for loans, insurance renewals and ownership paperwork.', heroImage: '/images/services/premium-service-center.jpg' },
   ]
-  for (const [slug,name,title,description] of pageSeeds) await SitePage.updateOne({ slug }, { $setOnInsert: { slug,name,title,description,status:'published' } }, { upsert: true })
-  await SitePage.updateOne({ slug: 'home', title: 'Find, Compare & Service Every Vehicle' }, { $set: { title: 'Vehicles, Parts & Service in One Place' } })
+  for (const page of pageSeeds) {
+    await SitePage.updateOne(
+      { slug: page.slug },
+      {
+        $set: {
+          name: page.name,
+          title: page.title,
+          description: page.description,
+          heroImage: page.heroImage,
+          status: 'published',
+          seoTitle: page.seoTitle || `${page.title} | Bright Auto Hub`,
+          seoDescription: page.description,
+        },
+        $setOnInsert: { slug: page.slug },
+      },
+      { upsert: true },
+    )
+  }
 
-  if (await Brand.countDocuments() === 0) {
-    await Brand.insertMany(['Bajaj','TVS','Hyundai','Maruti Suzuki','Tata Motors','Mahindra','JCB','MG Motor'].map((name, index) => ({ name, slug: slugify(name), status: 'active', featured: index < 6 })))
+  const brandSeeds = ['Bajaj', 'TVS', 'Honda', 'Hero', 'Royal Enfield', 'Hyundai', 'Maruti Suzuki', 'Tata Motors', 'Mahindra', 'Toyota', 'Kia', 'MG Motor', 'JCB', 'Tata Hitachi', 'Caterpillar', 'Ashok Leyland', 'Eicher', 'Force', 'John Deere', 'Swaraj']
+  for (const [index, name] of brandSeeds.entries()) {
+    await Brand.findOneAndUpdate(
+      { slug: slugify(name) },
+      { $set: { name, status: 'active', featured: index < 12 }, $setOnInsert: { slug: slugify(name) } },
+      { upsert: true, new: true, setDefaultsOnInsert: true },
+    )
   }
 
   if ([0, 6].includes(await Vehicle.countDocuments())) {
@@ -275,20 +316,153 @@ export const seedAdminData = async () => {
     }
   }
 
-  if (await Service.countDocuments() === 0) {
-    await Service.insertMany([
-      ['General Vehicle Service','General Service',1499,'2–3 hours',['Inspection','Oil and fluid check','Basic diagnostics']],
-      ['Bike Periodic Service','Bike Service',899,'90 minutes',['Engine inspection','Brake check','Chain adjustment']],
-      ['Car AC Service','AC Service',1599,'2 hours',['AC inspection','Cooling check','Filter cleaning']],
-      ['Brake Service','Brake Service',1299,'2 hours',['Pad inspection','Brake cleaning','Safety test']],
-      ['Engine Diagnostics','Engine Repair',1999,'1–2 hours',['Computer diagnostics','Engine health report','Expert advice']],
-      ['24/7 Breakdown Assistance','Breakdown Assistance',999,'On demand',['Roadside support','Towing assistance','Minor repairs']],
-    ].map(([name,category,price,duration,features]) => ({ name, slug: slugify(name), category, price, duration, features, vehicleTypes: ['Cars','Bikes','Commercial'], status: 'active', featured: true })))
+  const brands = Object.fromEntries((await Brand.find()).map((item) => [item.name, item._id]))
+  const vehicleRoot = await Category.findOne({ slug: 'vehicles', parentId: null })
+  const carsParent = await Category.findOne({ slug: 'cars', parentId: vehicleRoot?._id, group: 'Vehicles' })
+  const usedCarSeeds = [
+    ['Hyundai Creta Used 2023', 'Hyundai', 'SUV', 'Petrol', 'Manual', 2023, 28500, 'New Delhi', '/images/catalog/vehicles/cars/suv/hyundai-creta.jpg'],
+    ['Tata Nexon Used 2022', 'Tata Motors', 'SUV', 'Petrol', 'AMT', 2022, 34200, 'Mumbai', '/images/catalog/vehicles/cars/suv/tata-nexon.jpg'],
+    ['Maruti Suzuki Swift Used 2021', 'Maruti Suzuki', 'Hatchback', 'Petrol', 'Manual', 2021, 41800, 'Bengaluru', '/images/catalog/vehicles/cars/hatchback/maruti-suzuki-swift.jpg'],
+    ['Honda City Used 2020', 'Honda', 'Sedan', 'Petrol', 'CVT', 2020, 52000, 'Chennai', '/images/catalog/vehicles/cars/sedan/honda-city.jpg'],
+    ['Kia Seltos Used 2023', 'Kia', 'SUV', 'Diesel', 'Automatic', 2023, 23600, 'Hyderabad', '/images/catalog/vehicles/cars/suv/kia-seltos.jpg'],
+  ]
+  for (const [name, brandName, categoryName, fuelType, transmission, modelYear, mileage, location, imageUrl] of usedCarSeeds) {
+    const category = await Category.findOne({ name: categoryName, parentId: carsParent?._id, group: 'Vehicles' })
+    if (!category) continue
+    const brand = brands[brandName] || await Brand.findOneAndUpdate(
+      { slug: slugify(brandName) },
+      { $set: { name: brandName, status: 'active' }, $setOnInsert: { slug: slugify(brandName) } },
+      { upsert: true, new: true, setDefaultsOnInsert: true },
+    ).then((item) => item._id)
+    await Vehicle.findOneAndUpdate(
+      { slug: slugify(name) },
+      {
+        $set: {
+          name,
+          slug: slugify(name),
+          brand,
+          category: category._id,
+          vehicleType: 'Car',
+          fuelType,
+          transmission,
+          modelYear,
+          mileage,
+          location,
+          imageUrl,
+          condition: 'used',
+          description: `${name} is a verified pre-owned car listing. Send an enquiry for inspection details, ownership history and latest price.`,
+          specifications: { Segment: categoryName, Ownership: 'Pre-owned', Availability: 'Enquiry' },
+          status: 'active',
+          featured: false,
+        },
+      },
+      { upsert: true, new: true, setDefaultsOnInsert: true },
+    )
   }
 
-  if (isNewDatabase && await Part.countDocuments() === 0) await seedSparePartsCatalog()
-}
+  const serviceRoot = await Category.findOne({ slug: 'services', parentId: null })
+  const serviceSeeds = [
+    ['General Vehicle Service', 'General Service', 1499, '2 to 3 hours', '/images/services/general-service.jpg', ['Multi-point inspection', 'Oil and fluid check', 'Basic diagnostics'], ['Cars', 'Bikes', 'Commercial'], ['Maruti Suzuki', 'Hyundai', 'Tata', 'Mahindra']],
+    ['Bike Periodic Service', 'Bike Service', 899, '90 minutes', '/images/services/periodic-maintenance.jpg', ['Engine inspection', 'Brake check', 'Chain adjustment'], ['Bikes', 'Scooters'], ['Bajaj', 'TVS', 'Honda', 'Hero']],
+    ['Car AC Service', 'AC Service', 1599, '2 hours', '/images/services/ac-service.jpg', ['AC inspection', 'Cooling check', 'Filter cleaning'], ['Cars'], ['Maruti Suzuki', 'Hyundai', 'Tata', 'Kia']],
+    ['Brake Service', 'Brake Service', 1299, '2 hours', '/images/services/brake-service.jpg', ['Pad inspection', 'Brake cleaning', 'Safety test'], ['Cars', 'Bikes', 'Commercial'], ['Maruti Suzuki', 'Hyundai', 'Tata', 'Mahindra']],
+    ['Engine Diagnostics', 'Engine Repair', 1999, '1 to 2 hours', '/images/services/engine-repair.jpg', ['Computer diagnostics', 'Engine health report', 'Expert advice'], ['Cars', 'Commercial'], ['Hyundai', 'Tata', 'Mahindra', 'Toyota']],
+    ['Clutch Service', 'Clutch Service', 1899, '2 to 4 hours', '/images/services/clutch-service.jpg', ['Clutch wear check', 'Gear-shift diagnosis', 'Replacement estimate'], ['Cars', 'Commercial'], ['Maruti Suzuki', 'Hyundai', 'Tata', 'Mahindra']],
+    ['Suspension Service', 'Suspension Service', 1699, '2 to 3 hours', '/images/services/suspension-service.jpg', ['Shock absorber check', 'Underbody noise diagnosis', 'Ride comfort review'], ['Cars', 'Commercial'], ['Tata', 'Mahindra', 'Toyota', 'Kia']],
+    ['Wheel Alignment', 'Wheel Alignment', 699, '45 minutes', '/images/services/wheel-alignment.jpg', ['Computerized alignment', 'Steering pull correction', 'Tyre wear inspection'], ['Cars', 'Commercial'], ['Maruti Suzuki', 'Hyundai', 'Tata', 'Honda']],
+    ['Wheel Balancing', 'Wheel Balancing', 799, '45 minutes', '/images/services/wheel-balancing.jpg', ['Vibration diagnosis', 'Precision balancing', 'Tyre rotation guidance'], ['Cars', 'Commercial'], ['Maruti Suzuki', 'Hyundai', 'Tata', 'Toyota']],
+    ['Oil Change Service', 'Oil Change', 999, '60 minutes', '/images/services/oil-change.jpg', ['Oil grade recommendation', 'Filter condition check', 'Engine health review'], ['Cars', 'Bikes', 'Commercial'], ['Castrol', 'Bosch', 'Maruti Suzuki', 'Hyundai']],
+    ['Electrical Repair', 'Electrical Repair', 1499, '1 to 3 hours', '/images/services/electrical-repair.jpg', ['Wiring inspection', 'Sensor fault diagnosis', 'Lighting and fuse checks'], ['Cars', 'Bikes', 'Commercial', 'Electric'], ['Tata', 'Mahindra', 'MG Motor', 'TVS']],
+    ['Battery Service', 'Battery Service', 499, '30 minutes', '/images/services/battery-service.jpg', ['Battery health test', 'Alternator check', 'Replacement guidance'], ['Cars', 'Bikes', 'Commercial', 'Electric'], ['Exide', 'Amaron', 'Tata', 'Mahindra']],
+    ['Dent and Paint Repair', 'Dent & Paint', 2499, '1 to 3 days', '/images/services/dent-paint.jpg', ['Panel damage review', 'Paint match guidance', 'Bodywork estimate'], ['Cars', 'Commercial'], ['Maruti Suzuki', 'Hyundai', 'Tata', 'Kia']],
+    ['Doorstep Vehicle Care', 'Doorstep Care', 999, 'At location', '/images/services/doorstep-care.jpg', ['Pickup and drop support', 'At-location inspection', 'Convenient booking'], ['Cars', 'Bikes'], ['Maruti Suzuki', 'Hyundai', 'Honda', 'TVS']],
+    ['24/7 Breakdown Assistance', 'Breakdown Assistance', 999, 'On demand', '/images/services/breakdown-assistance.jpg', ['Roadside support', 'Towing assistance', 'Minor repairs'], ['Cars', 'Bikes', 'Commercial'], ['All major brands']],
+  ]
+  for (const [name, category, price, duration, imageUrl, features, vehicleTypes, serviceBrands] of serviceSeeds) {
+    const serviceCategory = await Category.findOne({ name: category, parentId: serviceRoot?._id, group: 'Services' })
+    await Service.findOneAndUpdate(
+      { slug: slugify(name) },
+      {
+        $set: {
+          name,
+          slug: slugify(name),
+          category,
+          categoryId: serviceCategory?._id || null,
+          price,
+          duration,
+          imageUrl,
+          description: `${name} is available through Bright Auto Hub with transparent enquiry support and expert workshop coordination.`,
+          features,
+          vehicleTypes,
+          brands: serviceBrands,
+          status: 'active',
+          featured: true,
+        },
+      },
+      { upsert: true, new: true, setDefaultsOnInsert: true },
+    )
+  }
 
+  const contentSeeds = [
+    ['vehicle-buying-guide', 'Vehicle Buying Guide', 'page', 'A practical guide for comparing vehicles before enquiry.', '/images/catalog/vehicles/cars/suv/hyundai-creta.jpg'],
+    ['service-maintenance-guide', 'Service Maintenance Guide', 'service', 'Understand service intervals, inspections and care packages.', '/images/services/general-vehicle-service.jpg'],
+    ['spare-parts-fitment-guide', 'Spare Parts Fitment Guide', 'page', 'Check compatibility, stock and fitment support before ordering parts.', '/images/spare-parts-catalog/automotive-workshop-parts.jpg'],
+    ['ev-running-cost-guide', 'EV Running Cost Guide', 'tool', 'Plan charging, range and running cost for electric vehicles.', '/images/services/diagnostics-tools.jpg'],
+    ['finance-insurance-support', 'Finance and Insurance Support', 'finance', 'Guidance for loans, insurance renewal and ownership paperwork.', '/images/services/premium-service-center.jpg'],
+    ['dealer-service-network', 'Dealer and Service Network', 'dealer', 'Find help for vehicles, workshops, parts and local support.', '/images/services/car-service-workshop.jpg'],
+  ]
+  for (const [slug, title, type, summary, heroImage] of contentSeeds) {
+    await Content.findOneAndUpdate(
+      { slug },
+      {
+        $set: {
+          title,
+          type,
+          summary,
+          body: `<p>${summary}</p><p>Bright Auto Hub stores this page in MongoDB so the admin panel can manage the content and the public website can render it live.</p>`,
+          heroImage,
+          status: 'published',
+          seoTitle: `${title} | Bright Auto Hub`,
+          seoDescription: summary,
+        },
+        $setOnInsert: { slug },
+      },
+      { upsert: true, new: true, setDefaultsOnInsert: true },
+    )
+  }
+
+  const blogSeeds = [
+    ['vehicle-comparison-checklist', 'Vehicle Comparison Checklist Before You Buy', 'BUYING GUIDE', 'Compare budget, usage, safety, comfort and service reach before shortlisting a vehicle.', '/images/catalog/vehicles/cars/suv/kia-seltos.jpg'],
+    ['used-car-inspection-guide', 'Used Car Inspection Guide', 'USED CARS', 'Check ownership history, service records, tyres, brakes and accident signs before enquiry.', '/images/catalog/vehicles/cars/suv/tata-nexon.jpg'],
+    ['ev-charging-planning-guide', 'EV Charging Planning Guide', 'ELECTRIC VEHICLES', 'Plan home charging, public charging and range needs before buying an EV.', '/images/catalog/vehicles/cars/electric-cars/tata-nexon-ev.jpg'],
+    ['service-intervals-explained', 'Vehicle Service Intervals Explained', 'MAINTENANCE', 'Simple maintenance habits can improve reliability, mileage and long-term ownership cost.', '/images/services/oil-change.jpg'],
+    ['spare-parts-fitment-tips', 'How to Choose the Right Spare Part', 'SPARE PARTS', 'Match part number, vehicle model and fitment details before installing a replacement.', '/images/spare-parts-catalog/brake-system-spare-parts.jpg'],
+    ['commercial-vehicle-buying-guide', 'Commercial Vehicle Buying Guide', 'COMMERCIAL', 'Match payload, route, fuel type and uptime support to your business requirement.', '/images/catalog/vehicles/commercial-vehicles/trucks/tata-signa-5530-s.jpg'],
+  ]
+  for (const [index, [slug, title, tag, excerpt, imageUrl]] of blogSeeds.entries()) {
+    await Blog.findOneAndUpdate(
+      { slug },
+      {
+        $setOnInsert: {
+          slug,
+          title,
+          excerpt,
+          content: `<p>${excerpt}</p><h2>What to check</h2><p>Start with your daily usage, budget, location, service support and long-term ownership needs.</p><h2>Next step</h2><p>Send an enquiry through Bright Auto Hub for the latest price, availability and expert guidance.</p>`,
+          imageUrl,
+          imageAlt: title,
+          author: 'Bright Auto Hub Editorial',
+          tags: [tag],
+          readingTime: 5,
+          status: 'published',
+          publishedAt: new Date(Date.UTC(2026, 7, 20 - index)),
+        },
+      },
+      { upsert: true, new: true, setDefaultsOnInsert: true },
+    )
+  }
+
+  if (await Part.countDocuments() === 0) await seedSparePartsCatalog()
+}
 export const getHomepageData = async () => ({
   stats: { customers: '2M+', workshops: '1500+', parts: '100K+' },
   page: await SitePage.findOne({ slug: 'home', status: 'published' }).lean(),
@@ -317,6 +491,35 @@ export const registerAdminApi = (app) => {
     } catch (error) { next(error) }
   })
 
+  app.post('/api/website-activities/track', async (request, response, next) => {
+    try {
+      const {
+        event = 'pageview',
+        pageTitle = '',
+        pageUrl = '',
+        pagePath = '',
+        action = '',
+        target = '',
+        referrer = '',
+        source = 'website',
+        details = '',
+      } = request.body || {}
+      const activity = await WebsiteActivity.create({
+        event,
+        pageTitle: cleanText(pageTitle, 160),
+        pageUrl: cleanText(pageUrl, 300),
+        pagePath: cleanText(pagePath, 200),
+        action: cleanText(action, 120),
+        target: cleanText(target, 120),
+        referrer: cleanText(referrer, 300),
+        source: cleanText(source, 40) || 'website',
+        details: cleanText(details, 240),
+        ip: request.ip || request.socket?.remoteAddress || '',
+        userAgent: request.get('user-agent') || '',
+      })
+      response.status(201).json({ id: activity._id })
+    } catch (error) { next(error) }
+  })
   app.get('/api/storage', async (request, response, next) => {
     try {
       const files = await mongoose.connection.db.collection('media.files').find({}).sort({ uploadDate: -1 }).toArray()
@@ -449,12 +652,15 @@ export const registerAdminApi = (app) => {
 
   app.get('/api/dashboard', async (_request, response, next) => {
     try {
-      const [categories, brands, vehicles, content, blogs, parts, services, enquiries, activeVehicles, activeServices, activeParts, lowStockParts, inventoryValue, recentVehicles, recentBlogs, recentServices, recentParts] = await Promise.all([
+      const [categories, brands, vehicles, content, blogs, parts, services, enquiries, activeVehicles, activeServices, activeParts, lowStockParts, inventoryValue, pageViews, websiteActivities, recentVehicles, recentBlogs, recentServices, recentParts, recentWebsiteActivities] = await Promise.all([
         Category.countDocuments(), Brand.countDocuments(), Vehicle.countDocuments(), Content.countDocuments(), Blog.countDocuments(), Part.countDocuments(), Service.countDocuments(), Enquiry.countDocuments(),
         Vehicle.countDocuments({ status: 'active' }), Service.countDocuments({ status: 'active' }), Part.countDocuments({ status: 'active' }), Part.countDocuments({ stock: { $lte: 5 } }),
         Part.aggregate([{ $group: { _id: null, value: { $sum: { $multiply: ['$price', '$stock'] } } } }]),
+        WebsiteActivity.countDocuments({ event: 'pageview' }),
+        WebsiteActivity.countDocuments(),
         Vehicle.find().sort({ createdAt: -1 }).limit(5).populate('brand', 'name').populate('category', 'name'), Blog.find().sort({ createdAt: -1 }).limit(5),
         Service.find().sort({ createdAt: -1 }).limit(4), Part.find().sort({ createdAt: -1 }).limit(4),
+        WebsiteActivity.find().sort({ createdAt: -1 }).limit(5),
       ])
       const [storage, storageCollections, activities, mainCategories, vehicleCategories, vehicleSubCategories, partSubCategories, serviceSubCategories, newEnquiries, sitePages, failedActivities] = await Promise.all([
         mongoose.connection.db.collection('media.files').countDocuments(),
@@ -474,11 +680,11 @@ export const registerAdminApi = (app) => {
           categories, mainCategories, vehicleCategories, partCategories: partSubCategories, serviceCategories: serviceSubCategories,
           vehicleSubCategories, partSubCategories, serviceSubCategories,
           brands, vehicles, content, blogs, pages: sitePages, websiteContent: content + sitePages, parts, services, enquiries,
-          storage, storageCollections, activities,
+          storage, storageCollections, activities, websiteActivities, pageViews,
         },
         notifications: { enquiries: newEnquiries, activities: failedActivities },
         summary: { activeVehicles, activeServices, activeParts, lowStockParts, inventoryValue: inventoryValue[0]?.value || 0 },
-        recentVehicles, recentBlogs, recentServices, recentParts,
+        recentVehicles, recentBlogs, recentServices, recentParts, recentWebsiteActivities,
       })
     } catch (error) { next(error) }
   })

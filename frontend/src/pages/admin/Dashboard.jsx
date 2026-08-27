@@ -10,11 +10,12 @@ const cards = [
   { key: 'brands', label: 'Brands', icon: 'brand', color: 'violet', page: 'brands' },
   { key: 'categories', label: 'Categories', icon: 'category', color: 'orange', page: 'categories' },
   { key: 'blogs', label: 'Blog posts', icon: 'blog', color: 'pink', page: 'blogs' },
-  { key: 'content', label: 'Website pages', icon: 'page', color: 'green', page: 'content' },
+  { key: 'content', label: 'Website pages', icon: 'page', color: 'green', page: 'website-content' },
+  { key: 'pageViews', label: 'Page views', icon: 'activity', color: 'blue', page: 'website-activities' },
 ]
 
 export default function Dashboard({ onNavigate, refreshKey = 0 }) {
-  const [data, setData] = useState({ counts: {}, summary: {}, recentVehicles: [], recentBlogs: [], recentServices: [], recentParts: [] })
+  const [data, setData] = useState({ counts: {}, summary: {}, recentVehicles: [], recentBlogs: [], recentServices: [], recentParts: [], recentWebsiteActivities: [] })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
 
@@ -92,6 +93,18 @@ export default function Dashboard({ onNavigate, refreshKey = 0 }) {
                 <span className={`stock-chip ${part.stock <= 5 ? 'low' : ''}`}>{part.stock <= 5 ? 'Low stock' : 'In stock'}</span>
               </div>
             )) : <div className="mini-empty">No spare parts added yet.</div>}
+          </div>
+        </section>
+        <section className="dashboard-panel">
+          <header><div><h3>Website activity</h3><p>Latest public pages opened</p></div><button onClick={() => onNavigate('website-activities')}>View all</button></header>
+          <div className="activity-list">
+            {(data.recentWebsiteActivities || []).length ? data.recentWebsiteActivities.map((activity) => (
+              <div className="activity-item" key={activity._id}>
+                <span className="activity-avatar website"><AdminIcon name="activity" /></span>
+                <div><strong>{activity.target || activity.pageTitle || activity.pagePath || 'Website page'}</strong><p>{activity.pagePath || activity.pageUrl || '/'} · {activity.action || activity.referrer || 'Direct visit'}</p></div>
+                <span className={`status-chip ${activity.event || 'pageview'}`}>{activity.event || 'pageview'}</span>
+              </div>
+            )) : <div className="mini-empty">No website activity yet.</div>}
           </div>
         </section>
       </div>

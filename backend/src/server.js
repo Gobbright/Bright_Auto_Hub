@@ -6,7 +6,23 @@ import { adminErrorHandler, getHomepageData, registerAdminApi, seedAdminData } f
 import { registerPublicApi } from './publicApi.js'
 
 const app = express()
-app.use(cors({ origin: process.env.CLIENT_URL?.split(',') || true }))
+const defaultClientOrigins = [
+  'https://www.brightautohub.gobrightglobal.com',
+  'https://brightautohub.gobrightglobal.com',
+  'http://localhost:5173',
+  'http://localhost:4173',
+]
+const allowedOrigins = new Set([
+  ...defaultClientOrigins,
+  ...(process.env.CLIENT_URL?.split(',') || []),
+].map((origin) => origin.trim()).filter(Boolean))
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.has(origin)) return callback(null, true)
+    return callback(new Error(`CORS blocked for origin ${origin}`))
+  },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+}))
 app.use(express.json({ limit: '4mb' }))
 
 app.get('/api/health', (_request, response) => response.json({ ok: true, service: 'GoAuto Admin API', database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected', databaseName: mongoose.connection.name || 'goautomobile' }))

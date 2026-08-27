@@ -1,6 +1,9 @@
 /* Content coming from the CMS needs a small typography layer because it is
    rendered from HTML rather than individual React elements. The page chrome
    is Tailwind-first in BlogDetailPage.jsx. */
+.blog-single-sidebar-ad{border-radius:18px;box-shadow:0 14px 35px rgba(50,42,35,.11)}
+.blog-single-sidebar-ad>div{padding:20px}
+.blog-single-sidebar-ad p{margin:0 0 12px;color:#d6dde7;font-size:10px;line-height:1.55}
 .blog-rich-text{color:#4e5967;font-size:16px;line-height:1.9}
 .blog-rich-text>*:first-child{margin-top:0}
 .blog-rich-text>*:last-child{margin-bottom:0}
@@ -18,3 +21,18 @@
 .blog-rich-text th,.blog-rich-text td{border:1px solid #e1e6eb;padding:.7rem;text-align:left}
 .blog-rich-text th{background:#f6f8fa;color:#1d2734}
 @media(max-width:600px){.blog-rich-text{font-size:14px;line-height:1.8}.blog-rich-text blockquote{font-size:15px}.blog-rich-text h2{font-size:25px}.blog-rich-text h3{font-size:20px}}
+/* News article polish */
+.blog-single-page{background:#f7f9fb!important;color:#17202a!important}
+.blog-single-page>header{border-bottom:1px solid #e6eaf0;background:#fff}
+.blog-single-page>header>div:first-child{padding-bottom:34px}
+.blog-single-page>header nav{color:#738090}
+.blog-single-page>header h1{max-width:980px!important;color:#111b2a!important;letter-spacing:-.045em!important}
+.blog-single-page>header figure{border:1px solid #e0e6ed;border-radius:8px!important;background:#e9eef3!important;box-shadow:0 18px 46px rgba(22,34,48,.14)!important}
+.blog-single-page>section[aria-label='Article overview']{border-radius:8px!important;border-color:#e0e6ed!important;box-shadow:0 8px 25px rgba(22,34,48,.06)!important}
+.blog-single-page>section:not([aria-label='Article overview']) article>section,.blog-single-page aside>div{border-radius:8px!important}
+.blog-single-page .blog-rich-text{color:#465466;font-size:17px;line-height:1.85}
+.blog-single-page .blog-rich-text h2{color:#132033;font-size:clamp(25px,2.5vw,35px)}
+.blog-single-page .blog-rich-text blockquote{border-radius:0 8px 8px 0;background:#fff1f3}
+.blog-single-page details{border-radius:6px!important;background:#fbfcfd!important}
+.blog-single-page #related-stories article{border-radius:8px!important;border-color:#e0e6ed!important}
+@media(max-width:700px){.blog-single-page>header>div:first-child{padding-bottom:24px}.blog-single-page>header h1{font-size:clamp(36px,11vw,58px)!important}.blog-single-page .blog-rich-text{font-size:15px;line-height:1.8}}

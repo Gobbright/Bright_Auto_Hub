@@ -1870,3 +1870,199 @@
   .main-nav.is-open,.mega-menu,.mobile-nav-scrim,.goauto-sidebar.open{animation:none}
   .mobile-toggle,.mobile-toggle .icon{transition:none}
 }
+
+/* Home product cards use the same clean vehicle-card model. */
+.public-home .trending-vehicle-card,
+.public-home .trending-vehicle-card:nth-child(n){
+  border-color:#e5e9ee;
+  border-radius:14px;
+  background:transparent;
+  padding:10px;
+  box-shadow:none;
+  transform:none;
+}
+.public-home .trending-vehicle-card:hover{
+  border-color:#e5e9ee;
+  box-shadow:none;
+  transform:none;
+}
+.public-home .trending-vehicle-card::before{content:none}
+.public-home .trending-vehicle-image{
+  height:170px;
+  aspect-ratio:auto;
+  margin:0;
+  border:0;
+  border-radius:11px;
+  background:radial-gradient(circle at 50% 52%,#ffcbd0 0%,#ffe2e5 32%,#fff4f5 64%,#fff 100%);
+  padding:0;
+}
+.public-home .trending-vehicle-image::before,
+.public-home .trending-vehicle-image::after{content:none}
+.public-home .trending-vehicle-image img,
+.public-home .explore-car-product-image img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  filter:none;
+  transform:none;
+  transition:none;
+}
+.public-home .trending-vehicle-card:hover .trending-vehicle-image img{transform:none}
+.public-home .vehicle-category-pill,
+.public-home .trending-rating{
+  border:0;
+  background:transparent;
+  padding:0;
+  box-shadow:none;
+  backdrop-filter:none;
+}
+.public-home .vehicle-category-pill{top:10px;left:10px;color:#e5091a;font-size:8px;line-height:1;text-transform:uppercase}
+.public-home .trending-rating{top:10px;right:10px;color:#e5091a;font-size:8px;line-height:1}
+.public-home .trending-vehicle-body{
+  background:transparent;
+  padding:12px 0 0;
+}
+.public-home .trending-vehicle-card h3{
+  display:-webkit-box;
+  min-height:0;
+  margin:0 0 6px;
+  overflow:hidden;
+  font-size:15px;
+  line-height:1.28;
+  letter-spacing:0;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+}
+.public-home .trending-vehicle-copy{
+  min-height:0;
+  margin:0 0 8px;
+  font-size:10px;
+  line-height:1.45;
+}
+.public-home .trending-vehicle-footer{
+  gap:6px;
+  border-top:0;
+  padding-top:4px;
+}
+.public-home .trending-vehicle-footer small{font-size:8px}
+.public-home .trending-vehicle-footer strong{font-size:14px}
+.public-home .trending-vehicle-footer>a{
+  min-height:32px;
+  border-radius:7px;
+  padding-inline:9px;
+  font-size:10px;
+}
+.public-home .trending-vehicle-footer>a:hover{transform:none}
+.public-home .trending-vehicle-footer>a .icon{width:13px;height:13px}
+@media(max-width:600px){
+  .public-home .trending-vehicle-image{height:160px}
+  .public-home .home-product-scroll-track .trending-vehicle-image{height:160px;margin:0}
+}
+/* Home button icon alignment. */
+.public-home .hero-actions a,
+.public-home .finder-tabs button,
+.public-home .final-cta a,
+.public-home .service-confidence-actions>a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+.public-home .hero-actions .icon,
+.public-home .finder-tabs .icon,
+.public-home .final-cta .icon{
+  width:14px;
+  height:14px;
+  flex:0 0 auto;
+}
+.public-home .slide-arrow{display:grid;place-items:center;font-size:0}
+.public-home .slide-arrow .icon{width:18px;height:18px}
+.public-home .slide-arrow.prev .icon{transform:rotate(180deg)}
+/* Built for Bigger Projects full image view. */
+.public-home .construction-showcase .construction-product-image{display:grid!important;height:240px;min-height:240px;place-items:center;padding:8px;overflow:hidden}
+.public-home .construction-showcase .construction-product-image img{width:96%!important;height:96%!important;max-width:100%;max-height:100%;object-fit:contain!important;object-position:center!important;padding:0!important;filter:drop-shadow(0 14px 16px rgba(18,28,40,.18));transform:none!important;transition:none}
+.public-home .construction-showcase .construction-product-card:hover .construction-product-image img{transform:none!important}
+@media(max-width:760px){.public-home .construction-showcase .construction-product-image{height:205px;min-height:205px}.public-home .construction-showcase .construction-product-image img{width:94%!important;height:94%!important}}
+@media(max-width:600px){.public-home .construction-showcase .construction-product-image{height:170px;min-height:170px}.public-home .construction-showcase .construction-product-image img{width:92%!important;height:92%!important}}
+/* Final compact red Home product badges. */
+.public-home .trending-vehicle-image .vehicle-category-pill,
+.public-home .construction-showcase .construction-product-image .vehicle-category-pill{top:10px;left:10px;z-index:5;display:inline-flex;align-items:center;max-width:calc(100% - 20px);min-height:20px;border:1px solid rgba(255,255,255,.72);border-radius:999px;background:#e5091a;color:#fff;padding:0 8px;font-size:8px;font-weight:900;letter-spacing:.07em;line-height:1;text-transform:uppercase;box-shadow:0 8px 16px rgba(229,9,26,.2);text-shadow:none;backdrop-filter:blur(8px);white-space:nowrap}
+@media(max-width:600px){.public-home .home-product-scroll-track .vehicle-category-pill{min-height:18px;padding:0 6px;font-size:7px}}
+/* Built project badge side padding. */
+.public-home .construction-showcase .construction-product-image .vehicle-category-pill{padding-right:13px;padding-left:13px}
+@media(max-width:600px){.public-home .construction-showcase .construction-product-image .vehicle-category-pill{padding-right:9px;padding-left:9px}}
+/* Match construction cards to Home product size. */
+.public-home .construction-showcase .construction-product-card{min-height:0!important;border-color:#e5e9ee!important;border-radius:14px!important;background:transparent!important;padding:10px!important;box-shadow:none!important;transform:none!important}
+.public-home .construction-showcase .construction-product-card:hover{border-color:#e5e9ee!important;box-shadow:none!important;transform:none!important}
+.public-home .construction-showcase .construction-product-image{height:170px!important;min-height:170px!important;margin:0!important;border:0!important;border-radius:11px!important;padding:0!important;background:radial-gradient(circle at 50% 52%,#ffcbd0 0%,#ffe2e5 32%,#fff4f5 64%,#fff 100%)!important}
+.public-home .construction-showcase .construction-product-image img{width:100%!important;height:100%!important;object-fit:contain!important;padding:0!important;filter:none!important;transform:none!important}
+.public-home .construction-showcase .construction-product-card .trending-vehicle-body{min-height:0!important;background:transparent!important;padding:12px 0 0!important}
+.public-home .construction-showcase .construction-product-card .trending-vehicle-heading{display:flex!important}
+.public-home .construction-showcase .construction-product-card .trending-vehicle-heading p{margin:0 0 4px!important;font-size:9px!important;letter-spacing:.08em!important}
+.public-home .construction-showcase .construction-product-card .trending-vehicle-heading h3{font-size:15px!important;line-height:1.28!important;letter-spacing:0!important}
+.public-home .construction-showcase .construction-product-card .trending-vehicle-copy{min-height:0!important;margin:0 0 8px!important;font-size:10px!important;line-height:1.45!important}
+.public-home .construction-showcase .construction-product-card .trending-vehicle-footer{gap:6px!important;border-top:0!important;padding-top:4px!important}
+.public-home .construction-showcase .construction-product-card .trending-vehicle-footer small{font-size:8px!important}
+.public-home .construction-showcase .construction-product-card .trending-vehicle-footer strong{font-size:14px!important}
+.public-home .construction-showcase .construction-product-card .trending-vehicle-footer a{min-height:32px!important;border-radius:7px!important;padding-inline:9px!important;font-size:10px!important}
+@media(max-width:600px){.public-home .construction-showcase .construction-product-image{height:160px!important;min-height:160px!important}.public-home .construction-showcase .construction-product-card{padding:10px!important}.public-home .construction-showcase .construction-product-card .trending-vehicle-footer{align-items:stretch!important;flex-direction:column!important}.public-home .construction-showcase .construction-product-card .trending-vehicle-footer a{width:100%!important;justify-content:center!important}}
+/* Wider construction project cards. */
+.public-home .construction-showcase .home-product-scroll-track>.construction-product-card,
+.public-home .construction-showcase .home-product-scroll-track>.trending-vehicle-card{flex:0 0 clamp(285px,32vw,360px)!important;min-width:clamp(285px,32vw,360px)!important}
+@media(max-width:900px){.public-home .construction-showcase .home-product-scroll-track>.construction-product-card,.public-home .construction-showcase .home-product-scroll-track>.trending-vehicle-card{flex-basis:min(82vw,340px)!important;min-width:min(82vw,340px)!important}}
+@media(max-width:600px){.public-home .construction-showcase .home-product-scroll-track>.construction-product-card,.public-home .construction-showcase .home-product-scroll-track>.trending-vehicle-card{flex:auto!important;min-width:0!important}}
+/* Full-cover Professional vehicle maintenance image. */
+.public-home .service-booking-card>img{inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;background:transparent!important;transform:none!important;transform-origin:center!important}
+.public-home .service-booking-card:hover>img{transform:scale(1.025)!important}
+.public-home .service-booking-card::after{background:linear-gradient(90deg,rgba(255,255,255,.98) 0%,rgba(255,255,255,.92) 34%,rgba(255,255,255,.58) 52%,rgba(255,255,255,.08) 76%)!important}
+@media(max-width:480px){.public-home .service-booking-card>img{inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center bottom!important}.public-home .service-booking-card::after{background:linear-gradient(180deg,rgba(255,255,255,.98) 0%,rgba(255,255,255,.9) 44%,rgba(255,255,255,.26) 72%,rgba(255,255,255,.06) 100%)!important}}
+/* Narrower construction project cards. */
+.public-home .construction-showcase .home-product-scroll-track>.construction-product-card,
+.public-home .construction-showcase .home-product-scroll-track>.trending-vehicle-card{flex:0 0 clamp(230px,23vw,285px)!important;min-width:clamp(230px,23vw,285px)!important}
+@media(max-width:900px){.public-home .construction-showcase .home-product-scroll-track>.construction-product-card,.public-home .construction-showcase .home-product-scroll-track>.trending-vehicle-card{flex-basis:min(74vw,300px)!important;min-width:min(74vw,300px)!important}}
+@media(max-width:600px){.public-home .construction-showcase .home-product-scroll-track>.construction-product-card,.public-home .construction-showcase .home-product-scroll-track>.trending-vehicle-card{flex:auto!important;min-width:0!important}}
+/* Home product gap and more card. */
+.public-home .home-product-scroll-track{gap:clamp(18px,1.8vw,28px)!important}
+.public-home .home-more-product-card{display:grid!important;min-height:0!important;place-items:center!important;align-content:center!important;justify-items:center!important;gap:10px!important;border:1px dashed #f0a8b0!important;background:linear-gradient(145deg,#fff 0%,#fff7f8 100%)!important;color:#171d27!important;text-align:center!important;text-decoration:none!important;cursor:pointer!important}
+.public-home .home-more-product-card:hover{border-color:#e5091a!important;background:#fff1f3!important;color:#171d27!important;transform:translateY(-2px)!important;box-shadow:0 14px 30px rgba(229,9,26,.1)!important}
+.public-home .home-more-product-card::before{content:none!important}
+.public-home .home-more-product-badge{display:inline-flex;min-height:20px;align-items:center;border-radius:999px;background:#e5091a;padding:0 9px;color:#fff;font-size:8px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;box-shadow:0 8px 16px rgba(229,9,26,.18)}
+.public-home .home-more-product-symbol{display:grid;width:46px;height:46px;place-items:center;border-radius:50%;background:#e5091a;color:#fff;font-style:normal;box-shadow:0 12px 25px rgba(229,9,26,.24)}
+.public-home .home-more-product-symbol .icon{width:18px;height:18px}
+.public-home .home-more-product-card strong{display:block;margin:2px 0 0;color:#151c27;font-size:16px;font-weight:900;line-height:1.2}
+.public-home .home-more-product-card small{display:block;color:#687384;font-size:10px;font-weight:800;text-transform:none}
+@media(max-width:760px){.public-home .home-product-scroll-track{gap:16px!important}}
+@media(max-width:600px){.public-home .home-product-scroll-track{gap:14px!important}.public-home .home-more-product-card{min-height:230px!important}.public-home .home-more-product-symbol{width:40px;height:40px}.public-home .home-more-product-card strong{font-size:14px}}
+/* Home product cards: replace rating badge with compare action. */
+.public-home .trending-compare-pill{position:absolute;top:10px;right:10px;z-index:6;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:24px;border:1px solid rgba(229,9,26,.16);border-radius:999px;background:#fff;color:#e5091a;padding:0 9px;font-size:8px;font-weight:900;line-height:1;text-transform:uppercase;white-space:nowrap;box-shadow:0 8px 18px rgba(18,28,40,.08);transition:background .2s ease,color .2s ease,transform .2s ease,border-color .2s ease}
+.public-home .trending-compare-pill .icon{width:12px;height:12px;flex:0 0 auto;stroke-width:2}
+.public-home .trending-compare-pill:hover{border-color:#e5091a;background:#e5091a;color:#fff;transform:translateY(-1px)}
+.public-home .trending-rating{display:none!important}
+@media(max-width:600px){.public-home .trending-compare-pill{top:9px;right:8px;min-height:21px;gap:4px;padding:0 7px;font-size:7px}.public-home .trending-compare-pill .icon{width:10px;height:10px}}
+/* Hide bottom scrollbars under Home product rows. */
+.public-home .home-product-scroll-track,
+.public-home .explore-car-product-grid,
+.public-home .bike-product-grid,
+.public-home .commercial-product-grid,
+.public-home .construction-product-grid,
+.public-home .ev-car-product-grid,
+.public-home .vehicle-grid.trending-vehicle-grid{scrollbar-width:none!important;-ms-overflow-style:none!important}
+.public-home .home-product-scroll-track::-webkit-scrollbar,
+.public-home .explore-car-product-grid::-webkit-scrollbar,
+.public-home .bike-product-grid::-webkit-scrollbar,
+.public-home .commercial-product-grid::-webkit-scrollbar,
+.public-home .construction-product-grid::-webkit-scrollbar,
+.public-home .ev-car-product-grid::-webkit-scrollbar,
+.public-home .vehicle-grid.trending-vehicle-grid::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
+/* Home product compare icon only final alignment. */
+.public-home .trending-vehicle-image{position:relative}
+.public-home .trending-vehicle-image-link{position:relative;z-index:1;display:grid;width:100%;height:100%;place-items:center;color:inherit}
+.public-home .trending-vehicle-image .vehicle-category-pill,
+.public-home .construction-showcase .construction-product-image .vehicle-category-pill{top:10px;left:10px;max-width:calc(100% - 56px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.public-home .trending-vehicle-image .trending-compare-pill{position:absolute;top:10px;right:10px;z-index:7;display:grid;width:28px;height:28px;min-width:28px;min-height:28px;place-items:center;border:1px solid rgba(229,9,26,.18);border-radius:999px;background:#fff;color:#e5091a;padding:0;box-shadow:0 8px 18px rgba(18,28,40,.08);font-size:0;line-height:1;transition:background .2s ease,color .2s ease,border-color .2s ease,transform .2s ease}
+.public-home .trending-vehicle-image .trending-compare-pill .icon{width:14px;height:14px;flex:0 0 auto;stroke-width:2.1}
+.public-home .trending-vehicle-image .trending-compare-pill span{display:none!important}
+.public-home .trending-vehicle-image .trending-compare-pill:hover{border-color:#e5091a;background:#e5091a;color:#fff;transform:translateY(-1px)}
+.public-home .trending-vehicle-heading{display:block!important}
+.public-home .trending-rating{display:none!important}
+@media(max-width:600px){.public-home .home-product-scroll-track .vehicle-category-pill{top:9px;left:9px;max-width:calc(100% - 50px)}.public-home .trending-vehicle-image .trending-compare-pill{top:9px;right:9px;width:24px;height:24px;min-width:24px;min-height:24px}.public-home .trending-vehicle-image .trending-compare-pill .icon{width:12px;height:12px}}

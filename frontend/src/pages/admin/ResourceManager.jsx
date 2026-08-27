@@ -270,9 +270,9 @@ export default function ResourceManager({ config, openToken = 0, onDataChange })
       let value = valueAt(item, field.name)
       if (field.lookup && value && typeof value === 'object') value = value._id
       if (field.name === 'tags' && Array.isArray(value)) value = value.join(', ')
-      if (['features', 'vehicleTypes', 'compatibleVehicleTypes'].includes(field.name) && Array.isArray(value)) value = value.join(', ')
+      if (['features', 'vehicleTypes', 'compatibleVehicleTypes', 'brands'].includes(field.name) && Array.isArray(value)) value = value.join(', ')
       if (field.name === 'sections' && value && typeof value === 'object') value = JSON.stringify(value, null, 2)
-      if (field.name === 'specifications' && value && typeof value === 'object') value = JSON.stringify(value, null, 2)
+      if (['specifications', 'details'].includes(field.name) && value && typeof value === 'object') value = JSON.stringify(value, null, 2)
       return [field.name, value ?? (field.type === 'checkbox' ? false : '')]
     })))
     setNotice({ kind: '', message: '' })
@@ -380,7 +380,7 @@ export default function ResourceManager({ config, openToken = 0, onDataChange })
                           ) : column.money ? (
                             `₹${Number(value || 0).toLocaleString('en-IN')}`
                           ) : (
-                            <span className={column.primary ? 'cell-primary' : ''}>{column.format ? column.format(value, item, lookups) : (value || '—')}</span>
+                            <span className={column.primary ? 'cell-primary' : ''}>{column.format ? column.format(value, item, lookups) : displayValue(value, column)}</span>
                           )}
                         </td>
                       )

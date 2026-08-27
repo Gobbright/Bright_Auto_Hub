@@ -49,9 +49,9 @@ const fallbackBrands=['Maruti Suzuki','Hyundai','Tata','Mahindra','Toyota','Hond
 const valueOf=(value)=>typeof value==='string'?value:value?.name||''
 const searchable=(values)=>values.filter(Boolean).join(' ').toLowerCase()
 const unique=(values)=>[...new Set(values.filter(Boolean))].sort((a,b)=>a.localeCompare(b))
-const money=(value)=>'₹'+Number(value||0).toLocaleString('en-IN')
+const priceOnEnquiry='Price on enquiry'
 const contactLink=(source,item)=>'/contact?'+new URLSearchParams({
-  subject:source==='service'?'Service enquiry':'Spare parts enquiry',item,source,
+  subject:source==='vehicle'?'Vehicle enquiry':source==='service'?'Service enquiry':'Spare parts enquiry',item,source,
   page:typeof window==='undefined'?'':window.location.pathname,
 }).toString()
 const matchesPrice=(value,range)=>{
@@ -211,7 +211,7 @@ function SearchCard({item,type,index}){
       <small>{[brand,category].filter(Boolean).join(' · ')}</small>
       <h3><Link to={path}>{item.name}</Link></h3>
       <p>{type==='vehicles'?[item.modelYear||new Date().getFullYear(),item.fuelType||'Multiple options',item.model||category].join(' · '):item.description||(type==='parts'?'Fitment verification and expert support available.':'Professional care from trained service partners.')}</p>
-      <div><strong>{type==='services'?'From ':''}{money(item.price||0)}</strong><Link to={path}>{type==='vehicles'?'View Vehicle':type==='parts'?'View Part':'View Service'} <Icon name='arrow'/></Link></div>
+      <div><strong>{priceOnEnquiry}</strong><Link to={contactLink(type==='vehicles'?'vehicle':type==='parts'?'part':'service',item.name)}>Enquire Now <Icon name='arrow'/></Link></div>
     </div>
   </article>
 }

@@ -8,12 +8,14 @@ import serviceFallback from '../assets/Images/service-spare-parts/expert-car-ser
 import './product-detail.css'
 
 const configs = {
-  vehicles: { label: 'Vehicle', backLabel: 'All Vehicles', backUrl: '/vehicles', source: 'vehicle', fallback: vehicleFallback, priceLabel: 'Starting price' },
-  parts: { label: 'Spare Part', backLabel: 'All Spare Parts', backUrl: '/spare-parts', source: 'part', fallback: partFallback, priceLabel: 'Product price' },
-  services: { label: 'Vehicle Service', backLabel: 'All Services', backUrl: '/services', source: 'service', fallback: serviceFallback, priceLabel: 'Service starts from' },
+  vehicles: { label: 'Vehicle', backLabel: 'All Vehicles', backUrl: '/vehicles', source: 'vehicle', fallback: vehicleFallback, priceLabel: 'Latest price' },
+  parts: { label: 'Spare Part', backLabel: 'All Spare Parts', backUrl: '/spare-parts', source: 'part', fallback: partFallback, priceLabel: 'Latest price' },
+  services: { label: 'Vehicle Service', backLabel: 'All Services', backUrl: '/services', source: 'service', fallback: serviceFallback, priceLabel: 'Latest price' },
 }
 
-const money = (value) => Number(value) > 0 ? '₹' + Number(value).toLocaleString('en-IN') : 'Price on enquiry'
+const priceOnEnquiry = 'Price on enquiry'
+const listKeyForKind = { vehicles: 'vehicles', parts: 'parts', services: 'services' }
+const siteSlugForKind = { vehicles: 'vehicles', parts: 'spare-parts', services: 'services' }
 const categoryName = (value) => typeof value === 'string' ? value : value?.name || ''
 const printable = (value) => {
   if (Array.isArray(value)) return value.join(', ')
@@ -21,6 +23,33 @@ const printable = (value) => {
   return value
 }
 const present = (value) => value !== undefined && value !== null && value !== ''
+const itemKey = (item = {}) => String(item._id || item.slug || item.name || '')
+const itemCategoryLabel = (item = {}) => categoryName(item.categoryId) || categoryName(item.category) || item.categoryGroup || item.vehicleType || item.group || ''
+const itemBrandLabel = (item = {}) => typeof item.brand === 'string' ? item.brand : item.brand?.name || ''
+const productRoute = (kind, item = {}) => {
+  const segment = kind === 'parts' ? 'spare-parts' : kind
+  return `/${segment}/product/${item.slug || item._id}`
+}
+const enquiryRoute = (config, item = {}) => '/contact?' + new URLSearchParams({
+  subject: config.label + ' enquiry',
+  item: item.name || 'Product enquiry',
+  source: config.source,
+  category: itemCategoryLabel(item),
+  page: typeof window === 'undefined' ? '' : window.location.pathname,
+}).toString()
+const relatedScore = (product, candidate) => {
+  let score = 0
+  const productCategory = itemCategoryLabel(product).toLowerCase()
+  const candidateCategory = itemCategoryLabel(candidate).toLowerCase()
+  const productParent = product?.category?.parentId?.slug || product?.categoryId?.parentId?.slug || ''
+  const candidateParent = candidate?.category?.parentId?.slug || candidate?.categoryId?.parentId?.slug || ''
+  if (productCategory && candidateCategory && productCategory === candidateCategory) score += 4
+  if (productParent && candidateParent && productParent === candidateParent) score += 3
+  if (product?.group && candidate?.group && product.group === candidate.group) score += 2
+  if (itemBrandLabel(product) && itemBrandLabel(product) === itemBrandLabel(candidate)) score += 1
+  if (candidate.featured) score += 1
+  return score
+}
 
 function productFacts(kind, product) {
   if (kind === 'vehicles') return [
@@ -52,12 +81,67 @@ function productFacts(kind, product) {
   ]
 }
 
+const toList = (value) => Array.isArray(value) ? value.filter(Boolean).map(String) : present(value) ? [String(value)] : []
+const detailObject = (value) => value && typeof value === 'object' && !Array.isArray(value) ? value : {}
+const normalizeDetailCards = (cards) => Array.isArray(cards) ? cards.map((card) => ({
+  title: String(card?.title || '').trim(),
+  text: String(card?.text || card?.copy || '').trim(),
+  points: toList(card?.points || card?.items),
+})).filter((card) => card.title || card.text || card.points.length) : []
+
+function defaultMoreDetails(kind, product, specifications, features) {
+  const stored = detailObject(product?.details)
+  const storedCards = normalizeDetailCards(stored.cards)
+  const category = itemCategoryLabel(product) || configs[kind]?.label || 'Product'
+  const brand = itemBrandLabel(product)
+  const specificationMap = Object.fromEntries((specifications || []).map(([key, value]) => [String(key).toLowerCase(), printable(value)]))
+  const vehicleContext = [brand, product?.vehicleType, category, product?.fuelType].filter(Boolean).join(' ')
+  const evProduct = kind === 'vehicles' && /(electric|ev)/i.test(vehicleContext)
+  const commercialProduct = kind === 'vehicles' && /(commercial|truck|pickup|bus|van|carrier)/i.test(vehicleContext)
+  const serviceFeatures = toList(features)
+  const compatible = toList(product?.compatibleVehicleTypes)
+  const serviceVehicles = toList(product?.vehicleTypes)
+
+  if (kind === 'parts') return {
+    eyebrow: stored.eyebrow || 'SPARE PART DETAILS',
+    title: stored.title || `${product.name} fitment and quality guide`,
+    intro: stored.intro || `Review fitment, stock and installation guidance for ${product.name} before sending an enquiry.`,
+    cards: storedCards.length ? storedCards : [
+      { title: 'Fitment Check', text: 'Confirm the part number, vehicle model, production year and variant before purchase.', points: [`Part number: ${product.partNumber || 'Confirm with team'}`, `Compatible with: ${compatible.join(', ') || category}`, `Category: ${category}`] },
+      { title: 'Quality And Warranty', text: 'Choose genuine-fit components with clear billing and warranty support wherever applicable.', points: ['Check packaging and batch details', 'Match old and new part before fitting', 'Ask for invoice and warranty terms'] },
+      { title: 'Installation Advice', text: 'Some parts need professional fitment and post-installation testing for safe performance.', points: ['Use trained technicians', 'Inspect connected components', 'Test vehicle before regular use'] },
+    ],
+  }
+
+  if (kind === 'services') return {
+    eyebrow: stored.eyebrow || 'SERVICE DETAILS',
+    title: stored.title || `${product.name} service workflow`,
+    intro: stored.intro || `Know what is checked, how the job is handled and what support you get after the service.`,
+    cards: storedCards.length ? storedCards : [
+      { title: 'Inspection Flow', text: 'The service starts with a vehicle check, job-card confirmation and clear estimate.', points: ['Initial vehicle inspection', 'Issue diagnosis and estimate', `Duration: ${product.duration || 'Confirmed during booking'}`] },
+      { title: 'Package Includes', text: 'Service inclusions are matched to the selected category and vehicle condition.', points: serviceFeatures.length ? serviceFeatures : ['Multi-point check', 'Fluid and wear inspection', 'Service guidance'] },
+      { title: 'After-Service Support', text: 'Get practical next-step guidance for reliability, maintenance intervals and future repairs.', points: [`Available for: ${serviceVehicles.join(', ') || 'Cars, bikes and commercial vehicles'}`, 'Final quality check', 'Next maintenance reminder guidance'] },
+    ],
+  }
+
+  return {
+    eyebrow: stored.eyebrow || 'MORE VEHICLE DETAILS',
+    title: stored.title || `${product.name} ownership highlights`,
+    intro: stored.intro || `Use these extra checks to compare ${product.name} against your budget, daily route and long-term ownership needs.`,
+    cards: storedCards.length ? storedCards : [
+      { title: 'Best Use Case', text: evProduct ? 'Strong choice for lower running cost, quieter city driving and planned charging access.' : commercialProduct ? 'Built for business routes where payload, uptime and service support matter.' : 'Shortlist it by passenger comfort, usage pattern, fuel preference and service reach.', points: [`Segment: ${category}`, `Fuel: ${product.fuelType || specificationMap['fuel type'] || 'Confirm details'}`, `Year: ${product.modelYear || specificationMap['model year'] || 'Latest model'}`] },
+      { title: evProduct ? 'EV Ownership Checks' : 'Running Cost Checks', text: evProduct ? 'Review driving range, charger access, battery warranty and service support before booking.' : 'Review mileage, service interval, tyres, brakes and insurance before you finalise.', points: evProduct ? ['Check real-world range needs', 'Confirm home or public charging plan', 'Ask about battery and charger warranty'] : ['Compare mileage and fuel type', 'Check service schedule and warranty', 'Review insurance and finance options'] },
+      { title: 'Before You Enquire', text: 'Share your city, usage and budget so the team can respond with the most relevant next steps.', points: ['Ask for latest on-road estimate', 'Confirm variant and colour availability', 'Compare with similar models'] },
+    ],
+  }
+}
 export default function ProductDetailPage({ kind }) {
   const { identifier } = useParams()
   const config = configs[kind]
   const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [relatedProducts, setRelatedProducts] = useState([])
   const isEvProduct=kind==='vehicles'&&/(electric|\bev\b)/i.test([
     product?.group,product?.vehicleType,product?.fuelType,product?.category?.name,product?.category?.slug,
     product?.categoryId?.name,product?.categoryId?.slug,
@@ -80,12 +164,33 @@ export default function ProductDetailPage({ kind }) {
     document.querySelector('meta[name=description]')?.setAttribute('content', description)
   }, [config.label, product])
 
+  useEffect(() => {
+    if (!product) { setRelatedProducts([]); return undefined }
+    let live = true
+    const listKey = listKeyForKind[kind]
+    api.get('/public/site/' + siteSlugForKind[kind])
+      .then((data) => {
+        if (!live) return
+        const currentKey = itemKey(product)
+        const related = (data?.[listKey] || [])
+          .filter((item) => itemKey(item) !== currentKey)
+          .map((item, index) => ({ item, index, score: relatedScore(product, item) }))
+          .sort((a, b) => b.score - a.score || a.index - b.index)
+          .slice(0, 4)
+          .map(({ item }) => item)
+        setRelatedProducts(related)
+      })
+      .catch(() => live && setRelatedProducts([]))
+    return () => { live = false }
+  }, [kind, product])
+
   const facts = useMemo(() => product ? productFacts(kind, product).filter(([, value]) => present(value)) : [], [kind, product])
   const specifications = useMemo(() => {
     if (!product?.specifications || typeof product.specifications !== 'object' || Array.isArray(product.specifications)) return []
     return Object.entries(product.specifications).filter(([, value]) => present(value))
   }, [product])
   const features = kind === 'services' ? product?.features || [] : []
+  const moreDetails = useMemo(() => product ? defaultMoreDetails(kind, product, specifications, features) : null, [features, kind, product, specifications])
   const enquiryUrl = product ? '/contact?' + new URLSearchParams({
     subject: config.label + ' enquiry',
     item: product.name,
@@ -122,8 +227,7 @@ export default function ProductDetailPage({ kind }) {
           <p className='product-detail-description'>{product.description || 'Contact our automotive team for complete information, availability and expert assistance.'}</p>
           <div className='product-detail-price'>
             <small>{config.priceLabel}</small>
-            <strong>{money(product.price)}</strong>
-            {kind === 'parts' && product.originalPrice > product.price && <del>{money(product.originalPrice)}</del>}
+            <strong>{priceOnEnquiry}</strong>
           </div>
           <div className='product-detail-actions'>
             <Link className='product-detail-primary' to={enquiryUrl}>Enquire Now</Link>
@@ -152,9 +256,44 @@ export default function ProductDetailPage({ kind }) {
         </aside>
       </section>
 
+      {moreDetails && <section className='market-wrap product-detail-wrap product-more-details'>
+        <div className='product-more-details-heading'>
+          <small>{moreDetails.eyebrow}</small>
+          <h2>{moreDetails.title}</h2>
+          <p>{moreDetails.intro}</p>
+        </div>
+        <div className='product-more-details-grid'>
+          {moreDetails.cards.map((card, index) => <article key={`${card.title || 'detail'}-${index}`}>
+            <span>{String(index + 1).padStart(2, '0')}</span>
+            {card.title && <h3>{card.title}</h3>}
+            {card.text && <p>{card.text}</p>}
+            {card.points.length > 0 && <ul>{card.points.map((point) => <li key={point}>{point}</li>)}</ul>}
+          </article>)}
+        </div>
+      </section>}
+
+      {relatedProducts.length > 0 && <section className='market-wrap product-detail-wrap product-related-section'>
+        <div className='product-related-heading'><div><small>RELATED PRODUCTS</small><h2>More options you may like</h2></div><Link to={config.backUrl}>View all {config.backLabel}</Link></div>
+        <div className='product-related-grid'>{relatedProducts.map((item) => {
+          const route = productRoute(kind, item)
+          return <article className='product-related-card' key={item._id || item.slug || item.name}>
+            <Link className='product-related-media' to={route}><img src={item.imageUrl || config.fallback} alt={item.name} onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = config.fallback }} /></Link>
+            <div className='product-related-copy'><small>{itemCategoryLabel(item) || config.label}</small><h3>{item.name}</h3><p>{item.description || 'Ask our team for latest price, availability and fitment guidance.'}</p><strong>{priceOnEnquiry}</strong><div><Link to={route}>View</Link><Link to={enquiryRoute(config, item)}>Enquire</Link></div></div>
+          </article>
+        })}</div>
+      </section>}
+
       <section className='market-wrap product-detail-wrap product-detail-cta'>
-        <div><small>NEED MORE INFORMATION?</small><h2>Ask about {product.name}.</h2><p>Send your requirement and our team will help with price, availability and the next steps.</p></div>
-        <Link to={enquiryUrl}>Send Product Enquiry →</Link>
+        <div className='product-detail-cta-copy'>
+          <small>NEED MORE INFORMATION?</small>
+          <h2>Ask about {product.name}.</h2>
+          <p>Send your requirement and our team will help with price, availability and the next steps.</p>
+          <div className='product-detail-cta-points'><span>Latest price guidance</span><span>Availability check</span><span>Expert callback</span></div>
+        </div>
+        <div className='product-detail-cta-action'>
+          <Link to={enquiryUrl}>Send Product Enquiry</Link>
+          <small>Quick response from our support team</small>
+        </div>
       </section>
     </main>
   </MarketplaceShell>

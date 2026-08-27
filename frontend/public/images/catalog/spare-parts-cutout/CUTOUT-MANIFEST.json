@@ -1,0 +1,881 @@
+{
+  "generatedAt": "2026-08-27T06:18:34.603Z",
+  "count": 175,
+  "images": [
+    {
+      "source": "/images/catalog/spare-parts/car-parts/electric-car-parts/electric-car-battery-cooling-pump.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/electric-car-parts/electric-car-battery-cooling-pump.png",
+      "changedPixels": 5664
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/electric-car-parts/electric-car-charge-cable.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/electric-car-parts/electric-car-charge-cable.png",
+      "changedPixels": 7141
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/electric-car-parts/electric-car-charging-port-assembly.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/electric-car-parts/electric-car-charging-port-assembly.png",
+      "changedPixels": 7141
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/electric-car-parts/electric-car-dc-converter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/electric-car-parts/electric-car-dc-converter.png",
+      "changedPixels": 7141
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/electric-car-parts/electric-car-onboard-charger.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/electric-car-parts/electric-car-onboard-charger.png",
+      "changedPixels": 5664
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/hatchback-parts/hatchback-cabin-air-filter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/hatchback-parts/hatchback-cabin-air-filter.png",
+      "changedPixels": 1013
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/hatchback-parts/hatchback-clutch-plate.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/hatchback-parts/hatchback-clutch-plate.png",
+      "changedPixels": 1013
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/hatchback-parts/hatchback-engine-mount.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/hatchback-parts/hatchback-engine-mount.png",
+      "changedPixels": 1013
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/hatchback-parts/hatchback-front-brake-pads.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/hatchback-parts/hatchback-front-brake-pads.png",
+      "changedPixels": 1013
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/hatchback-parts/hatchback-headlamp-assembly.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/hatchback-parts/hatchback-headlamp-assembly.png",
+      "changedPixels": 1013
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/luxury-car-parts/luxury-car-adaptive-suspension-sensor.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/luxury-car-parts/luxury-car-adaptive-suspension-sensor.png",
+      "changedPixels": 35411
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/luxury-car-parts/luxury-car-air-suspension-compressor.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/luxury-car-parts/luxury-car-air-suspension-compressor.png",
+      "changedPixels": 35411
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/luxury-car-parts/luxury-car-ceramic-brake-pad-set.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/luxury-car-parts/luxury-car-ceramic-brake-pad-set.png",
+      "changedPixels": 11863
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/luxury-car-parts/luxury-car-led-headlight-module.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/luxury-car-parts/luxury-car-led-headlight-module.png",
+      "changedPixels": 11863
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/luxury-car-parts/luxury-car-parking-sensor.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/luxury-car-parts/luxury-car-parking-sensor.png",
+      "changedPixels": 11863
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/muv-mpv-parts/muv-mpv-brake-pad-set.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/muv-mpv-parts/muv-mpv-brake-pad-set.png",
+      "changedPixels": 5664
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/muv-mpv-parts/muv-mpv-cabin-filter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/muv-mpv-parts/muv-mpv-cabin-filter.png",
+      "changedPixels": 5664
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/muv-mpv-parts/muv-mpv-clutch-assembly.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/muv-mpv-parts/muv-mpv-clutch-assembly.png",
+      "changedPixels": 5664
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/muv-mpv-parts/muv-mpv-engine-mount.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/muv-mpv-parts/muv-mpv-engine-mount.png",
+      "changedPixels": 5664
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/muv-mpv-parts/muv-mpv-sliding-door-roller.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/muv-mpv-parts/muv-mpv-sliding-door-roller.png",
+      "changedPixels": 5664
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/sedan-parts/sedan-cabin-air-filter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/sedan-parts/sedan-cabin-air-filter.png",
+      "changedPixels": 1013
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/sedan-parts/sedan-clutch-assembly.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/sedan-parts/sedan-clutch-assembly.png",
+      "changedPixels": 1013
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/sedan-parts/sedan-led-tail-lamp.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/sedan-parts/sedan-led-tail-lamp.png",
+      "changedPixels": 1013
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/sedan-parts/sedan-premium-brake-pad-set.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/sedan-parts/sedan-premium-brake-pad-set.png",
+      "changedPixels": 1013
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/sedan-parts/sedan-shock-absorber.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/sedan-parts/sedan-shock-absorber.png",
+      "changedPixels": 1013
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/suv-parts/suv-air-filter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/suv-parts/suv-air-filter.png",
+      "changedPixels": 1013
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/suv-parts/suv-brake-disc-rotor.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/suv-parts/suv-brake-disc-rotor.png",
+      "changedPixels": 1013
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/suv-parts/suv-heavy-duty-shock-absorber.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/suv-parts/suv-heavy-duty-shock-absorber.png",
+      "changedPixels": 1013
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/suv-parts/suv-lower-control-arm.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/suv-parts/suv-lower-control-arm.png",
+      "changedPixels": 1013
+    },
+    {
+      "source": "/images/catalog/spare-parts/car-parts/suv-parts/suv-wheel-bearing-hub.jpg",
+      "output": "/images/catalog/spare-parts-cutout/car-parts/suv-parts/suv-wheel-bearing-hub.png",
+      "changedPixels": 1013
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/3-wheeler-parts/three-wheeler-air-filter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/3-wheeler-parts/three-wheeler-air-filter.png",
+      "changedPixels": 2436
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/3-wheeler-parts/three-wheeler-brake-shoe.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/3-wheeler-parts/three-wheeler-brake-shoe.png",
+      "changedPixels": 2436
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/3-wheeler-parts/three-wheeler-clutch-plate.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/3-wheeler-parts/three-wheeler-clutch-plate.png",
+      "changedPixels": 2436
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/3-wheeler-parts/three-wheeler-differential-gear.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/3-wheeler-parts/three-wheeler-differential-gear.png",
+      "changedPixels": 2436
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/3-wheeler-parts/three-wheeler-drive-shaft-kit.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/3-wheeler-parts/three-wheeler-drive-shaft-kit.png",
+      "changedPixels": 2436
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/bus-parts/bus-air-suspension-bellows.webp",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/bus-parts/bus-air-suspension-bellows.png",
+      "changedPixels": 142592
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/bus-parts/bus-brake-lining-set.webp",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/bus-parts/bus-brake-lining-set.png",
+      "changedPixels": 142592
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/bus-parts/bus-clutch-disc.webp",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/bus-parts/bus-clutch-disc.png",
+      "changedPixels": 142592
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/bus-parts/bus-emergency-door-valve.webp",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/bus-parts/bus-emergency-door-valve.png",
+      "changedPixels": 142592
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/bus-parts/bus-headlamp-assembly.webp",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/bus-parts/bus-headlamp-assembly.png",
+      "changedPixels": 142592
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/mini-truck-parts/mini-truck-air-filter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/mini-truck-parts/mini-truck-air-filter.png",
+      "changedPixels": 61370
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/mini-truck-parts/mini-truck-brake-shoe-set.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/mini-truck-parts/mini-truck-brake-shoe-set.png",
+      "changedPixels": 13068
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/mini-truck-parts/mini-truck-clutch-plate-kit.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/mini-truck-parts/mini-truck-clutch-plate-kit.png",
+      "changedPixels": 61370
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/mini-truck-parts/mini-truck-tie-rod-end.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/mini-truck-parts/mini-truck-tie-rod-end.png",
+      "changedPixels": 61370
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/mini-truck-parts/mini-truck-wheel-bearing.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/mini-truck-parts/mini-truck-wheel-bearing.png",
+      "changedPixels": 13068
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/pickup-vehicle-parts/pickup-air-filter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/pickup-vehicle-parts/pickup-air-filter.png",
+      "changedPixels": 1013
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/pickup-vehicle-parts/pickup-brake-pad-set.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/pickup-vehicle-parts/pickup-brake-pad-set.png",
+      "changedPixels": 1013
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/pickup-vehicle-parts/pickup-propeller-shaft-joint.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/pickup-vehicle-parts/pickup-propeller-shaft-joint.png",
+      "changedPixels": 15399
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/pickup-vehicle-parts/pickup-shock-absorber.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/pickup-vehicle-parts/pickup-shock-absorber.png",
+      "changedPixels": 15399
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/pickup-vehicle-parts/pickup-tail-lamp-assembly.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/pickup-vehicle-parts/pickup-tail-lamp-assembly.png",
+      "changedPixels": 15399
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/tempo-traveller-parts/tempo-traveller-brake-pad-set.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/tempo-traveller-parts/tempo-traveller-brake-pad-set.png",
+      "changedPixels": 2436
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/tempo-traveller-parts/tempo-traveller-clutch-plate.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/tempo-traveller-parts/tempo-traveller-clutch-plate.png",
+      "changedPixels": 2436
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/tempo-traveller-parts/tempo-traveller-headlamp-assembly.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/tempo-traveller-parts/tempo-traveller-headlamp-assembly.png",
+      "changedPixels": 2436
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/tempo-traveller-parts/tempo-traveller-suspension-bush.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/tempo-traveller-parts/tempo-traveller-suspension-bush.png",
+      "changedPixels": 2436
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/tempo-traveller-parts/tempo-traveller-wheel-bearing.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/tempo-traveller-parts/tempo-traveller-wheel-bearing.png",
+      "changedPixels": 2436
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/truck-parts/heavy-duty-truck-air-filter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/truck-parts/heavy-duty-truck-air-filter.png",
+      "changedPixels": 12096
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/truck-parts/truck-brake-lining-set.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/truck-parts/truck-brake-lining-set.png",
+      "changedPixels": 5833
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/truck-parts/truck-clutch-plate.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/truck-parts/truck-clutch-plate.png",
+      "changedPixels": 12096
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/truck-parts/truck-fuel-filter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/truck-parts/truck-fuel-filter.png",
+      "changedPixels": 5833
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/truck-parts/truck-leaf-spring-assembly.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/truck-parts/truck-leaf-spring-assembly.png",
+      "changedPixels": 12096
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/van-parts/van-brake-pad-set.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/van-parts/van-brake-pad-set.png",
+      "changedPixels": 6427
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/van-parts/van-cabin-air-filter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/van-parts/van-cabin-air-filter.png",
+      "changedPixels": 323777
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/van-parts/van-clutch-plate.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/van-parts/van-clutch-plate.png",
+      "changedPixels": 6427
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/van-parts/van-sliding-door-roller-kit.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/van-parts/van-sliding-door-roller-kit.png",
+      "changedPixels": 323777
+    },
+    {
+      "source": "/images/catalog/spare-parts/commercial-vehicle-parts/van-parts/van-tail-lamp-assembly.jpg",
+      "output": "/images/catalog/spare-parts-cutout/commercial-vehicle-parts/van-parts/van-tail-lamp-assembly.png",
+      "changedPixels": 323777
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/concrete-mixer-parts/concrete-mixer-drive-belt.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/concrete-mixer-parts/concrete-mixer-drive-belt.png",
+      "changedPixels": 58168
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/concrete-mixer-parts/concrete-mixer-drum-gear.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/concrete-mixer-parts/concrete-mixer-drum-gear.png",
+      "changedPixels": 710
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/concrete-mixer-parts/concrete-mixer-drum-roller.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/concrete-mixer-parts/concrete-mixer-drum-roller.png",
+      "changedPixels": 58168
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/concrete-mixer-parts/concrete-mixer-mixing-blade.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/concrete-mixer-parts/concrete-mixer-mixing-blade.png",
+      "changedPixels": 710
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/concrete-mixer-parts/concrete-mixer-water-pump.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/concrete-mixer-parts/concrete-mixer-water-pump.png",
+      "changedPixels": 710
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/crane-parts/crane-hook-block.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/crane-parts/crane-hook-block.png",
+      "changedPixels": 0
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/crane-parts/crane-load-moment-sensor.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/crane-parts/crane-load-moment-sensor.png",
+      "changedPixels": 0
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/crane-parts/crane-outrigger-pad.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/crane-parts/crane-outrigger-pad.png",
+      "changedPixels": 26356
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/crane-parts/crane-sheave-pulley.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/crane-parts/crane-sheave-pulley.png",
+      "changedPixels": 26356
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/crane-parts/crane-wire-rope.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/crane-parts/crane-wire-rope.png",
+      "changedPixels": 26356
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/excavator-parts/excavator-bucket-tooth-set.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/excavator-parts/excavator-bucket-tooth-set.png",
+      "changedPixels": 2
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/excavator-parts/excavator-hydraulic-filter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/excavator-parts/excavator-hydraulic-filter.png",
+      "changedPixels": 2
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/excavator-parts/excavator-idler-assembly.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/excavator-parts/excavator-idler-assembly.png",
+      "changedPixels": 2
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/excavator-parts/excavator-swing-motor-seal-kit.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/excavator-parts/excavator-swing-motor-seal-kit.png",
+      "changedPixels": 18525
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/excavator-parts/excavator-track-roller.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/excavator-parts/excavator-track-roller.png",
+      "changedPixels": 18525
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/jcb-backhoe-loader-parts/backhoe-loader-bucket-tooth.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/jcb-backhoe-loader-parts/backhoe-loader-bucket-tooth.png",
+      "changedPixels": 5236
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/jcb-backhoe-loader-parts/backhoe-loader-hydraulic-filter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/jcb-backhoe-loader-parts/backhoe-loader-hydraulic-filter.png",
+      "changedPixels": 3124
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/jcb-backhoe-loader-parts/backhoe-loader-hydraulic-seal-kit.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/jcb-backhoe-loader-parts/backhoe-loader-hydraulic-seal-kit.png",
+      "changedPixels": 3124
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/jcb-backhoe-loader-parts/backhoe-loader-kingpost-bush.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/jcb-backhoe-loader-parts/backhoe-loader-kingpost-bush.png",
+      "changedPixels": 5236
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/jcb-backhoe-loader-parts/backhoe-loader-stabilizer-pad.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/jcb-backhoe-loader-parts/backhoe-loader-stabilizer-pad.png",
+      "changedPixels": 3124
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/loader-parts/wheel-loader-articulation-bearing.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/loader-parts/wheel-loader-articulation-bearing.png",
+      "changedPixels": 44039
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/loader-parts/wheel-loader-brake-disc.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/loader-parts/wheel-loader-brake-disc.png",
+      "changedPixels": 378
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/loader-parts/wheel-loader-bucket-tooth.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/loader-parts/wheel-loader-bucket-tooth.png",
+      "changedPixels": 378
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/loader-parts/wheel-loader-hydraulic-filter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/loader-parts/wheel-loader-hydraulic-filter.png",
+      "changedPixels": 44039
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/loader-parts/wheel-loader-lift-cylinder-seal-kit.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/loader-parts/wheel-loader-lift-cylinder-seal-kit.png",
+      "changedPixels": 44039
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/road-roller-parts/road-roller-drum-scraper.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/road-roller-parts/road-roller-drum-scraper.png",
+      "changedPixels": 6975
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/road-roller-parts/road-roller-hydraulic-filter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/road-roller-parts/road-roller-hydraulic-filter.png",
+      "changedPixels": 10694
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/road-roller-parts/road-roller-steering-joint.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/road-roller-parts/road-roller-steering-joint.png",
+      "changedPixels": 6975
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/road-roller-parts/road-roller-vibration-bearing.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/road-roller-parts/road-roller-vibration-bearing.png",
+      "changedPixels": 10694
+    },
+    {
+      "source": "/images/catalog/spare-parts/construction-equipment-parts/road-roller-parts/road-roller-vibration-motor-mount.jpg",
+      "output": "/images/catalog/spare-parts-cutout/construction-equipment-parts/road-roller-parts/road-roller-vibration-motor-mount.png",
+      "changedPixels": 10694
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-3-wheeler-parts/electric-three-wheeler-charging-socket.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-3-wheeler-parts/electric-three-wheeler-charging-socket.png",
+      "changedPixels": 343946
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-3-wheeler-parts/electric-three-wheeler-dc-converter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-3-wheeler-parts/electric-three-wheeler-dc-converter.png",
+      "changedPixels": 343946
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-3-wheeler-parts/electric-three-wheeler-differential-motor.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-3-wheeler-parts/electric-three-wheeler-differential-motor.png",
+      "changedPixels": 0
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-3-wheeler-parts/electric-three-wheeler-motor-controller.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-3-wheeler-parts/electric-three-wheeler-motor-controller.png",
+      "changedPixels": 0
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-3-wheeler-parts/electric-three-wheeler-throttle-sensor.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-3-wheeler-parts/electric-three-wheeler-throttle-sensor.png",
+      "changedPixels": 0
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-bike-parts/electric-bike-battery-management-system.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-bike-parts/electric-bike-battery-management-system.png",
+      "changedPixels": 8851
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-bike-parts/electric-bike-charging-socket.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-bike-parts/electric-bike-charging-socket.png",
+      "changedPixels": 22869
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-bike-parts/electric-bike-dc-converter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-bike-parts/electric-bike-dc-converter.png",
+      "changedPixels": 8851
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-bike-parts/electric-bike-motor-controller.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-bike-parts/electric-bike-motor-controller.png",
+      "changedPixels": 22869
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-bike-parts/electric-bike-throttle-sensor.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-bike-parts/electric-bike-throttle-sensor.png",
+      "changedPixels": 22869
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-car-parts/electric-car-battery-cooling-pump.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-car-parts/electric-car-battery-cooling-pump.png",
+      "changedPixels": 5664
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-car-parts/electric-car-charge-cable.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-car-parts/electric-car-charge-cable.png",
+      "changedPixels": 7141
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-car-parts/electric-car-charging-port-assembly.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-car-parts/electric-car-charging-port-assembly.png",
+      "changedPixels": 7141
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-car-parts/electric-car-dc-converter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-car-parts/electric-car-dc-converter.png",
+      "changedPixels": 7141
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-car-parts/electric-car-onboard-charger.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-car-parts/electric-car-onboard-charger.png",
+      "changedPixels": 5664
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-commercial-vehicle-parts/commercial-ev-battery-cooling-pump.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-commercial-vehicle-parts/commercial-ev-battery-cooling-pump.png",
+      "changedPixels": 16533
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-commercial-vehicle-parts/commercial-ev-charge-inlet.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-commercial-vehicle-parts/commercial-ev-charge-inlet.png",
+      "changedPixels": 16533
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-commercial-vehicle-parts/commercial-ev-dc-converter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-commercial-vehicle-parts/commercial-ev-dc-converter.png",
+      "changedPixels": 16533
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-commercial-vehicle-parts/commercial-ev-motor-controller.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-commercial-vehicle-parts/commercial-ev-motor-controller.png",
+      "changedPixels": 16533
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-commercial-vehicle-parts/commercial-ev-onboard-charger.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-commercial-vehicle-parts/commercial-ev-onboard-charger.png",
+      "changedPixels": 16533
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-scooter-parts/electric-scooter-battery-charger.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-scooter-parts/electric-scooter-battery-charger.png",
+      "changedPixels": 32633
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-scooter-parts/electric-scooter-brake-lever-sensor.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-scooter-parts/electric-scooter-brake-lever-sensor.png",
+      "changedPixels": 13447
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-scooter-parts/electric-scooter-display-cluster.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-scooter-parts/electric-scooter-display-cluster.png",
+      "changedPixels": 32633
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-scooter-parts/electric-scooter-hub-motor.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-scooter-parts/electric-scooter-hub-motor.png",
+      "changedPixels": 32633
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/electric-scooter-parts/electric-scooter-motor-controller.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/electric-scooter-parts/electric-scooter-motor-controller.png",
+      "changedPixels": 13447
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/ev-charging-parts/ccs2-ev-charging-cable.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/ev-charging-parts/ccs2-ev-charging-cable.png",
+      "changedPixels": 16533
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/ev-charging-parts/ev-charger-contactor.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/ev-charging-parts/ev-charger-contactor.png",
+      "changedPixels": 36862
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/ev-charging-parts/ev-charging-socket.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/ev-charging-parts/ev-charging-socket.png",
+      "changedPixels": 16533
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/ev-charging-parts/portable-ev-charger.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/ev-charging-parts/portable-ev-charger.png",
+      "changedPixels": 36862
+    },
+    {
+      "source": "/images/catalog/spare-parts/ev-vehicle-parts/ev-charging-parts/type-2-ev-charging-connector.jpg",
+      "output": "/images/catalog/spare-parts-cutout/ev-vehicle-parts/ev-charging-parts/type-2-ev-charging-connector.png",
+      "changedPixels": 36862
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/agricultural-trailer-parts/agricultural-trailer-axle.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/agricultural-trailer-parts/agricultural-trailer-axle.png",
+      "changedPixels": 12271
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/agricultural-trailer-parts/agricultural-trailer-brake-drum.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/agricultural-trailer-parts/agricultural-trailer-brake-drum.png",
+      "changedPixels": 1501
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/agricultural-trailer-parts/agricultural-trailer-hub-assembly.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/agricultural-trailer-parts/agricultural-trailer-hub-assembly.png",
+      "changedPixels": 1501
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/agricultural-trailer-parts/agricultural-trailer-leaf-spring.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/agricultural-trailer-parts/agricultural-trailer-leaf-spring.png",
+      "changedPixels": 12271
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/agricultural-trailer-parts/agricultural-trailer-towing-eye.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/agricultural-trailer-parts/agricultural-trailer-towing-eye.png",
+      "changedPixels": 1501
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/farm-implement-parts/cultivator-tine.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/farm-implement-parts/cultivator-tine.png",
+      "changedPixels": 33
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/farm-implement-parts/disc-harrow-bearing.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/farm-implement-parts/disc-harrow-bearing.png",
+      "changedPixels": 33
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/farm-implement-parts/farm-implement-pto-shaft.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/farm-implement-parts/farm-implement-pto-shaft.png",
+      "changedPixels": 33
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/farm-implement-parts/rotavator-blade-set.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/farm-implement-parts/rotavator-blade-set.png",
+      "changedPixels": 4145
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/farm-implement-parts/three-point-linkage-kit.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/farm-implement-parts/three-point-linkage-kit.png",
+      "changedPixels": 4145
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/harvester-parts/harvester-conveyor-chain.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/harvester-parts/harvester-conveyor-chain.png",
+      "changedPixels": 133424
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/harvester-parts/harvester-cutter-bar-blade.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/harvester-parts/harvester-cutter-bar-blade.png",
+      "changedPixels": 133424
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/harvester-parts/harvester-grain-elevator-chain.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/harvester-parts/harvester-grain-elevator-chain.png",
+      "changedPixels": 133424
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/harvester-parts/harvester-knife-guard.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/harvester-parts/harvester-knife-guard.png",
+      "changedPixels": 133424
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/harvester-parts/harvester-thresher-belt.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/harvester-parts/harvester-thresher-belt.png",
+      "changedPixels": 133424
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/mini-tractor-parts/mini-tractor-brake-shoe.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/mini-tractor-parts/mini-tractor-brake-shoe.png",
+      "changedPixels": 91178
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/mini-tractor-parts/mini-tractor-clutch-disc.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/mini-tractor-parts/mini-tractor-clutch-disc.png",
+      "changedPixels": 6222
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/mini-tractor-parts/mini-tractor-fan-belt.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/mini-tractor-parts/mini-tractor-fan-belt.png",
+      "changedPixels": 6222
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/mini-tractor-parts/mini-tractor-fuel-filter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/mini-tractor-parts/mini-tractor-fuel-filter.png",
+      "changedPixels": 91178
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/mini-tractor-parts/mini-tractor-hydraulic-filter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/mini-tractor-parts/mini-tractor-hydraulic-filter.png",
+      "changedPixels": 91178
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/power-tiller-parts/power-tiller-air-filter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/power-tiller-parts/power-tiller-air-filter.png",
+      "changedPixels": 147
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/power-tiller-parts/power-tiller-clutch-plate.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/power-tiller-parts/power-tiller-clutch-plate.png",
+      "changedPixels": 147
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/power-tiller-parts/power-tiller-rotary-shaft.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/power-tiller-parts/power-tiller-rotary-shaft.png",
+      "changedPixels": 147
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/power-tiller-parts/power-tiller-tine-blade-set.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/power-tiller-parts/power-tiller-tine-blade-set.png",
+      "changedPixels": 147
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/power-tiller-parts/power-tiller-v-belt.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/power-tiller-parts/power-tiller-v-belt.png",
+      "changedPixels": 147
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/tractor-parts/tractor-clutch-plate.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/tractor-parts/tractor-clutch-plate.png",
+      "changedPixels": 4601
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/tractor-parts/tractor-fuel-filter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/tractor-parts/tractor-fuel-filter.png",
+      "changedPixels": 6552
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/tractor-parts/tractor-hydraulic-pump.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/tractor-parts/tractor-hydraulic-pump.png",
+      "changedPixels": 6552
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/tractor-parts/tractor-pto-shaft.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/tractor-parts/tractor-pto-shaft.png",
+      "changedPixels": 4601
+    },
+    {
+      "source": "/images/catalog/spare-parts/farm-vehicle-parts/tractor-parts/tractor-tie-rod-end.jpg",
+      "output": "/images/catalog/spare-parts-cutout/farm-vehicle-parts/tractor-parts/tractor-tie-rod-end.png",
+      "changedPixels": 6552
+    },
+    {
+      "source": "/images/catalog/spare-parts/two-wheeler-parts/bike-parts/motorcycle-air-filter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/two-wheeler-parts/bike-parts/motorcycle-air-filter.png",
+      "changedPixels": 164121
+    },
+    {
+      "source": "/images/catalog/spare-parts/two-wheeler-parts/bike-parts/motorcycle-chain-and-sprocket-kit.jpg",
+      "output": "/images/catalog/spare-parts-cutout/two-wheeler-parts/bike-parts/motorcycle-chain-and-sprocket-kit.png",
+      "changedPixels": 3795
+    },
+    {
+      "source": "/images/catalog/spare-parts/two-wheeler-parts/bike-parts/motorcycle-clutch-plate-kit.jpg",
+      "output": "/images/catalog/spare-parts-cutout/two-wheeler-parts/bike-parts/motorcycle-clutch-plate-kit.png",
+      "changedPixels": 3795
+    },
+    {
+      "source": "/images/catalog/spare-parts/two-wheeler-parts/bike-parts/motorcycle-front-brake-pad-set.jpg",
+      "output": "/images/catalog/spare-parts-cutout/two-wheeler-parts/bike-parts/motorcycle-front-brake-pad-set.png",
+      "changedPixels": 164121
+    },
+    {
+      "source": "/images/catalog/spare-parts/two-wheeler-parts/bike-parts/motorcycle-iridium-spark-plug.jpg",
+      "output": "/images/catalog/spare-parts-cutout/two-wheeler-parts/bike-parts/motorcycle-iridium-spark-plug.png",
+      "changedPixels": 3795
+    },
+    {
+      "source": "/images/catalog/spare-parts/two-wheeler-parts/electric-bike-parts/electric-bike-battery-management-system.jpg",
+      "output": "/images/catalog/spare-parts-cutout/two-wheeler-parts/electric-bike-parts/electric-bike-battery-management-system.png",
+      "changedPixels": 8851
+    },
+    {
+      "source": "/images/catalog/spare-parts/two-wheeler-parts/electric-bike-parts/electric-bike-charging-socket.jpg",
+      "output": "/images/catalog/spare-parts-cutout/two-wheeler-parts/electric-bike-parts/electric-bike-charging-socket.png",
+      "changedPixels": 22869
+    },
+    {
+      "source": "/images/catalog/spare-parts/two-wheeler-parts/electric-bike-parts/electric-bike-dc-converter.jpg",
+      "output": "/images/catalog/spare-parts-cutout/two-wheeler-parts/electric-bike-parts/electric-bike-dc-converter.png",
+      "changedPixels": 8851
+    },
+    {
+      "source": "/images/catalog/spare-parts/two-wheeler-parts/electric-bike-parts/electric-bike-motor-controller.jpg",
+      "output": "/images/catalog/spare-parts-cutout/two-wheeler-parts/electric-bike-parts/electric-bike-motor-controller.png",
+      "changedPixels": 22869
+    },
+    {
+      "source": "/images/catalog/spare-parts/two-wheeler-parts/electric-bike-parts/electric-bike-throttle-sensor.jpg",
+      "output": "/images/catalog/spare-parts-cutout/two-wheeler-parts/electric-bike-parts/electric-bike-throttle-sensor.png",
+      "changedPixels": 22869
+    },
+    {
+      "source": "/images/catalog/spare-parts/two-wheeler-parts/electric-scooter-parts/electric-scooter-battery-charger.jpg",
+      "output": "/images/catalog/spare-parts-cutout/two-wheeler-parts/electric-scooter-parts/electric-scooter-battery-charger.png",
+      "changedPixels": 32633
+    },
+    {
+      "source": "/images/catalog/spare-parts/two-wheeler-parts/electric-scooter-parts/electric-scooter-brake-lever-sensor.jpg",
+      "output": "/images/catalog/spare-parts-cutout/two-wheeler-parts/electric-scooter-parts/electric-scooter-brake-lever-sensor.png",
+      "changedPixels": 13447
+    },
+    {
+      "source": "/images/catalog/spare-parts/two-wheeler-parts/electric-scooter-parts/electric-scooter-display-cluster.jpg",
+      "output": "/images/catalog/spare-parts-cutout/two-wheeler-parts/electric-scooter-parts/electric-scooter-display-cluster.png",
+      "changedPixels": 32633
+    },
+    {
+      "source": "/images/catalog/spare-parts/two-wheeler-parts/electric-scooter-parts/electric-scooter-hub-motor.jpg",
+      "output": "/images/catalog/spare-parts-cutout/two-wheeler-parts/electric-scooter-parts/electric-scooter-hub-motor.png",
+      "changedPixels": 32633
+    },
+    {
+      "source": "/images/catalog/spare-parts/two-wheeler-parts/electric-scooter-parts/electric-scooter-motor-controller.jpg",
+      "output": "/images/catalog/spare-parts-cutout/two-wheeler-parts/electric-scooter-parts/electric-scooter-motor-controller.png",
+      "changedPixels": 13447
+    },
+    {
+      "source": "/images/catalog/spare-parts/two-wheeler-parts/scooter-parts/scooter-air-filter-element.jpg",
+      "output": "/images/catalog/spare-parts-cutout/two-wheeler-parts/scooter-parts/scooter-air-filter-element.png",
+      "changedPixels": 22201
+    },
+    {
+      "source": "/images/catalog/spare-parts/two-wheeler-parts/scooter-parts/scooter-clutch-assembly.jpg",
+      "output": "/images/catalog/spare-parts-cutout/two-wheeler-parts/scooter-parts/scooter-clutch-assembly.png",
+      "changedPixels": 14785
+    },
+    {
+      "source": "/images/catalog/spare-parts/two-wheeler-parts/scooter-parts/scooter-cvt-drive-belt.jpg",
+      "output": "/images/catalog/spare-parts-cutout/two-wheeler-parts/scooter-parts/scooter-cvt-drive-belt.png",
+      "changedPixels": 14785
+    },
+    {
+      "source": "/images/catalog/spare-parts/two-wheeler-parts/scooter-parts/scooter-rear-brake-shoe.jpg",
+      "output": "/images/catalog/spare-parts-cutout/two-wheeler-parts/scooter-parts/scooter-rear-brake-shoe.png",
+      "changedPixels": 14785
+    },
+    {
+      "source": "/images/catalog/spare-parts/two-wheeler-parts/scooter-parts/scooter-variator-roller-set.jpg",
+      "output": "/images/catalog/spare-parts-cutout/two-wheeler-parts/scooter-parts/scooter-variator-roller-set.png",
+      "changedPixels": 22201
+    }
+  ]
+}

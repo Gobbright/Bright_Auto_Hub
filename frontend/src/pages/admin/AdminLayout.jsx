@@ -7,7 +7,7 @@ import ResourceManager from './ResourceManager.jsx'
 import StorageManager from './StorageManager.jsx'
 import StorageUsage from './StorageUsage.jsx'
 import WebsiteContentManager from './WebsiteContentManager.jsx'
-import { activityConfig, blogConfig, brandConfig, enquiryConfig, mainCategoryConfig, partConfig, partSubcategoryConfig, serviceConfig, serviceSubcategoryConfig, vehicleCategoryConfig, vehicleConfig, vehicleSubcategoryConfig } from './resourceConfigs.js'
+import { activityConfig, blogConfig, brandConfig, enquiryConfig, mainCategoryConfig, partConfig, partSubcategoryConfig, serviceConfig, serviceSubcategoryConfig, vehicleCategoryConfig, vehicleConfig, vehicleSubcategoryConfig, websiteActivityConfig } from './resourceConfigs.js'
 
 const navigation = [
   { label: 'Overview', items: [
@@ -33,6 +33,7 @@ const navigation = [
   ] },
   { label: 'System', items: [
     { id: 'activities', label: 'Login Activity', icon: 'activity' },
+    { id: 'website-activities', label: 'Website Activity', icon: 'activity' },
     { id: 'storage', label: 'Storage', icon: 'storage', children: [
       { id: 'storage-images', label: 'Image Gallery' },
       { id: 'storage-usage', label: 'Storage & Collections' },
@@ -55,11 +56,12 @@ const pageMeta = {
   services: ['Vehicle Services', 'Manage service packages and bookings'],
   enquiries: ['Enquiries', 'Manage customer messages and leads'],
   activities: ['Login Activity', 'View website login, failed attempt and logout history'],
+  'website-activities': ['Website Activity', 'View page views and click tracking from the public website'],
   'storage-images': ['Image Gallery', 'Manage every image stored in MongoDB GridFS'],
   'storage-usage': ['Storage & Collections', 'View website assets, GridFS and every MongoDB collection'],
 }
 
-const configs = { brands: brandConfig, 'main-categories': mainCategoryConfig, 'vehicle-categories': vehicleCategoryConfig, 'vehicle-subcategories': vehicleSubcategoryConfig, 'part-subcategories': partSubcategoryConfig, 'service-subcategories': serviceSubcategoryConfig, vehicles: vehicleConfig, blogs: blogConfig, parts: partConfig, services: serviceConfig, enquiries: enquiryConfig, activities: activityConfig, 'website-content': { noCreate: true }, 'storage-images': { singular: 'Image' }, 'storage-usage': { noCreate: true } }
+const configs = { brands: brandConfig, 'main-categories': mainCategoryConfig, 'vehicle-categories': vehicleCategoryConfig, 'vehicle-subcategories': vehicleSubcategoryConfig, 'part-subcategories': partSubcategoryConfig, 'service-subcategories': serviceSubcategoryConfig, vehicles: vehicleConfig, blogs: blogConfig, parts: partConfig, services: serviceConfig, enquiries: enquiryConfig, activities: activityConfig, 'website-activities': websiteActivityConfig, 'website-content': { noCreate: true }, 'storage-images': { singular: 'Image' }, 'storage-usage': { noCreate: true } }
 
 const countKeys = {
   categories: 'categories',
@@ -76,6 +78,7 @@ const countKeys = {
   blogs: 'blogs',
   enquiries: 'enquiries',
   activities: 'activities',
+  'website-activities': 'websiteActivities',
   storage: 'storage',
   'storage-images': 'storage',
   'storage-usage': 'storageCollections',
@@ -166,7 +169,7 @@ export default function AdminLayout({ onLogout }) {
               {section.items.map((item) => item.children ? (
                 <div className='nav-tree' key={item.id}>
                   <button className={item.children.some((child) => child.id === activePage) ? 'active parent-active' : ''} type='button' data-label={item.label} aria-expanded={Boolean(openTrees[item.id])} onClick={() => setOpenTrees((current) => ({ ...current, [item.id]: !current[item.id] }))}>
-                    <span><AdminIcon name={item.icon}/></span>{item.label}<em className='nav-count'>{countLabel(item.id)}</em><b className={openTrees[item.id] ? 'nav-caret open' : 'nav-caret'}>⌄</b>
+                    <span><AdminIcon name={item.icon}/></span>{item.label}<em className='nav-count'>{countLabel(item.id)}</em><b className={openTrees[item.id] ? 'nav-caret open' : 'nav-caret'}>âŒ„</b>
                   </button>
                   {openTrees[item.id] && <div className='nav-submenu'>{item.children.map((child) => <button className={activePage === child.id ? 'active' : ''} type='button' key={child.id} data-label={child.label} onClick={() => selectPage(child.id)}>{child.label}<em className='nav-count'>{countLabel(child.id)}</em>{activePage === child.id && <i/>}</button>)}</div>}
                 </div>

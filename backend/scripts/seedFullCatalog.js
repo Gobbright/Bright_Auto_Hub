@@ -17,6 +17,20 @@ const stripHtml = (value = '') => value.replace(/<[^>]*>/g, '').replace(/&nbsp;/
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 let lastCommonsRequestAt = 0
 const categorySourceCache = new Map()
+const sparePartBrandByKeyword = [
+  [/brake|disc|rotor|lining/i, 'Brembo'],
+  [/filter|air filter|fuel filter|cabin/i, 'MANN-FILTER'],
+  [/clutch|belt/i, 'LuK'],
+  [/shock|suspension|strut|control arm/i, 'KYB'],
+  [/bearing|hub|roller/i, 'SKF'],
+  [/lamp|headlight|tail|sensor/i, 'Hella'],
+  [/spark|plug/i, 'NGK'],
+  [/battery|charger|charging|controller|converter|motor/i, 'DENSO'],
+  [/tyre|tire/i, 'MRF'],
+  [/oil|lubricant/i, 'Castrol'],
+  [/hydraulic|loader|excavator|tractor|pump/i, 'Bosch'],
+]
+const sparePartBrandFor = (name) => sparePartBrandByKeyword.find(([matcher]) => matcher.test(name))?.[1] || 'Bosch'
 
 async function commonsFetch(url, attempts = 5) {
   for (let attempt = 0; attempt < attempts; attempt += 1) {
@@ -184,14 +198,20 @@ async function seedVehicles() {
         const brand = await ensureBrand(name)
         const slug = slugify(`vehicles-${parentName}-${categoryName}-${name}`)
         const vehicleType = inferVehicleType(parentName, categoryName)
+        const fuelType = vehicleType === 'Electric' ? 'Electric' : ['Farm', 'Construction', 'Commercial'].includes(vehicleType) ? 'Diesel' : 'Petrol'
         await Vehicle.findOneAndUpdate(
           { slug },
           { $set: {
             name, slug, brand: brand._id, category: category._id, vehicleType,
-            fuelType: vehicleType === 'Electric' ? 'Electric' : ['Farm', 'Construction', 'Commercial'].includes(vehicleType) ? 'Diesel' : 'Petrol',
+            fuelType,
             price: 0, modelYear: new Date().getFullYear(), condition: 'new', location: 'New Delhi', imageUrl,
-            description: `${name} is listed in ${categoryName}. Send an enquiry for specifications, availability and the latest quotation.`,
-            specifications: { Category: categoryName, Segment: parentName, Availability: 'Enquiry' }, status: 'active', featured: productIndex === 0,
+            description: `${name} is listed in ${categoryName} under ${parentName}. Compare usage, fuel type, service reach and availability before requesting the latest quotation.`,
+            specifications: { Category: categoryName, Segment: parentName, Availability: 'Enquiry', 'Fuel Type': fuelType, 'Model Year': new Date().getFullYear(), 'Service Guidance': vehicleType === 'Electric' ? 'Check range, charging access and battery warranty.' : 'Check mileage, warranty, service interval and running cost.' },
+            details: { title: `${name} buying and ownership notes`, intro: `Useful checks for comparing ${name} with similar ${categoryName} options.`, cards: [
+              { title: 'Usage Fit', text: `Shortlist this ${categoryName} by daily route, passenger or payload needs and local service support.`, points: [`Segment: ${parentName}`, `Category: ${categoryName}`, `Fuel: ${fuelType}`] },
+              { title: vehicleType === 'Electric' ? 'EV Readiness' : 'Running Cost', text: vehicleType === 'Electric' ? 'Check real-world range, charging access and battery support.' : 'Check mileage, periodic service, tyres, brakes and warranty coverage.', points: vehicleType === 'Electric' ? ['Confirm home or public charging plan', 'Ask about battery warranty', 'Review service support in your city'] : ['Compare mileage and fuel cost', 'Ask for service interval', 'Review insurance and finance options'] },
+              { title: 'Before Enquiry', text: 'Share budget, city, expected usage and preferred variant for a faster response.', points: ['Ask latest quotation', 'Confirm colour and variant availability', 'Compare with similar models'] },
+            ] }, status: 'active', featured: productIndex === 0,
           } },
           { upsert: true, new: true, setDefaultsOnInsert: true },
         )
@@ -220,8 +240,13 @@ async function seedParts() {
           { $set: {
             name, slug, category: categoryNode.name, categoryId: category._id, categoryGroup: parentNode.name,
             partNumber: `BAH-${String(parentIndex + 1).padStart(2, '0')}${String(categoryIndex + 1).padStart(2, '0')}-${String(productIndex + 1).padStart(2, '0')}`,
-            brand: 'Bright Genuine', price: 0, originalPrice: 0, imageUrl,
-            description: `${name} for ${categoryNode.name}, with compatibility and fitment confirmed through enquiry.`,
+            brand: sparePartBrandFor(name), price: 0, originalPrice: 0, imageUrl,
+            description: name + ' for ' + categoryNode.name + ', with compatibility, part number and fitment confirmed through enquiry.',
+            details: { title: name + ' fitment and installation guide', intro: 'Check compatibility and quality points before buying ' + name + '.', cards: [
+              { title: 'Fitment Check', text: 'Match the vehicle model, variant, production year and part number before purchase.', points: ['Part number: BAH-' + String(parentIndex + 1).padStart(2, '0') + String(categoryIndex + 1).padStart(2, '0') + '-' + String(productIndex + 1).padStart(2, '0'), 'Category: ' + categoryNode.name, 'Vehicle group: ' + parentNode.name.replace(' Parts', '')] },
+              { title: 'Quality Check', text: 'Inspect packaging, invoice and warranty terms before installation.', points: ['Check genuine-fit quality', 'Compare old and new part', 'Confirm warranty support'] },
+              { title: 'Installation', text: 'Use trained technicians and test the vehicle after fitment.', points: ['Inspect nearby components', 'Fit using proper tools', 'Road-test before regular use'] },
+            ] },
             compatibleVehicleTypes: [parentNode.name.replace(' Parts', '')], stock: 25, status: 'active', featured: productIndex === 0,
           } },
           { upsert: true, new: true, setDefaultsOnInsert: true },

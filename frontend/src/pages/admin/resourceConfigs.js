@@ -124,10 +124,11 @@ export const vehicleConfig = {
     { name: 'location', label: 'Location' },
     { name: 'color', label: 'Colour' },
     { name: 'seatingCapacity', label: 'Seats / capacity', type: 'number', min: 0 },
-    { name: 'price', label: 'Starting price (₹)', type: 'number', defaultValue: 0, min: 0 },
+    { name: 'price', label: 'Starting price (â‚¹)', type: 'number', defaultValue: 0, min: 0 },
     { name: 'imageUrl', label: 'Vehicle image', type: 'file', accept: 'image/png,image/jpeg,image/webp,image/svg+xml', wide: true, required: true, hint: 'Upload PNG, JPG, WEBP or SVG. Maximum 2 MB.' },
     { name: 'description', label: 'Overview / description', type: 'textarea', wide: true, rows: 6 },
     { name: 'specifications', label: 'Specifications JSON', type: 'textarea', wide: true, rows: 7, hint: 'Add flexible specifications as valid JSON.' },
+    { name: 'details', label: 'More details JSON', type: 'textarea', wide: true, rows: 8, hint: 'Optional JSON cards for the public product detail page.' },
     { name: 'status', label: 'Status', type: 'select', options: statusOptions, defaultValue: 'draft', required: true },
     { name: 'featured', label: 'Featured vehicle', type: 'checkbox', hint: 'Show on home page and featured sections.' },
   ],
@@ -191,13 +192,13 @@ export const blogConfig = {
 
 export const partConfig = {
   resource:'parts',title:'Spare Parts',singular:'Spare Part',eyebrow:'Commerce catalogue',description:'Manage parts, prices, stock and product images.',
-  columns:[{key:'imageUrl',label:'Image',image:true},{key:'name',label:'Part',primary:true},{key:'category',label:'Category'},{key:'price',label:'Price',money:true},{key:'stock',label:'Stock'},{key:'status',label:'Status',status:true}],
-  fields:[{name:'name',label:'Part name',required:true},{name:'categoryId',label:'Category / sub-category',type:'select',lookup:'categories',lookupGroup:'Spare Parts',leafOnly:true,treeOptions:true,required:true},{name:'partNumber',label:'Part number'},{name:'brand',label:'Brand'},{name:'price',label:'Price (₹)',type:'number',min:0},{name:'originalPrice',label:'Original price (₹)',type:'number',min:0},{name:'stock',label:'Stock quantity',type:'number',min:0},{name:'compatibleVehicleTypes',label:'Compatible vehicles',wide:true,placeholder:'Cars, Bikes, Commercial',hint:'Comma separated vehicle types'},{name:'imageUrl',label:'Part image',type:'file',accept:'image/png,image/jpeg,image/webp,image/svg+xml',wide:true,required:true,hint:'Stored in MongoDB GridFS. Maximum 2 MB.'},{name:'description',label:'Description',type:'textarea',wide:true},{name:'status',label:'Status',type:'select',options:statusOptions,defaultValue:'active'},{name:'featured',label:'Featured product',type:'checkbox'}],
+  columns:[{key:'imageUrl',label:'Image',image:true},{key:'name',label:'Part',primary:true},{key:'brand',label:'Brand'},{key:'category',label:'Category'},{key:'price',label:'Price',money:true},{key:'stock',label:'Stock'},{key:'status',label:'Status',status:true}],
+  fields:[{name:'name',label:'Part name',required:true},{name:'categoryId',label:'Category / sub-category',type:'select',lookup:'categories',lookupGroup:'Spare Parts',leafOnly:true,treeOptions:true,required:true},{name:'partNumber',label:'Part number'},{name:'brand',label:'Brand'},{name:'price',label:'Price (â‚¹)',type:'number',min:0},{name:'originalPrice',label:'Original price (â‚¹)',type:'number',min:0},{name:'stock',label:'Stock quantity',type:'number',min:0},{name:'compatibleVehicleTypes',label:'Compatible vehicles',wide:true,placeholder:'Cars, Bikes, Commercial',hint:'Comma separated vehicle types'},{name:'imageUrl',label:'Part image',type:'file',accept:'image/png,image/jpeg,image/webp,image/svg+xml',wide:true,required:true,hint:'Stored in MongoDB GridFS. Maximum 2 MB.'},{name:'description',label:'Description',type:'textarea',wide:true},{name:'details',label:'More details JSON',type:'textarea',wide:true,rows:8,hint:'Optional JSON cards for the public product detail page.'},{name:'status',label:'Status',type:'select',options:statusOptions,defaultValue:'active'},{name:'featured',label:'Featured product',type:'checkbox'}],
 }
 export const serviceConfig = {
   resource:'services',title:'Vehicle Services',singular:'Service',eyebrow:'Service catalogue',description:'Manage bookable services, packages, prices and images.',
-  columns:[{key:'imageUrl',label:'Image',image:true},{key:'name',label:'Service',primary:true},{key:'category',label:'Category'},{key:'price',label:'From price',money:true},{key:'duration',label:'Duration'},{key:'status',label:'Status',status:true}],
-  fields:[{name:'name',label:'Service name',required:true},{name:'categoryId',label:'Category / sub-category',type:'select',lookup:'categories',lookupGroup:'Services',leafOnly:true,treeOptions:true,required:true},{name:'price',label:'Starting price (₹)',type:'number',min:0},{name:'duration',label:'Duration',placeholder:'e.g. 2 to 3 hours'},{name:'vehicleTypes',label:'Available for',wide:true,placeholder:'Cars, Bikes, Commercial',hint:'Comma separated vehicle types'},{name:'imageUrl',label:'Service image',type:'file',accept:'image/png,image/jpeg,image/webp,image/svg+xml',wide:true,required:true,hint:'Stored in MongoDB GridFS. Maximum 2 MB.'},{name:'description',label:'Description',type:'textarea',wide:true},{name:'features',label:'Package features',wide:true,hint:'Comma separated features'},{name:'status',label:'Status',type:'select',options:statusOptions,defaultValue:'active'},{name:'featured',label:'Featured service',type:'checkbox'}],
+  columns:[{key:'imageUrl',label:'Image',image:true},{key:'name',label:'Service',primary:true},{key:'category',label:'Category'},{key:'brands',label:'Brands'},{key:'price',label:'From price',money:true},{key:'duration',label:'Duration'},{key:'status',label:'Status',status:true}],
+  fields:[{name:'name',label:'Service name',required:true},{name:'categoryId',label:'Category / sub-category',type:'select',lookup:'categories',lookupGroup:'Services',leafOnly:true,treeOptions:true,required:true},{name:'price',label:'Starting price (â‚¹)',type:'number',min:0},{name:'duration',label:'Duration',placeholder:'e.g. 2 to 3 hours'},{name:'vehicleTypes',label:'Available for',wide:true,placeholder:'Cars, Bikes, Commercial',hint:'Comma separated vehicle types'},{name:'brands',label:'Brands serviced',wide:true,placeholder:'Maruti Suzuki, Hyundai, Tata, Mahindra',hint:'Comma separated brands shown in Brands We Service on the public services page.'},{name:'imageUrl',label:'Service image',type:'file',accept:'image/png,image/jpeg,image/webp,image/svg+xml',wide:true,required:true,hint:'Stored in MongoDB GridFS. Maximum 2 MB.'},{name:'description',label:'Description',type:'textarea',wide:true},{name:'features',label:'Package features',wide:true,hint:'Comma separated features'},{name:'details',label:'More service details JSON',type:'textarea',wide:true,rows:8,hint:'Optional JSON cards for the public service detail page.'},{name:'status',label:'Status',type:'select',options:statusOptions,defaultValue:'active'},{name:'featured',label:'Featured service',type:'checkbox'}],
 }
 export const pageConfig = {
   resource:'pages',title:'Public Website Pages',singular:'Website Page',eyebrow:'Website content',description:'View and edit the hero, text, images, calls to action, SEO and structured content for every public website page.',
@@ -206,19 +207,19 @@ export const pageConfig = {
 }
 export const legacyEnquiryConfig = {
   resource:'enquiries',title:'Enquiries',singular:'Enquiry',eyebrow:'Customer inbox',description:'Review contact, vehicle, service and parts enquiries.',
-  columns:[{key:'name',label:'Customer',primary:true},{key:'email',label:'Email'},{key:'phone',label:'Phone'},{key:'subject',label:'Subject'},{key:'source',label:'Source'},{key:'createdAt',label:'Received',format:(value)=>value?new Date(value).toLocaleDateString('en-IN'):'—'},{key:'status',label:'Status',status:true}],
+  columns:[{key:'name',label:'Customer',primary:true},{key:'email',label:'Email'},{key:'phone',label:'Phone'},{key:'subject',label:'Subject'},{key:'source',label:'Source'},{key:'createdAt',label:'Received',format:(value)=>value?new Date(value).toLocaleDateString('en-IN'):'â€”'},{key:'status',label:'Status',status:true}],
   filters:[{key:'source',label:'All sources'},{key:'subject',label:'All subjects'},{key:'createdAt',label:'All dates',type:'date',options:[{value:'today',label:'Today'},{value:'7days',label:'Last 7 days'},{value:'30days',label:'Last 30 days'}]}],
   fields:[{name:'name',label:'Customer name',required:true},{name:'email',label:'Email',type:'email',required:true},{name:'phone',label:'Phone'},{name:'subject',label:'Subject'},{name:'message',label:'Message',type:'textarea',wide:true,required:true},{name:'source',label:'Source'},{name:'status',label:'Status',type:'select',options:[{value:'new',label:'New'},{value:'in-progress',label:'In progress'},{value:'resolved',label:'Resolved'}],defaultValue:'new'}],
 }
 
 export const enquiryConfig = {
   resource:'enquiries',title:'Enquiries',singular:'Enquiry',eyebrow:'Customer inbox',description:'Review every enquiry with its selected product, location, account and source-page context.',
-  columns:[{key:'name',label:'Customer',primary:true},{key:'phone',label:'Phone'},{key:'itemName',label:'Item / service'},{key:'location',label:'Location'},{key:'source',label:'Source'},{key:'createdAt',label:'Received',format:(value)=>value?new Date(value).toLocaleDateString('en-IN'):'—'},{key:'status',label:'Status',status:true}],
+  columns:[{key:'name',label:'Customer',primary:true},{key:'phone',label:'Phone'},{key:'itemName',label:'Item / service'},{key:'location',label:'Location'},{key:'source',label:'Source'},{key:'createdAt',label:'Received',format:(value)=>value?new Date(value).toLocaleDateString('en-IN'):'â€”'},{key:'status',label:'Status',status:true}],
   filters:[{key:'source',label:'All sources'},{key:'subject',label:'All subjects'},{key:'createdAt',label:'All dates',type:'date',options:[{value:'today',label:'Today'},{value:'7days',label:'Last 7 days'},{value:'30days',label:'Last 30 days'}]}],
   fields:[{name:'name',label:'Customer name',required:true},{name:'email',label:'Email',type:'email',required:true},{name:'phone',label:'Phone'},{name:'subject',label:'Subject'},{name:'itemName',label:'Selected item / service'},{name:'category',label:'Category'},{name:'enquiryType',label:'Enquiry type'},{name:'location',label:'Selected location',wide:true},{name:'pageTitle',label:'Source page title',wide:true},{name:'pageUrl',label:'Source page URL',wide:true},{name:'accountEmail',label:'Signed-in account'},{name:'latitude',label:'Latitude',type:'number'},{name:'longitude',label:'Longitude',type:'number'},{name:'message',label:'Message',type:'textarea',wide:true,required:true},{name:'context',label:'Automatic context',type:'textarea',wide:true,rows:5},{name:'emailNotificationStatus',label:'Email notification status'},{name:'emailNotifiedAt',label:'Email sent at'},{name:'customerAcknowledgementSent',label:'Customer acknowledgement'},{name:'emailNotificationError',label:'Email error',type:'textarea',wide:true},{name:'ip',label:'IP address'},{name:'userAgent',label:'Browser / device',type:'textarea',wide:true,rows:3},{name:'source',label:'Source'},{name:'status',label:'Status',type:'select',options:[{value:'new',label:'New'},{value:'in-progress',label:'In progress'},{value:'resolved',label:'Resolved'}],defaultValue:'new'}],
   noCreate:true,
   simple:true,
-  columns:[{key:'name',label:'Customer',primary:true},{key:'phone',label:'Phone'},{key:'itemName',label:'Service / item'},{key:'pageTitle',label:'Submitted from page'},{key:'emailNotificationStatus',label:'Email',status:true},{key:'source',label:'Type'},{key:'createdAt',label:'Received',format:(value)=>value?new Date(value).toLocaleString('en-IN'):'—'},{key:'status',label:'Status',status:true}],
+  columns:[{key:'name',label:'Customer',primary:true},{key:'phone',label:'Phone'},{key:'itemName',label:'Service / item'},{key:'pageTitle',label:'Submitted from page'},{key:'emailNotificationStatus',label:'Email',status:true},{key:'source',label:'Type'},{key:'createdAt',label:'Received',format:(value)=>value?new Date(value).toLocaleString('en-IN'):'â€”'},{key:'status',label:'Status',status:true}],
   filters:[{key:'itemName',label:'All services / items'},{key:'category',label:'All categories'},{key:'enquiryType',label:'All enquiry types'},{key:'source',label:'All sources'},{key:'pageTitle',label:'All source pages'},{key:'subject',label:'All subjects'},{key:'createdAt',label:'All dates',type:'date',options:[{value:'today',label:'Today'},{value:'7days',label:'Last 7 days'},{value:'30days',label:'Last 30 days'}]}],
 }
 
@@ -232,7 +233,7 @@ export const activityConfig = {
     {key:'status',label:'Status',status:true},
     {key:'source',label:'Source'},
     {key:'ip',label:'IP address'},
-    {key:'createdAt',label:'Date & time',format:(value)=>value?new Date(value).toLocaleString('en-IN'):'—'},
+    {key:'createdAt',label:'Date & time',format:(value)=>value?new Date(value).toLocaleString('en-IN'):'â€”'},
   ],
   filters:[
     {key:'event',label:'All events'},
@@ -250,5 +251,43 @@ export const activityConfig = {
     {name:'userAgent',label:'Device / browser',wide:true},
     {name:'details',label:'Details',wide:true},
     {name:'createdAt',label:'Date & time'},
+  ],
+}
+export const websiteActivityConfig = {
+  resource: 'website-activities',
+  title: 'Website Activity',
+  singular: 'Website Event',
+  eyebrow: 'Website traffic',
+  description: 'Track page views and important click actions from the public website.',
+  noCreate: true,
+  noEdit: true,
+  simple: true,
+  columns: [
+    { key: 'pageTitle', label: 'Page', primary: true },
+    { key: 'event', label: 'Event' },
+    { key: 'action', label: 'Action' },
+    { key: 'target', label: 'Target' },
+    { key: 'pagePath', label: 'Path' },
+    { key: 'createdAt', label: 'Tracked', format: (value) => value ? new Date(value).toLocaleString('en-IN') : 'â€”' },
+  ],
+  filters: [
+    { key: 'event', label: 'All events' },
+    { key: 'pageTitle', label: 'All pages' },
+    { key: 'pagePath', label: 'All paths' },
+    { key: 'createdAt', label: 'All dates', type: 'date', options: [{ value: 'today', label: 'Today' }, { value: '7days', label: 'Last 7 days' }, { value: '30days', label: 'Last 30 days' }] },
+  ],
+  fields: [
+    { name: 'event', label: 'Event' },
+    { name: 'pageTitle', label: 'Page title' },
+    { name: 'pageUrl', label: 'Page URL', wide: true },
+    { name: 'pagePath', label: 'Page path' },
+    { name: 'action', label: 'Action' },
+    { name: 'target', label: 'Target' },
+    { name: 'referrer', label: 'Referrer', wide: true },
+    { name: 'source', label: 'Source' },
+    { name: 'details', label: 'Details', type: 'textarea', wide: true, rows: 3 },
+    { name: 'ip', label: 'IP address' },
+    { name: 'userAgent', label: 'Browser / device', type: 'textarea', wide: true, rows: 3 },
+    { name: 'createdAt', label: 'Date & time' },
   ],
 }

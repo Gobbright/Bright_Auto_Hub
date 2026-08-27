@@ -113,6 +113,20 @@ const products = {
   'Agricultural Trailer Parts': ['Agricultural Trailer Hub Assembly', 5250],
 }
 
+const sparePartBrandByKeyword = [
+  [/brake|disc|rotor|lining/i, 'Brembo'],
+  [/filter|air filter|fuel filter|cabin/i, 'MANN-FILTER'],
+  [/clutch|belt/i, 'LuK'],
+  [/shock|suspension|strut|control arm/i, 'KYB'],
+  [/bearing|hub|roller/i, 'SKF'],
+  [/lamp|headlight|tail|sensor/i, 'Hella'],
+  [/spark|plug/i, 'NGK'],
+  [/battery|charger|charging|controller|converter|motor/i, 'DENSO'],
+  [/tyre|tire/i, 'MRF'],
+  [/oil|lubricant/i, 'Castrol'],
+  [/hydraulic|loader|excavator|tractor|pump/i, 'Bosch'],
+]
+const sparePartBrandFor = (name) => sparePartBrandByKeyword.find(([matcher]) => matcher.test(name))?.[1] || 'Bosch'
 export const sparePartSeeds = sparePartsTree.flatMap((parent, parentIndex) =>
   parent.children.map((category, childIndex) => {
     const [name, price] = products[category.name]
@@ -121,7 +135,7 @@ export const sparePartSeeds = sparePartsTree.flatMap((parent, parentIndex) =>
       category: category.name,
       categoryGroup: parent.name,
       partNumber: `BAH-${String(parentIndex + 1).padStart(2, '0')}-${String(childIndex + 1).padStart(2, '0')}`,
-      brand: 'Bright Genuine',
+      brand: sparePartBrandFor(name),
       price,
       originalPrice: Math.round(price * 1.16),
       stock: 12 + ((parentIndex * 7 + childIndex * 5) % 29),

@@ -15,11 +15,98 @@ import { api } from './lib/api.js'
 import EnquiryModal from './components/EnquiryModal.jsx'
 import { ui } from './lib/uiClasses.js'
 
+const stripSiteSuffix = (value = '') => value.toString().replace(/\s+\|\s+Bright Auto Hub.*$/i, '').trim()
+const toTitleCase = (value = '') => value.toString().replace(/[-_]+/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase()).trim()
+
+const pageLabelForPath = (pathname = '') => {
+  if (pathname === '/') return 'Home'
+  if (pathname === '/vehicles') return 'Vehicles'
+  if (pathname === '/compare') return 'Compare Vehicles'
+  if (pathname === '/calculators') return 'Calculators'
+  if (pathname === '/used-cars') return 'Used Cars'
+  if (pathname === '/spare-parts') return 'Spare Parts'
+  if (pathname === '/services') return 'Services'
+  if (pathname === '/contact') return 'Contact'
+  if (pathname === '/blog') return 'Blog'
+  if (pathname === '/pages') return 'Website Pages'
+  if (pathname === '/search') return 'Search'
+  if (pathname === '/finance-insurance') return 'Finance & Insurance'
+  if (pathname.startsWith('/vehicles/product/')) return 'Vehicle Details'
+  if (pathname.startsWith('/spare-parts/product/')) return 'Spare Part Details'
+  if (pathname.startsWith('/services/product/')) return 'Service Details'
+  if (pathname.startsWith('/blog/')) return 'Blog Article'
+  if (pathname.startsWith('/pages/')) return 'Website Page'
+  if (pathname.startsWith('/vehicles/')) return toTitleCase(pathname.split('/').filter(Boolean).at(-1) || 'Vehicles')
+  if (pathname.startsWith('/spare-parts/')) return toTitleCase(pathname.split('/').filter(Boolean).at(-1) || 'Spare Parts')
+  if (pathname.startsWith('/services/')) return toTitleCase(pathname.split('/').filter(Boolean).at(-1) || 'Services')
+  if (pathname.startsWith('/finance-insurance/')) return toTitleCase(pathname.split('/').filter(Boolean).at(-1) || 'Finance & Insurance')
+  if (pathname.startsWith('/legal/')) return 'Legal Page'
+  return toTitleCase(pathname.split('/').filter(Boolean).at(-1) || 'Home')
+}
 export default function App() {
-  const { pathname } = useLocation()
+  const { pathname, search } = useLocation()
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isDashboardLoggedIn') === 'true')
   useEffect(() => {
     window.scrollTo(0, 0)
+  }, [pathname])
+  useEffect(() => {
+    if (pathname.startsWith('/admin') || pathname === '/dashboard') return undefined
+    const timer = window.setTimeout(() => {
+      const pageTitle = stripSiteSuffix(document.title) || pageLabelForPath(pathname)
+      const pagePath = `${window.location.pathname}${window.location.search}`
+      const fingerprint = `${pagePath}|${pageTitle}`
+      try {
+        const existing = JSON.parse(window.sessionStorage.getItem('goauto:last-pageview') || 'null')
+        if (existing && existing.fingerprint === fingerprint && Date.now() - Number(existing.time || 0) < 1500) return
+        window.sessionStorage.setItem('goauto:last-pageview', JSON.stringify({ fingerprint, time: Date.now() }))
+      } catch {
+        // Ignore storage failures and still send the event.
+      }
+      api.post('/website-activities/track', {
+        event: 'pageview',
+        pageTitle,
+        pageUrl: window.location.href,
+        pagePath,
+        referrer: document.referrer || '',
+        source: 'website',
+        details: pageLabelForPath(pathname),
+      }).catch(() => {})
+    }, 0)
+    return () => window.clearTimeout(timer)
+  }, [pathname, search])
+  useEffect(() => {
+    if (pathname.startsWith('/admin') || pathname === '/dashboard') return undefined
+    const handleWebsiteClick = (event) => {
+      const clickedElement = event.target instanceof Element ? event.target.closest('a, button') : null
+      if (!clickedElement || clickedElement.closest('[data-no-track]')) return
+
+      const tagName = clickedElement.tagName.toLowerCase()
+      const target = stripSiteSuffix(
+        clickedElement.getAttribute('aria-label')
+        || clickedElement.getAttribute('title')
+        || clickedElement.textContent
+        || clickedElement.getAttribute('href')
+        || `${tagName} click`,
+      )
+      if (!target) return
+
+      const pageTitle = stripSiteSuffix(document.title) || pageLabelForPath(pathname)
+      const pagePath = `${window.location.pathname}${window.location.search}`
+      api.post('/website-activities/track', {
+        event: 'click',
+        pageTitle,
+        pageUrl: window.location.href,
+        pagePath,
+        action: tagName === 'a' ? 'link' : 'button',
+        target,
+        referrer: document.referrer || '',
+        source: 'website',
+        details: clickedElement.getAttribute('href') || clickedElement.getAttribute('type') || '',
+      }).catch(() => {})
+    }
+
+    document.addEventListener('click', handleWebsiteClick, true)
+    return () => document.removeEventListener('click', handleWebsiteClick, true)
   }, [pathname])
   const login = (name, method = 'password') => {
     localStorage.setItem('isDashboardLoggedIn', 'true')
@@ -56,7 +143,7 @@ export default function App() {
     <Route path="/contact" element={<MarketplacePage kind="contact" />} />
     <Route path="/login" element={<Login onAdminLogin={login} onUserLogin={userLogin} />} />
     <Route path="/register" element={<Register onUserLogin={userLogin} />} />
-    <Route path="/services/:slug" element={<PublicContent kind="content" type="service" />} />
+    <Route path="/services/:slug" element={<MarketplacePage kind="services" />} />
     <Route path="/pages" element={<PublicContent kind="content" />} />
     <Route path="/pages/:slug" element={<PublicContent kind="content" />} />
     <Route path="/blog" element={<MarketplacePage kind="blog" />} />

@@ -35,9 +35,12 @@ import electricSuvRainDrivingBanner from '../assets/Images/Home/images/electric-
 import electricSuvCarsRoadBanner from '../assets/Images/Home/images/electric-suv-cars-road-banner.png'
 import tataNexonEvWhite from '../assets/Images/Home/images/tata-nexon-ev-white.png'
 import evCarsBanner from '../assets/Images/Home/images/Ev-cars-img.png'
+import compareEvCarsCutout from '../assets/Images/Home/images/cutouts/ev-cars-cutout.png'
 import tataNexonGreySuv from '../assets/Images/Home/images/tata-nexon-grey-suv.png'
+import compareTataNexonCutout from '../assets/Images/Home/images/cutouts/tata-nexon-grey-suv-cutout.png'
 import hyundaiCretaBlackSuv from '../assets/Images/Home/images/hyundai-creta-black-suv.png'
 import kiaSeltosWhiteSuv from '../assets/Images/Home/images/kia-seltos-white-suv.png'
+import compareKiaSeltosCutout from '../assets/Images/Home/images/cutouts/kia-seltos-white-suv-cutout.png'
 import mahindraXuv700BlueSuv from '../assets/Images/Home/images/mahindra-xuv700-blue-suv.png'
 import mgAstorWhiteSuv from '../assets/Images/Home/images/mg-astor-white-suv.png'
 import automobileTyresAlloyWheelsBanner from '../assets/Images/Home/images/automobile-tyres-alloy-wheels-banner.png'
@@ -67,11 +70,11 @@ import skodaLogo from '../assets/Images/Home/Brand Logos/skoda.svg'
 import volkswagenLogo from '../assets/Images/Home/Brand Logos/volkswagen.svg'
 
 const exploreVehicleCategories = [
-  {name:'Bikes',model:'Sport Bikes & Scooters',copy:'Agile rides for city streets and open roads.',image:bikesCategory,to:'/vehicles/bikes',icon:'motorcycle'},
-  {name:'Cars',model:'Cars & SUVs',copy:'Comfort, safety and style for every journey.',image:carsCategory,to:'/vehicles/cars',icon:'car'},
-  {name:'Commercial Vehicles',model:'Trucks & Carriers',copy:'Dependable mobility that moves every business.',image:commercialCategory,to:'/vehicles/commercial-vehicles',icon:'truck'},
-  {name:'Farm Vehicles',model:'Tractors & Equipment',copy:'Reliable machines built for productive farms.',image:farmCategory,to:'/vehicles/farm-vehicles',icon:'tractor'},
-  {name:'Electric Vehicles',model:'Smart Electric Mobility',copy:'Cleaner, connected vehicles for tomorrow.',image:evCategory,to:'/vehicles/ev-vehicles',icon:'evcar'},
+  {name:'Bikes',model:'Commuter Bikes & Scooters',copy:'Easy city rides, weekend plans and daily savings.',image:bikesCategory,to:'/vehicles/bikes',icon:'motorcycle'},
+  {name:'Cars',model:'Family Cars & SUVs',copy:'Comfort, safety and style for every drive.',image:carsCategory,to:'/vehicles/cars',icon:'car'},
+  {name:'Commercial Vehicles',model:'Trucks, Pickups & Vans',copy:'Strong transport options for growing businesses.',image:commercialCategory,to:'/vehicles/commercial-vehicles',icon:'truck'},
+  {name:'Farm Vehicles',model:'Tractors & Farm Equipment',copy:'Reliable machines for faster, cleaner field work.',image:farmCategory,to:'/vehicles/farm-vehicles',icon:'tractor'},
+  {name:'Electric Vehicles',model:'Electric Cars & Two-Wheelers',copy:'Smart EV choices with lower running costs.',image:evCategory,to:'/vehicles/ev-vehicles',icon:'evcar'},
 ]
 
 const brandDirectory = [
@@ -92,12 +95,19 @@ const brandDirectory = [
 ]
 const brands = brandDirectory.map(({name})=>name)
 const homeEnquiryLink=(subject,item,source,category='')=>`/contact?${new URLSearchParams({subject,item,source,category,page:typeof window==='undefined'?'':window.location.pathname}).toString()}`
+const priceOnEnquiry='Price on enquiry'
 
 const fallbackConstructionProducts = [
   {name:'JCB 3DX',category:'Backhoe Loader',detail:'Versatile digging, trenching and loading performance for Indian worksites.',image:'/images/construction-vehicles/jcb-3dx.png',slug:'jcb'},
   {name:'Tata Hitachi EX200LC',category:'Hydraulic Excavator',detail:'Tracked earthmoving capability for excavation and infrastructure projects.',image:'/images/construction-vehicles/tata-hitachi-ex200lc.png',slug:'excavators'},
   {name:'Caterpillar 950 GC',category:'Wheel Loader',detail:'High-capacity material handling with dependable job-site productivity.',image:'/images/construction-vehicles/caterpillar-950-gc.png',slug:'wheel-loaders'},
   {name:'Liebherr LTM 1130-5.1',category:'Mobile Crane',detail:'Five-axle mobile lifting performance for demanding project requirements.',image:'/images/construction-vehicles/liebherr-ltm-1130-5-1.png',slug:'cranes'},
+  {name:'Sany SY215C',category:'Hydraulic Excavator',detail:'Heavy digging performance for roadwork and infrastructure sites.',image:constructionCategory,slug:'excavators'},
+  {name:'Komatsu PC210',category:'Crawler Excavator',detail:'Reliable tracked excavation for demanding earthmoving projects.',image:constructionVehicles,slug:'excavators'},
+  {name:'CASE 770 NXe',category:'Backhoe Loader',detail:'Multi-purpose backhoe support for loading, trenching and site prep.',image:constructionCategory,slug:'jcb'},
+  {name:'ACE FX 150 Crane',category:'Mobile Crane',detail:'Compact lifting support for city projects and industrial work.',image:constructionVehicles,slug:'cranes'},
+  {name:'Volvo EC210',category:'Excavator',detail:'Efficient excavation with strong uptime for bigger projects.',image:constructionCategory,slug:'excavators'},
+  {name:'Schwing Stetter Mixer',category:'Transit Mixer',detail:'Concrete movement support for construction and batching needs.',image:constructionVehicles,slug:'construction-vehicles'},
 ]
 
 const constructionToneFor=(item={})=>{
@@ -128,6 +138,10 @@ const trendingVehicles = [
   {name:'Farm Tractor Series',category:'Farm Vehicles',price:'\u20B95.80L',image:farmCategory,rating:'4.8',group:'farm-vehicles',copy:'Dependable tractors and equipment made for productive farms.'},
   {name:'Heavy Construction Fleet',category:'Construction Vehicles',price:'\u20B918.00L',image:constructionCategory,rating:'4.7',group:'construction-vehicles',copy:'Powerful excavators and machines for demanding worksites.'},
   {name:'Electric Mobility Range',category:'Electric Vehicles',price:'\u20B91.20L',image:evCategory,rating:'4.9',group:'ev-vehicles',copy:'Cleaner electric mobility with smart everyday performance.'},
+  {name:'Used Vehicle Picks',category:'Used Vehicles',price:'Check Price',image:carsCategory,rating:'4.7',group:'cars',copy:'Verified pre-owned cars and SUVs with enquiry support.'},
+  {name:'Electric Car Shortlist',category:'Electric Cars',price:'Check Price',image:evCategory,rating:'4.8',group:'ev-vehicles',copy:'Popular electric cars compared by range and ownership needs.'},
+  {name:'Family SUV Picks',category:'SUV',price:'Check Price',image:familyCarsRainyRoadBanner,rating:'4.7',group:'cars',copy:'Comfortable SUVs for family drives and weekend plans.',visual:'lifestyle'},
+  {name:'Business Pickup Picks',category:'Pickup Vehicles',price:'Check Price',image:commercialCategory,rating:'4.6',group:'commercial-vehicles',copy:'Pickup and cargo options for business mobility.'},
 ]
 const fallbackCarProducts=[
   {name:'Tata Nexon',category:'Compact SUV',price:'Check Price',priceLabel:'Latest price & offers',image:tataNexonGreySuv,rating:'4.8',copy:'Compact SUV with confident performance and smart features',to:'/vehicles/cars'},
@@ -136,6 +150,10 @@ const fallbackCarProducts=[
   {name:'Mahindra XUV700',category:'Seven-seat SUV',price:'Check Price',priceLabel:'Latest price & offers',image:mahindraXuv700BlueSuv,rating:'4.9',copy:'Spacious SUV designed for confident family journeys',to:'/vehicles/cars'},
   {name:'MG Astor',category:'Connected SUV',price:'Check Price',priceLabel:'Latest price & offers',image:mgAstorWhiteSuv,rating:'4.7',copy:'Feature-rich SUV with modern design and connected technology',to:'/vehicles/cars'},
   {name:'Tata Safari',category:'Full-size SUV',price:'Check Price',priceLabel:'Latest price & offers',image:tataSafariGreySuv,rating:'4.8',copy:'Premium three-row SUV built for comfortable road trips',to:'/vehicles/cars'},
+  {name:'Urban Hatchback Picks',category:'Hatchback',price:'Check Price',priceLabel:'Latest price & offers',image:carsCategory,rating:'4.6',copy:'Compact cars for easy city driving and daily value',to:'/vehicles/cars'},
+  {name:'Premium Sedan Picks',category:'Sedan',price:'Check Price',priceLabel:'Latest price & offers',image:familyCarsRainyRoadBanner,rating:'4.7',copy:'Smooth sedan choices with comfort and road presence',to:'/vehicles/cars',visual:'lifestyle'},
+  {name:'Compact MPV Picks',category:'MUV / MPV',price:'Check Price',priceLabel:'Latest price & offers',image:electricSuvCarsRoadBanner,rating:'4.7',copy:'Flexible family seating with practical ownership value',to:'/vehicles/cars',visual:'lifestyle'},
+  {name:'Luxury SUV Picks',category:'Luxury Cars',price:'Check Price',priceLabel:'Latest price & offers',image:mgAstorWhiteSuv,rating:'4.8',copy:'Premium comfort, advanced features and refined styling',to:'/vehicles/cars'},
 ]
 const carCategorySlugs=new Set(['cars','car','hatchback','sedan','suv','muv','mpv','muv-mpv','luxury-cars','electric-cars'])
 const slugValue=(value)=>String(value||'').trim().toLowerCase().replace(/\s+/g,'-')
@@ -165,6 +183,10 @@ const fallbackBikeProducts=[
   {name:'Daily Commuter Scooter',category:'Commuter Scooter',price:'₹75,000',image:bikesCategory,rating:'4.6',copy:'Fuel efficient · Easy handling · Daily comfort',to:'/vehicles/bikes/scooters'},
   {name:'Performance Bike Line-up',category:'Sport Bikes',price:'₹1.35L',image:motorcyclesLineup,rating:'4.7',copy:'Responsive engines · Sporty road performance',to:'/vehicles/bikes/bikes',visual:'lifestyle'},
   {name:'Adventure Touring Range',category:'Adventure Bikes',price:'₹1.85L',image:touringMotorcycles,rating:'4.9',copy:'Tour-ready motorcycles for every open road',to:'/vehicles/bikes/bikes',visual:'lifestyle'},
+  {name:'Electric Scooter Picks',category:'Electric Scooters',price:'Check Price',image:evCategory,rating:'4.8',copy:'Easy electric scooter choices for daily city commutes',to:'/vehicles/bikes/electric-scooters'},
+  {name:'Premium Scooter Range',category:'Premium Scooters',price:'Check Price',image:bikesCategory,rating:'4.7',copy:'Comfort-focused scooters with modern features',to:'/vehicles/bikes/scooters'},
+  {name:'Commuter Bike Picks',category:'Commuter Bikes',price:'Check Price',image:motorcyclesLineup,rating:'4.6',copy:'Mileage-friendly motorcycles for everyday travel',to:'/vehicles/bikes/bikes',visual:'lifestyle'},
+  {name:'Electric Bike Range',category:'Electric Bikes',price:'Check Price',image:evCategory,rating:'4.8',copy:'Smart electric bikes with lower running costs',to:'/vehicles/bikes/electric-bikes'},
 ]
 const fallbackCommercialProducts=[
   {name:'City Mini Truck Range',category:'Mini Trucks',price:'₹6.50L',image:commercialCategory,rating:'4.7',copy:'Compact cargo vehicles for reliable city deliveries',to:'/vehicles/commercial-vehicles/mini-trucks'},
@@ -173,6 +195,10 @@ const fallbackCommercialProducts=[
   {name:'Pickup & Cargo Range',category:'Pickup Vehicles',price:'₹9.25L',image:commercialCategory,rating:'4.6',copy:'Versatile cargo mobility for growing businesses',to:'/vehicles/commercial-vehicles/pickup-vehicles'},
   {name:'Business Transport Fleet',category:'Fleet Vehicles',price:'₹12.80L',image:commercialTrucksFleetBanner,rating:'4.7',copy:'Dependable transport options for every enterprise',to:'/vehicles/commercial-vehicles',visual:'lifestyle'},
   {name:'Commercial Vehicle Line-up',category:'Business Mobility',price:'₹8.75L',image:commercialVehicleOverview,rating:'4.9',copy:'Explore trucks, carriers, vans and business vehicles',to:'/vehicles/commercial-vehicles'},
+  {name:'Cargo Van Range',category:'Vans',price:'Check Price',image:commercialCategory,rating:'4.6',copy:'Practical vans for delivery and passenger movement',to:'/vehicles/commercial-vehicles/vans'},
+  {name:'Passenger Bus Range',category:'Buses',price:'Check Price',image:commercialVehicleOverview,rating:'4.7',copy:'Bus options for staff, school and route operations',to:'/vehicles/commercial-vehicles/buses'},
+  {name:'Three Wheeler Cargo',category:'3 Wheelers',price:'Check Price',image:commercialTrucksFleetBanner,rating:'4.6',copy:'Efficient last-mile cargo mobility for city business',to:'/vehicles/commercial-vehicles/3-wheelers',visual:'lifestyle'},
+  {name:'Fleet Pickup Pro',category:'Fleet Pickup',price:'Check Price',image:commercialLogisticsFleet,rating:'4.8',copy:'Pickup choices for fleet teams and business owners',to:'/vehicles/commercial-vehicles/pickup-vehicles',visual:'lifestyle'},
 ]
 const fallbackElectricCarProducts=[
   {name:'Tata Nexon EV',category:'Electric SUV',price:'\u20B914.49L',image:tataNexonEvWhite,rating:'4.9',copy:'Smart electric SUV with confident everyday range',to:'/vehicles/ev-vehicles/electric-cars'},
@@ -181,6 +207,10 @@ const fallbackElectricCarProducts=[
   {name:'City Electric Car Range',category:'City EV',price:'\u20B98.69L',image:evCategory,rating:'4.7',copy:'Compact, efficient electric mobility for city drives',to:'/vehicles/ev-vehicles/electric-cars'},
   {name:'Premium Electric Mobility',category:'Premium EV',price:'\u20B918.90L',image:electricSuvRainDrivingBanner,rating:'4.8',copy:'Refined electric performance with connected features',to:'/vehicles/ev-vehicles/electric-cars',visual:'lifestyle'},
   {name:'Family Electric SUV Line-up',category:'Family EV',price:'\u20B913.75L',image:electricVehicleOverview,rating:'4.9',copy:'Comfortable electric cars made for every journey',to:'/vehicles/ev-vehicles/electric-cars'},
+  {name:'Electric Hatchback Picks',category:'Electric Hatchback',price:'Check Price',image:tataNexonEvWhite,rating:'4.7',copy:'Compact electric cars for city use and lower running cost',to:'/vehicles/ev-vehicles/electric-cars'},
+  {name:'EV Charging Ready Cars',category:'Charging Friendly EV',price:'Check Price',image:electricCarChargingStation,rating:'4.8',copy:'Electric cars matched with practical charging needs',to:'/vehicles/ev-vehicles/electric-cars',visual:'lifestyle'},
+  {name:'Premium Electric SUV Picks',category:'Premium Electric SUV',price:'Check Price',image:electricSuvRainDrivingBanner,rating:'4.8',copy:'Connected electric SUVs with comfort and confident range',to:'/vehicles/ev-vehicles/electric-cars',visual:'lifestyle'},
+  {name:'Long Drive EV Picks',category:'Long Drive EV',price:'Check Price',image:electricSuvCarsRoadBanner,rating:'4.7',copy:'EV options for longer routes and family travel',to:'/vehicles/ev-vehicles/electric-cars',visual:'lifestyle'},
 ]
 const vehicles=trendingVehicles.map(({name,category,price,image,rating})=>[name,category,price,image,rating])
 const megaMenus = {
@@ -241,6 +271,7 @@ export function Icon({name}) {
     tag:<><path d='M20 13 13 20 4 11V4h7l9 9Z'/><circle cx='8.5' cy='8.5' r='1.25'/><path d='m12 15 3-3'/></>,
     calendar:<><rect x='3' y='5' width='18' height='16' rx='3'/><path d='M7 3v4M17 3v4M3 10h18m-13 5 2 2 5-5'/></>,
     calculator:<><rect x='4' y='2.5' width='16' height='19' rx='2.5'/><path d='M7.5 6h9v3h-9zM8 13h.01M12 13h.01M16 13h.01M8 17h.01M12 17h.01M16 17h.01'/></>,
+    compare:<><rect x='3' y='5' width='7' height='14' rx='1.5'/><rect x='14' y='5' width='7' height='14' rx='1.5'/><path d='M10 9h4M12 7l2 2-2 2M14 15h-4M12 13l-2 2 2 2'/></>,
     motorcycle:<><circle cx='5.5' cy='17.5' r='3.5'/><circle cx='18.5' cy='17.5' r='3.5'/><path d='m5.5 17.5 4-7h4l5 7M9.5 10.5l3 7M8 14h7.5l-2-5H17M16 6h3M17.5 6l1 3M10 10.5 8 8H5.5'/><path d='M3.5 12.5 6 10h3'/></>,
     truck:<><path d='M3 7h11v10H3Z'/><path d='M14 11h4l3 3v3h-7Z'/><circle cx='7' cy='18' r='2'/><circle cx='18' cy='18' r='2'/><path d='M5 10h7'/></>,
     tractor:<><circle cx='7' cy='17' r='4'/><circle cx='18' cy='18' r='2.5'/><path d='M7 13h7l2 3M11 13V8h4l2 5M10 9H7M15 8V5h2'/></>,
@@ -386,8 +417,8 @@ export function Header() {
   },[mobileOpen])
   const toggleMobile=()=>setMobileOpen((current)=>{if(current)setOpenMenu('');return !current})
   const closeMobile=()=>{setMobileOpen(false);setOpenMenu('')}
-  const nav=['Home','Vehicles','Spare Parts','Services','Finance & Insurance','Blog']
-  const routes={Home:'/',Vehicles:'/vehicles','Spare Parts':'/spare-parts',Services:'/services','Finance & Insurance':'/finance-insurance',Blog:'/blog'}
+  const nav=['Home','Vehicles','Spare Parts','Services','Finance & Insurance','News']
+  const routes={Home:'/',Vehicles:'/vehicles','Spare Parts':'/spare-parts',Services:'/services','Finance & Insurance':'/finance-insurance',News:'/blog'}
   const vehicleNav=[
     [twoWheelerIcon,'Bikes','/vehicles/bikes'],
     [fourWheelerIcon,'Cars','/vehicles/cars'],
@@ -395,7 +426,7 @@ export function Header() {
     [farmVehicleIcon,'Farm Vehicles','/vehicles/farm-vehicles'],
     [constructionVehicleIcon,'Construction Vehicles','/vehicles/construction-vehicles'],
     [evVehicleIcon,'EV Vehicles','/vehicles/ev-vehicles'],
-    ...(pathname==='/'?[[serviceIcon,'Services','/services'],[sparePartIcon,'Spare Parts','/spare-parts'],[null,'EMI Calculator','/calculators','calculator']]:[]),
+    ...(pathname==='/'?[[serviceIcon,'Services','/services'],[sparePartIcon,'Spare Parts','/spare-parts'],[null,'EMI Calculator','/calculators','calculator'],[null,'Compare','/compare','compare']]:[]),
   ]
   const sparePartsNav=[
     [sparePartIcon,'Spare Parts','/spare-parts'],
@@ -418,7 +449,7 @@ export function Header() {
   const isSparePartsPage=pathname.startsWith('/spare-parts')
   const isServicesPage=pathname.startsWith('/services')
   const isEvPath=pathname.startsWith('/vehicles/ev-vehicles')||pathname.includes('/electric-cars')
-  const hideSecondaryNav=pathname.startsWith('/contact')||pathname.startsWith('/blog')
+  const hideSecondaryNav=pathname.startsWith('/contact')||pathname.startsWith('/blog')||isSparePartsPage
   const secondaryNav=isSparePartsPage?vehicleNav:isServicesPage?servicesNav:vehicleNav
   const selectedCategory=new URLSearchParams(search).get('category')||''
   return <>
@@ -452,14 +483,14 @@ export function Header() {
         </div>
       })}<Link className={pathname.startsWith('/contact')?'active':''} to='/contact' onClick={closeMobile}>Contact Us</Link><div className='mobile-nav-actions'>
         <HeaderSearch mobile onNavigate={closeMobile}/>
-        <Link className='mobile-enquiry-button' to={homeEnquiryLink('General enquiry','Automotive requirement','header')} onClick={closeMobile}><Icon name='enquiry'/> Enquire Now</Link>
+        <Link className='mobile-enquiry-button' to={homeEnquiryLink('General enquiry','Automotive requirement','header')} onClick={closeMobile}><Icon name='enquiry'/> Enquire</Link>
         <div className='mobile-nav-utility'>
           <a className='mobile-phone-link' href='tel:+919876543210'><Icon name='phone'/><span>+91 98765 43210</span></a>
           <LocationPicker/>
           <AccountMenu/>
         </div>
       </div></nav>
-      <div className='header-actions'><HeaderSearch/><Link className='red-button compact' to={homeEnquiryLink('General enquiry','Automotive requirement','header')}><Icon name='enquiry'/> Enquire Now</Link></div>
+      <div className='header-actions'><HeaderSearch/><Link className='red-button compact' to={homeEnquiryLink('General enquiry','Automotive requirement','header')}><Icon name='enquiry'/> Enquire</Link></div>
     </div></header>
     {!hideSecondaryNav&&<nav className={'vehicle-nav'+(isSparePartsPage?' parts-secondary-nav':'')+(isServicesPage?' services-secondary-nav':'')} aria-label={isSparePartsPage?'Vehicle categories':isServicesPage?'Vehicle service categories':'Vehicle categories'}>
       <div className={'site-container vehicle-nav-inner '+(pathname==='/'?'home-nav':'')+(isSparePartsPage?' parts-nav':'')+(isServicesPage?' services-nav':'')}>
@@ -497,11 +528,11 @@ function HeroSlider({ page }) {
         <p className='red-kicker'>{kicker}</p>
         {index===0?<h1>{title}</h1>:<h2>{title}</h2>}
         <p className='hero-description'>{copy}</p>
-        <div className='hero-actions'><Link className='red-button' to={to} aria-label={`${cta}: ${title}`}>{cta}</Link><Link className='hero-secondary-button' to={homeEnquiryLink('Service enquiry','Vehicle service requirement','service')}>Enquire for Service</Link></div>
+        <div className='hero-actions'><Link className='red-button' to={to} aria-label={`${cta}: ${title}`}><Icon name='car'/>{cta}</Link><Link className='hero-secondary-button' to={homeEnquiryLink('Service enquiry','Vehicle service requirement','service')}><Icon name='tools'/> Enquire for Service</Link></div>
       </div>
     </article>)}
-    <button className='slide-arrow prev' type='button' onClick={()=>move(-1)} aria-label='Show previous banner'>&lsaquo;</button>
-    <button className='slide-arrow next' type='button' onClick={()=>move(1)} aria-label='Show next banner'>&rsaquo;</button>
+    <button className='slide-arrow prev' type='button' onClick={()=>move(-1)} aria-label='Show previous banner'><Icon name='arrow'/></button>
+    <button className='slide-arrow next' type='button' onClick={()=>move(1)} aria-label='Show next banner'><Icon name='arrow'/></button>
     <div className='slide-dots' aria-label='Choose a featured banner'>{homeSlides.map(([image,,title],index)=><button className={index===active?'active':''} type='button' aria-label={`Show banner ${index+1}: ${title}`} aria-current={index===active?'true':undefined} onClick={()=>setActive(index)} key={`${image}-${index}`}/>)}</div>
   </section>
 }
@@ -539,7 +570,7 @@ function Finder() {
     navigate('/search?'+params.toString())
   }
   return <section className='finder site-container' id='vehicles'>
-    <div className='finder-tabs'>{tabs.map((item)=><button className={tab===item?'active':''} type='button' onClick={()=>switchTab(item)} key={item}>{item}</button>)}</div>
+    <div className='finder-tabs'>{tabs.map((item)=><button className={tab===item?'active':''} type='button' onClick={()=>switchTab(item)} key={item}><Icon name={item==='New Vehicle'?'car':item==='Spare Parts'?'parts':'tools'}/>{item}</button>)}</div>
     <form className='finder-form' onSubmit={submit}>
       {fields[tab].map((field)=><label key={field.name}><span>{field.label}</span>{field.type==='input'
         ?<input name={field.name} value={filters[field.name]||''} onChange={(event)=>setFilters({...filters,[field.name]:event.target.value})} placeholder={field.placeholder}/>
@@ -568,19 +599,30 @@ function HomeVehicleCard({item,group,cardClassName='',imageClassName='',cta='Exp
   const openProduct=(event)=>{if(event.target.closest('a,button'))return;navigate(route)}
   const openProductFromKeyboard=(event)=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();navigate(route)}}
   return <article className={`trending-vehicle-card ${cardClassName} ${item.visual==='lifestyle'?'is-lifestyle':''}`.trim()} data-category={cardGroup} role='link' tabIndex='0' onClick={openProduct} onKeyDown={openProductFromKeyboard}>
-    <Link className={`trending-vehicle-image ${imageClassName}`.trim()} to={route} aria-label={`View ${item.name}`}>
+    <div className={`trending-vehicle-image ${imageClassName}`.trim()}>
       <span className='vehicle-category-pill'>{item.category}</span>
-      <img src={item.image} alt={`${item.name} product`} loading='lazy'/>
-    </Link>
+      <Link className='trending-compare-pill' to='/compare' aria-label={'Compare '+item.name} title='Compare vehicle'><Icon name='compare'/></Link>
+      <Link className='trending-vehicle-image-link' to={route} aria-label={`View ${item.name}`}>
+        <img src={item.image} alt={`${item.name} product`} loading='lazy'/>
+      </Link>
+    </div>
     <div className='trending-vehicle-body'>
-      <div className='trending-vehicle-heading'><div><p>{item.category}</p><h3>{item.name}</h3></div><span className='trending-rating'>★ {item.rating}</span></div>
+      <div className='trending-vehicle-heading'><div><p>{item.category}</p><h3>{item.name}</h3></div></div>
       <p className='trending-vehicle-copy'>{item.copy}</p>
       <div className='trending-vehicle-footer'>
-        <div><small>{item.priceLabel||'Starting from'}</small><strong>{item.price}</strong></div>
-        <Link to={route}>{cta} <Icon name='arrow'/></Link>
+        <div><small>Latest price</small><strong>{priceOnEnquiry}</strong></div>
+        <Link to={homeEnquiryLink('Vehicle price enquiry',item.name,'vehicle',item.category)}>Enquire <Icon name='arrow'/></Link>
       </div>
     </div>
   </article>
+}
+function HomeMoreProductCard({to,label='More Products',category='category'}) {
+  return <Link className='trending-vehicle-card home-more-product-card' to={to} aria-label={`View more ${category} products`}>
+    <span className='home-more-product-badge'>More Products</span>
+    <i className='home-more-product-symbol'><Icon name='arrow'/></i>
+    <strong>{label}</strong>
+    <small>Explore full category</small>
+  </Link>
 }
 function BrandLogoCard({name,mark,logoUrl,isClone=false}) {
   const [logoFailed,setLogoFailed]=useState(false)
@@ -649,7 +691,7 @@ function Home() {
     to:'/vehicles/product/'+(item.slug||item._id),
   }))
   const availableCarFallbacks=fallbackCarProducts.filter((fallback)=>!liveCarCards.some((item)=>item.name.toLowerCase()===fallback.name.toLowerCase()))
-  const carProducts=liveCarCards.length>=6?liveCarCards:[...liveCarCards,...availableCarFallbacks.slice(0,6-liveCarCards.length)]
+  const carProducts=(liveCarCards.length>=10?liveCarCards:[...liveCarCards,...availableCarFallbacks.slice(0,10-liveCarCards.length)]).slice(0,10)
   const uniqueConstructionVehicles=allConstructionVehicles.filter((item,index,items)=>item.condition!=='used'&&items.findIndex((candidate)=>candidate.condition!=='used'&&candidate.name.trim().toLowerCase()===item.name.trim().toLowerCase())===index)
   const liveConstructionCards=uniqueConstructionVehicles.map((item)=>({
     id:item._id||item.slug||item.name,
@@ -663,7 +705,7 @@ function Home() {
     to:'/vehicles/product/'+(item.slug||item._id),
     tone:constructionToneFor(item),
   }))
-  const constructionProducts=liveConstructionCards.length?liveConstructionCards:fallbackConstructionProducts.map((item)=>({
+  const constructionFallbackCards=fallbackConstructionProducts.map((item)=>({
     ...item,
     id:item.name,
     price:'Enquire Price',
@@ -672,8 +714,9 @@ function Home() {
     to:`/vehicles/construction-vehicles/${item.slug}`,
     tone:constructionToneFor(item),
   }))
+  const constructionProducts=[...liveConstructionCards,...constructionFallbackCards.filter((fallback)=>!liveConstructionCards.some((item)=>item.name===fallback.name))].slice(0,10)
   const liveBikeProducts=homeData.featuredVehicles.filter((item)=>[item.group,item.vehicleType,item.category?.slug,item.category?.parentId?.slug,item.category?.name].filter(Boolean).some((value)=>/(bike|scooter|two.?wheeler)/i.test(String(value))))
-  const liveBikeCards=liveBikeProducts.slice(0,6).map((item)=>({
+  const liveBikeCards=liveBikeProducts.slice(0,10).map((item)=>({
     name:item.name,
     category:item.category?.name||item.vehicleType||'Bike',
     price:`₹${Number(item.price||0).toLocaleString('en-IN')}`,
@@ -682,9 +725,9 @@ function Home() {
     copy:[item.engineCapacity,item.fuelType,item.modelYear].filter(Boolean).join(' · ')||'Verified two-wheeler listing with expert enquiry support.',
     to:'/vehicles/product/'+(item.slug||item._id),
   }))
-  const bikeProducts=[...liveBikeCards,...fallbackBikeProducts.filter((fallback)=>!liveBikeCards.some((item)=>item.name===fallback.name))].slice(0,6)
+  const bikeProducts=[...liveBikeCards,...fallbackBikeProducts.filter((fallback)=>!liveBikeCards.some((item)=>item.name===fallback.name))].slice(0,10)
   const liveCommercialProducts=homeData.featuredVehicles.filter((item)=>[item.group,item.vehicleType,item.category?.slug,item.category?.parentId?.slug,item.category?.name].filter(Boolean).some((value)=>/(commercial|truck|pickup|cargo|bus|van|carrier)/i.test(String(value))))
-  const liveCommercialCards=liveCommercialProducts.slice(0,6).map((item)=>({
+  const liveCommercialCards=liveCommercialProducts.slice(0,10).map((item)=>({
     name:item.name,
     category:item.category?.name||item.vehicleType||'Commercial Vehicle',
     price:`₹${Number(item.price||0).toLocaleString('en-IN')}`,
@@ -693,12 +736,12 @@ function Home() {
     copy:[item.payloadCapacity,item.fuelType,item.modelYear].filter(Boolean).join(' · ')||'Verified commercial vehicle with expert business support.',
     to:'/vehicles/product/'+(item.slug||item._id),
   }))
-  const commercialProducts=[...liveCommercialCards,...fallbackCommercialProducts.filter((fallback)=>!liveCommercialCards.some((item)=>item.name===fallback.name))].slice(0,6)
+  const commercialProducts=[...liveCommercialCards,...fallbackCommercialProducts.filter((fallback)=>!liveCommercialCards.some((item)=>item.name===fallback.name))].slice(0,10)
   const liveElectricCarProducts=homeData.featuredVehicles.filter((item)=>{
     const vehicleDetails=[item.group,item.vehicleType,item.fuelType,item.category?.slug,item.category?.parentId?.slug,item.category?.name].filter(Boolean).join(' ')
     return /(electric|\bev\b)/i.test(vehicleDetails)&&/(car|suv|sedan|hatchback|four.?wheeler)/i.test(vehicleDetails)
   })
-  const liveElectricCarCards=liveElectricCarProducts.slice(0,6).map((item)=>({
+  const liveElectricCarCards=liveElectricCarProducts.slice(0,10).map((item)=>({
     name:item.name,
     category:item.category?.name||item.vehicleType||'Electric Car',
     price:`\u20B9${Number(item.price||0).toLocaleString('en-IN')}`,
@@ -707,11 +750,11 @@ function Home() {
     copy:[item.drivingRange,item.batteryCapacity,item.modelYear].filter(Boolean).join(' · ')||'Verified electric car with expert purchase support.',
     to:'/vehicles/product/'+(item.slug||item._id),
   }))
-  const electricCarProducts=[...liveElectricCarCards,...fallbackElectricCarProducts.filter((fallback)=>!liveElectricCarCards.some((item)=>item.name===fallback.name))].slice(0,6)
+  const electricCarProducts=[...liveElectricCarCards,...fallbackElectricCarProducts.filter((fallback)=>!liveElectricCarCards.some((item)=>item.name===fallback.name))].slice(0,10)
   const homeBrands=brandDirectory.map(item=>({...item,logoUrl:item.logo}))
   const quick=[
     ['car','Vehicle marketplace','Explore Vehicles','Discover vehicles across every segment.','Explore Now','/vehicles','vehicles'],
-    ['tools','Expert vehicle care','Enquire Service','Connect with a trusted workshop service.','Enquire Now',homeEnquiryLink('Service enquiry','Vehicle service requirement','service'),'service'],
+    ['tools','Expert vehicle care','Enquire Service','Connect with a trusted workshop service.','Enquire',homeEnquiryLink('Service enquiry','Vehicle service requirement','service'),'service'],
     ['parts','Genuine components','Find Spare Parts','Find the right genuine spare parts.','Enquire Parts','/spare-parts','parts'],
   ]
   const homeBlogs=homeData.latestBlogs.length?homeData.latestBlogs.map((item,index)=>[item.title,item.tags?.[0]||'Automotive',item.imageUrl||[familyCarsRainyRoadBanner,electricSuvRainDrivingBanner,carSparePartsServiceBanner,automobileTyresAlloyWheelsBanner][index%4],item.slug]):[
@@ -735,8 +778,8 @@ function Home() {
         <div className='explore-vehicle-intro'>
           <h2 id='explore-vehicle-title'>Explore <span>Vehicles</span></h2>
           <i className='explore-title-line' aria-hidden='true'/>
-          <p className='explore-vehicle-copy'>From city streets to demanding work sites, find the perfect vehicle for every journey.</p>
-          <Link className='explore-all-button' to='/vehicles'>Explore All <span><Icon name='arrow'/></span></Link>
+          <p className='explore-vehicle-copy'>Find the right vehicle for daily travel, family comfort, business work, farming, construction and electric mobility.</p>
+          <Link className='explore-all-button' to='/vehicles'>View All Vehicles <span><Icon name='arrow'/></span></Link>
         </div>
         <div className='explore-carousel-shell'>
           <div className='explore-category-track' ref={exploreTrackRef}>
@@ -764,7 +807,7 @@ function Home() {
         <SectionHeading eyebrow='Popular cars for every kind of journey' title='Explore All Cars' link='View All Cars' to='/vehicles/cars' onPrevious={()=>scrollProductTrack(carProductTrackRef,-1)} onNext={()=>scrollProductTrack(carProductTrackRef,1)}/>
         <div className='explore-car-product-shell'>
           <div className='trending-vehicle-grid explore-car-product-grid home-product-scroll-track' ref={carProductTrackRef}>
-            {carProducts.map((item,index)=><HomeVehicleCard item={item} group='cars' cardClassName='explore-car-product-card' imageClassName='explore-car-product-image' key={item.id||`${item.name}-${index}`}/>)}
+            {carProducts.map((item,index)=><HomeVehicleCard item={item} group='cars' cardClassName='explore-car-product-card' imageClassName='explore-car-product-image' key={item.id||`${item.name}-${index}`}/>)}<HomeMoreProductCard to='/vehicles/cars' label='More Car Products' category='car'/>
           </div>
         </div>
       </div>
@@ -777,9 +820,16 @@ function Home() {
         <Link className='home-compare-cta' to='/compare'>Start Comparing <Icon name='arrow'/></Link>
       </div>
       <div className='home-compare-visuals' aria-label='Vehicle comparison options'>
-        <Link to='/compare' className='home-compare-card'><img src={tataNexonGreySuv} alt='Tata Nexon compact SUV for vehicle comparison'/><strong>Compare Cars</strong><small>Price, features & comfort</small></Link>
-        <Link to='/compare' className='home-compare-card featured'><img src={kiaSeltosWhiteSuv} alt='Kia Seltos SUV for vehicle comparison'/><strong>Compare SUVs</strong><small>Space, safety & performance</small></Link>
-        <Link to='/compare' className='home-compare-card'><img src={evCarsBanner} alt='Electric car for EV comparison'/><strong>Compare EVs</strong><small>Range, charging & running cost</small></Link>
+        <div className='home-compare-carousel'>
+          {[
+            [compareTataNexonCutout,'Tata Nexon','Price, safety & comfort'],
+            [compareKiaSeltosCutout,'Kia Seltos','Features, space & style'],
+            [compareEvCarsCutout,'Electric Cars','Range, charging & running cost'],
+            ['/images/catalog/vehicles/cars-transparent/suv/hyundai-creta.png','Hyundai Creta','Comfort, tech & daily use'],
+            ['/images/catalog/vehicles/cars-transparent/suv/mahindra-xuv-3xo.png','Mahindra XUV 3XO','Performance, safety & value'],
+            ['/images/catalog/vehicles/cars-transparent/electric-cars/mg-windsor-ev.png','MG Windsor EV','EV comfort & ownership'],
+          ].flatMap((item)=>[item,item]).map(([image,title,copy],index)=><Link to='/compare' className={'home-compare-card '+(index%6===1?'featured':'')} aria-hidden={index>=6?'true':undefined} tabIndex={index>=6?-1:undefined} key={title+'-'+index}><img src={image} alt={title+' vehicle comparison'}/><strong>{title}</strong><small>{copy}</small></Link>)}
+        </div>
       </div>
     </section>
     <section className='journey-banner'>
@@ -805,9 +855,9 @@ function Home() {
     </section>
     <section className='content-section site-container trending-section' id='trending-vehicles'>
       <SectionHeading eyebrow='Most searched this week' title='Trending Vehicles' link='View All Vehicles' onPrevious={()=>scrollProductTrack(trendingTrackRef,-1)} onNext={()=>scrollProductTrack(trendingTrackRef,1)}/>
-      <div className='vehicle-grid trending-vehicle-grid home-product-scroll-track' ref={trendingTrackRef}>{trendingVehicles.map((item)=>
+      <div className='vehicle-grid trending-vehicle-grid home-product-scroll-track' ref={trendingTrackRef}>{trendingVehicles.slice(0,10).map((item)=>
         <HomeVehicleCard item={item} cta='Explore' cardClassName='vehicle-card' imageClassName='vehicle-image' key={item.name}/>
-      )}</div>
+      )}<HomeMoreProductCard to='/vehicles' label='More Vehicle Products' category='vehicle'/></div>
     </section>
     <section className='home-service-showcase site-container' aria-labelledby='home-service-showcase-title'>
       <div className='service-confidence-bar'>
@@ -817,7 +867,7 @@ function Home() {
           <p className='service-confidence-copy'>Bright Auto Hub brings vehicle discovery, expert guidance, genuine spare parts and dependable service support together in one trusted automotive platform.</p>
           <div className='service-confidence-actions'>
             <Link to='/vehicles'>Explore Vehicles <Icon name='arrow'/></Link>
-            <Link to={homeEnquiryLink('Vehicle assistance','Help me choose the right vehicle or service','why-choose')}>Talk to an Expert</Link>
+            <Link to={homeEnquiryLink('Vehicle assistance','Help me choose the right vehicle or service','why-choose')}><Icon name='enquiry'/> Talk to an Expert</Link>
           </div>
         </div>
         <div className='service-confidence-story'>
@@ -831,7 +881,7 @@ function Home() {
         <SectionHeading eyebrow='Built to move every business forward' title='Commercial Vehicles' link='View All Commercial Vehicles' to='/vehicles/commercial-vehicles' onPrevious={()=>scrollProductTrack(commercialTrackRef,-1)} onNext={()=>scrollProductTrack(commercialTrackRef,1)}/>
         <div className='trending-vehicle-grid commercial-product-grid home-product-scroll-track' ref={commercialTrackRef}>{commercialProducts.map((item)=>
           <HomeVehicleCard item={item} group='commercial-vehicles' cardClassName='commercial-product-card' imageClassName='commercial-product-image' key={item.name}/>
-        )}</div>
+        )}<HomeMoreProductCard to='/vehicles/commercial-vehicles' label='More Commercial Products' category='commercial vehicle'/></div>
       </div>
       <div className='service-campaign-grid'>
         <article className='service-campaign-card service-booking-card'>
@@ -855,7 +905,7 @@ function Home() {
       </div>
     </section>
     <section className='content-section site-container construction-showcase' id='construction-showcase'><SectionHeading eyebrow='Explore powerful construction vehicles in India' title='Built for Bigger Projects' link='View All Construction Vehicles' to='/vehicles/construction-vehicles' onPrevious={()=>scrollProductTrack(constructionTrackRef,-1)} onNext={()=>scrollProductTrack(constructionTrackRef,1)}/><div className='ev-layout'><div className='trending-vehicle-grid construction-product-grid home-product-scroll-track' ref={constructionTrackRef}>
-      {constructionProducts.map((item)=><HomeVehicleCard item={item} group='construction-vehicles' cardClassName={`construction-product-card tone-${item.tone}`} imageClassName='construction-product-image' key={item.id||item.name}/>)}
+      {constructionProducts.slice(0,10).map((item)=><HomeVehicleCard item={item} group='construction-vehicles' cardClassName={`construction-product-card tone-${item.tone}`} imageClassName='construction-product-image' showRating={false} key={item.id||item.name}/>)}<HomeMoreProductCard to='/vehicles/construction-vehicles' label='More Construction Products' category='construction vehicle'/>
       </div>
       <aside className='electric-benefits construction-benefits construction-ad-card' aria-label='Advertisement space'>
         <small>ADVERTISEMENT</small>
@@ -883,7 +933,7 @@ function Home() {
       <SectionHeading eyebrow='Clean mobility for every journey' title='Electric Cars' link='View All Electric Cars' to='/vehicles/ev-vehicles/electric-cars' onPrevious={()=>scrollProductTrack(electricTrackRef,-1)} onNext={()=>scrollProductTrack(electricTrackRef,1)}/>
       <div className='trending-vehicle-grid ev-car-product-grid home-product-scroll-track' ref={electricTrackRef}>{electricCarProducts.map((item)=>
         <HomeVehicleCard item={item} group='ev-vehicles' cardClassName='ev-car-product-card' imageClassName='ev-car-product-image' key={item.name}/>
-      )}</div>
+      )}<HomeMoreProductCard to='/vehicles/ev-vehicles/electric-cars' label='More Electric Car Products' category='electric car'/></div>
     </section>
     <section className='home-care-promos ev-service-promo site-container' id='trusted-service-promo'>
       <article className='home-care-card service-card service-booking-banner'>
@@ -918,7 +968,7 @@ function Home() {
       <SectionHeading eyebrow='Popular two wheelers for every ride' title='Bikes & Scooters' link='View All Bikes' to='/vehicles/bikes' onPrevious={()=>scrollProductTrack(bikeTrackRef,-1)} onNext={()=>scrollProductTrack(bikeTrackRef,1)}/>
       <div className='trending-vehicle-grid bike-product-grid home-product-scroll-track' ref={bikeTrackRef}>{bikeProducts.map((item)=>
         <HomeVehicleCard item={item} group='bikes' cardClassName='bike-product-card' imageClassName='bike-product-image' key={item.name}/>
-      )}</div>
+      )}<HomeMoreProductCard to='/vehicles/bikes' label='More Bike Products' category='bike'/></div>
     </section>
     <section className='content-section site-container' id='business-vehicles-promo'>
       <article className='business-banner'>
@@ -935,7 +985,7 @@ function Home() {
         </aside>
       </article>
     </section>
-    <section className='content-section site-container' id='blog'><SectionHeading eyebrow='Expert insights, news and tips' title='Latest from Blog' link='View All Blogs'/><div className='blog-grid'>{homeBlogs.map(([title,tag,image,slug])=><article key={title}>
+    <section className='content-section site-container' id='blog'><SectionHeading eyebrow='Expert insights, news and tips' title='Latest from News' link='View All News'/><div className='blog-grid'>{homeBlogs.map(([title,tag,image,slug])=><article key={title}>
       <div><img src={image} alt={title}/><span>{tag}</span></div>
       <h3>{title}</h3><p>Helpful automobile insights from our experts.</p>
       <Link to={slug?`/blog/${slug}`:'/blog'}>Read Article <Icon name='arrow'/></Link>
@@ -967,8 +1017,8 @@ function Home() {
   <section className='final-cta' id='enquire'><div className='site-container'>
     <h2>Ready to Drive the Best Experience?</h2>
     <p>Join millions of satisfied customers who trust Bright Auto Hub.</p>
-    <div><a className='red-button' href='#vehicles'>Explore Vehicles</a>
-    <Link className='outline-button' to={homeEnquiryLink('Service enquiry','Vehicle service requirement','service')}>Enquire Service</Link></div>
+    <div><a className='red-button' href='#vehicles'><Icon name='car'/> Explore Vehicles</a>
+    <Link className='outline-button' to={homeEnquiryLink('Service enquiry','Vehicle service requirement','service')}><Icon name='tools'/> Enquire Service</Link></div>
   </div></section>
   <PublicFooter />
   </div>

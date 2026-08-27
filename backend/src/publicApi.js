@@ -5,7 +5,7 @@ import { randomBytes, scryptSync, timingSafeEqual } from 'node:crypto'
 const locationCache = new Map()
 let locationQueue = Promise.resolve()
 let lastLocationRequestAt = 0
-const locationAttribution = { label: '© OpenStreetMap contributors', url: 'https://www.openstreetmap.org/copyright' }
+const locationAttribution = { label: 'Â© OpenStreetMap contributors', url: 'https://www.openstreetmap.org/copyright' }
 const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds))
 const cleanText = (value, limit = 500) => String(value || '').trim().slice(0, limit)
 
@@ -20,7 +20,7 @@ const fetchLocationData = (url) => {
       const result = await fetch(url, {
         headers: {
           'User-Agent': 'BrightAutoHub/1.0 (support@brightautohub.com)',
-          Referer: 'https://brightautohub.com',
+          Referer: 'https://www.brightautohub.gobrightglobal.com',
           Accept: 'application/json',
         },
         signal: controller.signal,
@@ -137,25 +137,21 @@ export const registerPublicApi = (app) => {
     try {
       const categories = await Category.find({ group: 'Spare Parts', status: 'active' }).sort({ sortOrder: 1, name: 1 }).lean()
       const byParent = new Map()
-      for (const item of categories) {
-        const key = item.parentId?.toString() || 'root'
-        byParent.set(key, [...(byParent.get(key) || []), item])
-      }
-      const build = (parent = 'root') => (byParent.get(parent) || []).map((item) => ({
-        ...item,
-        children: build(item._id.toString()),
-      }))
-      response.json(build().find((item) => item.slug === 'spare-parts')?.children || [])
+      for (const item of categories) { const key = item.parentId?.toString() || 'root'; byParent.set(key, [...(byParent.get(key)||[]), item]) }
+      const build = (parent='root') => (byParent.get(parent)||[]).map(item => ({ ...item, children: build(item._id.toString()) }))
+      response.json(build())
     } catch (error) { next(error) }
   })
 
   app.get('/api/public/vehicles', async (request, response, next) => {
     try {
       const filter = { status: 'active' }
-      if (request.query.condition) filter.condition = request.query.condition
+      if (request.query.search) filter.$text = { $search: String(request.query.search) }
+      if (request.query.brand) filter.brand = request.query.brand
       if (request.query.category) {
         let parent = null
-        if (request.query.group) { const root = await Category.findOne({ slug: 'vehicles', parentId: null }); parent = await Category.findOne({ slug: request.query.group, parentId: root?._id, status: 'active' }) }
+        if (request.query.group) {
+          const root = await Category.findOne({ slug: 'vehicles', parentId: null }); parent = await Category.findOne({ slug: request.query.group, parentId: root?._id, status: 'active' }) }
         const category = await Category.findOne({ slug: request.query.category, status: 'active', ...(parent ? { parentId: parent._id } : {}) })
         if (!category) return response.json([])
         filter.category = category._id
