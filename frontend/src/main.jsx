@@ -7,9 +7,9 @@ import '@fontsource/inter/500.css'
 import '@fontsource/inter/600.css'
 import '@fontsource/space-grotesk/600.css'
 import '@fontsource/space-grotesk/700.css'
-import './base.css'
-import './responsive.css'
-import './typography.css'
+import './styles/base.css'
+import './styles/responsive.css'
+import './styles/typography.css'
 
 createRoot(document.getElementById('app')).render(
   <StrictMode><BrowserRouter><App /></BrowserRouter></StrictMode>,

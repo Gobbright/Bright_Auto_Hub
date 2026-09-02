@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 import { seedAdminData } from '../src/adminApi.js'
 import { constructionVehicleImageOverrides } from '../src/data/fullCatalog.js'
 
-const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/goautomobile'
+const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/brightautohub'
 const slugify = (value = '') => value.toString().trim().toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 
 const products = [
@@ -20,7 +20,7 @@ const ensureCategory = (Category, name, parentId, group, sortOrder = 0) => Categ
 )
 
 try {
-  await mongoose.connect(uri)
+  await mongoose.connect(uri, { dbName: process.env.MONGODB_DB_NAME || 'brightautohub' })
   await seedAdminData()
   const Category = mongoose.model('AdminCategory')
   const Brand = mongoose.model('AdminBrand')

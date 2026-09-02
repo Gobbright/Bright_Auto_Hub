@@ -7,7 +7,7 @@ import { seedAdminData, seedSparePartsCatalog } from '../src/adminApi.js'
 import { vehicleCatalog, sparePartProducts, inferVehicleType, constructionVehicleImageOverrides } from '../src/data/fullCatalog.js'
 import { sparePartsTree } from '../src/data/sparePartsCatalog.js'
 
-const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/goautomobile'
+const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/brightautohub'
 const scriptDir = path.dirname(fileURLToPath(import.meta.url))
 const publicDir = path.resolve(scriptDir, '../../frontend/public')
 const catalogDir = path.join(publicDir, 'images', 'catalog')
@@ -260,7 +260,7 @@ async function seedParts() {
 }
 
 try {
-  await mongoose.connect(uri)
+  await mongoose.connect(uri, { dbName: process.env.MONGODB_DB_NAME || 'brightautohub' })
   await seedAdminData()
   await seedSparePartsCatalog()
   await mkdir(catalogDir, { recursive: true })

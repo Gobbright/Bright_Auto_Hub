@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { api } from '../lib/api.js'
-import '../style.css'
+import '../styles/style.css'
 import { ui } from '../lib/uiClasses.js'
 import PublicFooter from '../components/PublicFooter.jsx'
 import bannerOne from '../assets/Images/Home/Banners/banner-1.png'
@@ -20,6 +20,7 @@ import commercialVehicleIcon from '../assets/Images/Icons/truck (2).png'
 import farmVehicleIcon from '../assets/Images/Icons/tractor.png'
 import constructionVehicleIcon from '../assets/Images/Icons/excavator (1).png'
 import evVehicleIcon from '../assets/Images/Icons/charging-station (1).png'
+import usedVehicleIcon from '../assets/Images/Home/Vehicle Icons/used-vehicles.png'
 import serviceIcon from '../assets/Images/Icons/service.png'
 import sparePartIcon from '../assets/Images/Icons/part.png'
 import bikesCategory from '../assets/Images/Home/Vehicle Category/2_Wheelers.png'
@@ -121,15 +122,15 @@ const constructionToneFor=(item={})=>{
 
 // Slider sequence: Banner 1, Banner 2, Banner 3, followed by every segment banner.
 const slides = [
-  [bannerOne,'India’s complete automobile platform','Find Every Vehicle Solution in One Trusted Place','Compare new vehicles, discover genuine spare parts and connect with trusted service support across India.','Explore All Vehicles','Bright Auto Hub vehicle, spare parts and service platform in India','/vehicles'],
-  [bannerTwo,'Smarter vehicle research starts here','Compare Vehicles with Clarity and Confidence','Research cars and bikes by price, specifications, features and ownership needs before choosing the right vehicle for your journey.','Compare Vehicles','Compare new cars, bikes and vehicle specifications on Bright Auto Hub','/compare'],
-  [bannerThree,'Everything you need beyond the showroom','Make Vehicle Ownership Simple from Day One','Discover the right vehicle, find genuine spare parts and access expert service support through one dependable automobile platform.','Start Your Journey','Complete vehicle discovery, spare parts and service support in India','/search'],
-  [twoWheelers,'Bikes and scooters in India','Find the Right Two-Wheeler for Every Ride','Compare commuter bikes, performance motorcycles, scooters and electric two-wheelers by price, mileage and features.','Explore Bikes & Scooters','New bikes, scooters and electric two-wheelers available in India','/vehicles/bikes'],
-  [fourWheelers,'New cars and SUVs in India','Discover Cars Made for Indian Roads','Explore hatchbacks, sedans, SUVs, MPVs and premium cars with the space, safety and performance your family needs.','Explore New Cars','New hatchbacks, sedans, SUVs and family cars in India','/vehicles/cars'],
-  [commercialVehicles,'Commercial mobility for growing businesses','Move Your Business Forward with the Right Vehicle','Discover trucks, mini trucks, pickups, buses and vans by payload, application, performance and ownership needs.','Explore Commercial Vehicles','Commercial trucks, pickups, buses and vans for Indian businesses','/vehicles/commercial-vehicles'],
-  [farmVehicles,'Tractors and farm equipment','Power Productive Farming with Dependable Machines','Explore tractors and agricultural equipment engineered for reliable field performance, efficiency and everyday farm work.','Explore Farm Vehicles','Tractors and agricultural equipment for farming in India','/vehicles/farm-vehicles'],
-  [constructionVehicles,'Construction equipment for demanding projects','Build Bigger with Powerful Machinery','Find backhoe loaders, excavators, wheel loaders and cranes built for productive infrastructure and construction work.','Explore Construction Vehicles','Construction vehicles and heavy equipment for projects in India','/vehicles/construction-vehicles'],
-  [evVehicles,'Electric vehicles and clean mobility','Drive Smarter into an Electric Future','Compare electric cars, bikes, scooters and commercial EVs by driving range, charging time, price and key features.','Explore Electric Vehicles','Electric cars, bikes, scooters and commercial vehicles in India','/vehicles/ev-vehicles'],
+  [bannerOne,'ALL VEHICLES IN ONE PLACE','Explore New, Used and Electric Vehicles','Compare cars, bikes, scooters, commercial vehicles, farm vehicles, construction equipment and EVs with genuine parts and service support from Bright Auto Hub.','Explore All Vehicles','Bright Auto Hub all vehicle marketplace for cars bikes EVs commercial farm and construction vehicles','/vehicles'],
+  [bannerTwo,'COMPARE VEHICLES ONLINE','Compare Cars, Bikes and EVs Before You Buy','Research vehicle price, mileage, features, specifications, fuel type and ownership needs in one trusted automobile comparison platform.','Compare Vehicles','Online vehicle comparison for cars bikes electric vehicles price mileage and specifications','/compare'],
+  [bannerThree,'VEHICLE SEARCH MADE SIMPLE','Find the Right Automobile Faster','Search new vehicles, used vehicles, spare parts and service support by category, brand and requirement with direct enquiry assistance.','Search Vehicles','Bright Auto Hub vehicle search for new used cars bikes spare parts and service enquiries','/search'],
+  [twoWheelers,'TWO WHEELERS','Bikes and Scooters for Daily Riding','Explore commuter bikes, performance motorcycles, scooters and electric two-wheelers by price, mileage, comfort and everyday usability.','Explore Bikes & Scooters','New bikes scooters motorcycles and electric two wheelers in India','/vehicles/bikes'],
+  [fourWheelers,'CARS AND SUVS','Cars for Family, City and Highway Drives','Discover hatchbacks, sedans, SUVs, MPVs, luxury cars and electric cars with safety, comfort, features and ownership guidance.','Explore New Cars','New cars SUVs hatchbacks sedans MPVs luxury cars and electric cars in India','/vehicles/cars'],
+  [commercialVehicles,'COMMERCIAL VEHICLES','Business Vehicles Built for Every Load','Compare trucks, mini trucks, pickups, buses and vans by payload, application, fuel type, uptime and business ownership needs.','Explore Commercial Vehicles','Commercial trucks pickups mini trucks buses and vans for business in India','/vehicles/commercial-vehicles'],
+  [farmVehicles,'FARM VEHICLES','Tractors and Machines for Productive Farming','Explore tractors, mini tractors, harvesters and farm equipment made for reliable field work, efficiency and agricultural productivity.','Explore Farm Vehicles','Tractors mini tractors harvesters and farm equipment vehicles in India','/vehicles/farm-vehicles'],
+  [constructionVehicles,'CONSTRUCTION VEHICLES','Heavy Equipment for Bigger Projects','Find backhoe loaders, excavators, wheel loaders, cranes and construction machinery for infrastructure, roadwork and job-site productivity.','Explore Construction Vehicles','Construction vehicles heavy equipment excavators loaders cranes and backhoe loaders in India','/vehicles/construction-vehicles'],
+  [evVehicles,'ELECTRIC VEHICLES','Electric Cars and EVs for Smart Mobility','Compare electric cars, electric scooters, electric bikes and commercial EVs by range, charging time, running cost and features.','Explore Electric Vehicles','Electric cars scooters bikes and commercial EV vehicles in India','/vehicles/ev-vehicles'],
 ]
 const trendingVehicles = [
   {name:'Sport Bikes & Scooters',category:'Two Wheelers',price:'\u20B979,999',image:bikesCategory,rating:'4.8',group:'bikes',copy:'City-ready motorcycles and scooters for every daily ride.'},
@@ -138,7 +139,7 @@ const trendingVehicles = [
   {name:'Farm Tractor Series',category:'Farm Vehicles',price:'\u20B95.80L',image:farmCategory,rating:'4.8',group:'farm-vehicles',copy:'Dependable tractors and equipment made for productive farms.'},
   {name:'Heavy Construction Fleet',category:'Construction Vehicles',price:'\u20B918.00L',image:constructionCategory,rating:'4.7',group:'construction-vehicles',copy:'Powerful excavators and machines for demanding worksites.'},
   {name:'Electric Mobility Range',category:'Electric Vehicles',price:'\u20B91.20L',image:evCategory,rating:'4.9',group:'ev-vehicles',copy:'Cleaner electric mobility with smart everyday performance.'},
-  {name:'Used Vehicle Picks',category:'Used Vehicles',price:'Check Price',image:carsCategory,rating:'4.7',group:'cars',copy:'Verified pre-owned cars and SUVs with enquiry support.'},
+  {name:'Used Vehicle Picks',category:'Used Vehicles',price:'Check Price',image:carsCategory,rating:'4.7',group:'cars',copy:'Verified pre-owned bikes, cars and every vehicle category with enquiry support.'},
   {name:'Electric Car Shortlist',category:'Electric Cars',price:'Check Price',image:evCategory,rating:'4.8',group:'ev-vehicles',copy:'Popular electric cars compared by range and ownership needs.'},
   {name:'Family SUV Picks',category:'SUV',price:'Check Price',image:familyCarsRainyRoadBanner,rating:'4.7',group:'cars',copy:'Comfortable SUVs for family drives and weekend plans.',visual:'lifestyle'},
   {name:'Business Pickup Picks',category:'Pickup Vehicles',price:'Check Price',image:commercialCategory,rating:'4.6',group:'commercial-vehicles',copy:'Pickup and cargo options for business mobility.'},
@@ -237,18 +238,26 @@ const megaMenus = {
   ],
   More:[
     ['Finance','Vehicle Loan','Car Loan','Bike Loan','Vehicle Insurance'],
-    ['Buy & Sell','Pre-Owned Vehicles','Sell Vehicle','Exchange','Get Exchange Value'],
+    ['Buy & Sell','Used Vehicles','Sell Vehicle','Exchange','Get Exchange Value'],
     ['Find Near You','Vehicle Dealers','Spare Part Dealers','Service Centers'],
     ['Company','About Us','Advertise With Us','FAQ','Privacy Policy','Terms & Conditions'],
   ],
 }
 const vehicleMenuRoutes = {
   Bikes:'/vehicles/bikes/bikes',Scooters:'/vehicles/bikes/scooters','Electric Bikes':'/vehicles/bikes/electric-bikes','Electric Scooters':'/vehicles/bikes/electric-scooters',
+  'Used Vehicles':'/used-vehicles',
   Hatchback:'/vehicles/cars/hatchback',Sedan:'/vehicles/cars/sedan',SUV:'/vehicles/cars/suv','MUV / MPV':'/vehicles/cars/muv-mpv','Luxury Cars':'/vehicles/cars/luxury-cars','Electric Cars':'/vehicles/ev-vehicles/electric-cars',
   'Electric 3 Wheelers':'/vehicles/ev-vehicles/electric-3-wheelers','Electric Buses':'/vehicles/ev-vehicles/electric-buses',
   Trucks:'/vehicles/commercial-vehicles/trucks','Mini Trucks':'/vehicles/commercial-vehicles/mini-trucks','Pickup Vehicles':'/vehicles/commercial-vehicles/pickup-vehicles',Buses:'/vehicles/commercial-vehicles/buses',Vans:'/vehicles/commercial-vehicles/vans','3 Wheelers':'/vehicles/commercial-vehicles/3-wheelers',
   Tractors:'/vehicles/farm-vehicles/tractors','Farm Equipment':'/vehicles/farm-vehicles/farm-equipment',JCB:'/vehicles/construction-vehicles/jcb',Excavators:'/vehicles/construction-vehicles/excavators',Cranes:'/vehicles/construction-vehicles/cranes',
 }
+const calculatorMenuRoutes = {
+  'EMI Calculator':'/calculators/emi-calculator','Vehicle Loan Calculator':'/calculators/vehicle-loan-calculator','Fuel Cost Calculator':'/calculators/fuel-cost-calculator','Mileage Calculator':'/calculators/mileage-calculator',
+  'EV Running Cost Calculator':'/calculators/ev-running-cost-calculator','On-Road Price Calculator':'/calculators/on-road-price-calculator','Vehicle Valuation':'/calculators/vehicle-valuation','Exchange Value Calculator':'/calculators/exchange-value-calculator',
+}
+
+const comingSoonMenuLinks = new Set(['Vehicle Dealers', 'Spare Part Dealers', 'Service Centers', 'Dealers & Locations'])
+
 const financeMenuRoutes = {
   'Vehicle Loan':'/finance-insurance/vehicle-loan','Car Loan':'/finance-insurance/car-loan','Bike Loan':'/finance-insurance/bike-loan',
   'Commercial Vehicle Loan':'/finance-insurance/commercial-vehicle-loan','Tractor Loan':'/finance-insurance/tractor-loan',
@@ -401,24 +410,14 @@ function HeaderSearch({onNavigate, mobile=false}) {
 }
 
 export function Header() {
-  const [mobileOpen,setMobileOpen]=useState(false)
   const [openMenu,setOpenMenu]=useState('')
   const [partMenu,setPartMenu]=useState([])
   const { pathname, search }=useLocation()
   useEffect(()=>{let live=true;api.get('/public/part-categories').then((groups)=>{if(live&&groups.length)setPartMenu(groups.map((group)=>[group.name,...(group.children||[]).map((item)=>item.name)]))}).catch(()=>{});return()=>{live=false}},[])
-  useEffect(()=>{setMobileOpen(false);setOpenMenu('')},[pathname])
-  useEffect(()=>{
-    if(!mobileOpen)return undefined
-    const previousOverflow=document.body.style.overflow
-    const closeOnEscape=(event)=>{if(event.key==='Escape'){setMobileOpen(false);setOpenMenu('')}}
-    if(window.matchMedia('(max-width: 820px)').matches)document.body.style.overflow='hidden'
-    document.addEventListener('keydown',closeOnEscape)
-    return()=>{document.body.style.overflow=previousOverflow;document.removeEventListener('keydown',closeOnEscape)}
-  },[mobileOpen])
-  const toggleMobile=()=>setMobileOpen((current)=>{if(current)setOpenMenu('');return !current})
-  const closeMobile=()=>{setMobileOpen(false);setOpenMenu('')}
-  const nav=['Home','Vehicles','Spare Parts','Services','Finance & Insurance','News']
-  const routes={Home:'/',Vehicles:'/vehicles','Spare Parts':'/spare-parts',Services:'/services','Finance & Insurance':'/finance-insurance',News:'/blog'}
+  useEffect(()=>{setOpenMenu('')},[pathname])
+  const closeMobile=()=>setOpenMenu('')
+  const nav=['Home','Vehicles','Spare Parts','Services','Finance & Insurance','Tools & Calculators','News']
+  const routes={Home:'/',Vehicles:'/vehicles','Spare Parts':'/spare-parts',Services:'/services','Finance & Insurance':'/finance-insurance','Tools & Calculators':'/calculators',News:'/blog'}
   const vehicleNav=[
     [twoWheelerIcon,'Bikes','/vehicles/bikes'],
     [fourWheelerIcon,'Cars','/vehicles/cars'],
@@ -426,7 +425,18 @@ export function Header() {
     [farmVehicleIcon,'Farm Vehicles','/vehicles/farm-vehicles'],
     [constructionVehicleIcon,'Construction Vehicles','/vehicles/construction-vehicles'],
     [evVehicleIcon,'EV Vehicles','/vehicles/ev-vehicles'],
-    ...(pathname==='/'?[[serviceIcon,'Services','/services'],[sparePartIcon,'Spare Parts','/spare-parts'],[null,'EMI Calculator','/calculators','calculator'],[null,'Compare','/compare','compare']]:[]),
+    ...(pathname==='/'?[]:[[usedVehicleIcon,'Used Vehicles','/used-vehicles']]),
+    ...(pathname==='/'?[[serviceIcon,'Services','/services'],[sparePartIcon,'Spare Parts','/spare-parts'],[null,'Tools & Calculators','/calculators','calculator'],[null,'Compare','/compare','compare']]:[]),
+  ]
+  const calculatorNav=[
+    [null,'EMI Calculator','/calculators/emi-calculator','calculator'],
+    [null,'Vehicle Loan Calculator','/calculators/vehicle-loan-calculator','calculator'],
+    [null,'Fuel Cost Calculator','/calculators/fuel-cost-calculator','car'],
+    [null,'Mileage Calculator','/calculators/mileage-calculator','car'],
+    [null,'EV Running Cost Calculator','/calculators/ev-running-cost-calculator','bolt'],
+    [null,'On-Road Price Calculator','/calculators/on-road-price-calculator','tag'],
+    [null,'Vehicle Valuation','/calculators/vehicle-valuation','shield'],
+    [null,'Exchange Value Calculator','/calculators/exchange-value-calculator','compare'],
   ]
   const sparePartsNav=[
     [sparePartIcon,'Spare Parts','/spare-parts'],
@@ -448,9 +458,10 @@ export function Header() {
   ]
   const isSparePartsPage=pathname.startsWith('/spare-parts')
   const isServicesPage=pathname.startsWith('/services')
+  const isCalculatorPage=pathname.startsWith('/calculators')
   const isEvPath=pathname.startsWith('/vehicles/ev-vehicles')||pathname.includes('/electric-cars')
-  const hideSecondaryNav=pathname.startsWith('/contact')||pathname.startsWith('/blog')||isSparePartsPage
-  const secondaryNav=isSparePartsPage?vehicleNav:isServicesPage?servicesNav:vehicleNav
+  const hideSecondaryNav=pathname.startsWith('/contact')||pathname.startsWith('/blog')||pathname.startsWith('/finance-insurance')||isSparePartsPage
+  const secondaryNav=isCalculatorPage?calculatorNav:isSparePartsPage?vehicleNav:isServicesPage?servicesNav:vehicleNav
   const selectedCategory=new URLSearchParams(search).get('category')||''
   return <>
     <div className='utility-bar'>
@@ -465,38 +476,29 @@ export function Header() {
     </div>
     <header className='site-header'><div className='site-container header-inner'>
       <Link className='auto-logo' to='/' aria-label='Bright Auto Hub home'><img src={brightAutoHubLogo} alt='Bright Auto Hub'/></Link>
-      <button className='mobile-toggle' type='button' aria-label={mobileOpen?'Close navigation':'Open navigation'} aria-controls='primary-navigation' aria-expanded={mobileOpen} onClick={toggleMobile}><Icon name={mobileOpen?'close':'menu'}/></button>
-      {mobileOpen&&<button className='mobile-nav-scrim' type='button' aria-label='Close navigation' onClick={closeMobile}/>}
-      <nav className={`main-nav ${mobileOpen?'is-open':''}`} id='primary-navigation' aria-label='Primary navigation'>{nav.map((item)=>{
+      <nav className='main-nav' id='primary-navigation' aria-label='Primary navigation'>{nav.map((item)=>{
         const menu=item==='Spare Parts'&&partMenu.length?partMenu:megaMenus[item]
         const href=routes[item]
-        const isActive=href==='/'?pathname===href:pathname.startsWith(href)
+        const isComingSoon=comingSoonMenuLinks.has(item)
+        const isActive=!isComingSoon&&(href==='/'?pathname===href:pathname.startsWith(href))
         return <div className={`nav-entry${menu?' has-menu':''}${openMenu===item?' is-expanded':''}`} key={item} onMouseEnter={()=>menu&&setOpenMenu(item)} onMouseLeave={()=>menu&&setOpenMenu('')}>
           <div className='nav-entry-main'>
-            <Link className={isActive?'active':''} to={href} onClick={closeMobile}>{item}</Link>
-            {menu&&<button className='nav-dropdown-toggle' type='button' aria-label={`${openMenu===item?'Close':'Open'} ${item} menu`} aria-expanded={openMenu===item} onClick={()=>setOpenMenu(openMenu===item?'':item)}><span aria-hidden='true'>⌄</span></button>}
+            {isComingSoon ? <span className='nav-coming-soon'>{item}<small>Coming Soon</small></span> : <Link className={isActive?'active':''} to={href} onClick={closeMobile}>{item}</Link>}
+            {menu&&<button className='nav-dropdown-toggle' type='button' aria-label={`${openMenu===item?'Close':'Open'} ${item} menu`} aria-expanded={openMenu===item} onClick={()=>setOpenMenu(openMenu===item?'':item)}><span aria-hidden='true'>?</span></button>}
           </div>
-          {menu&&openMenu===item&&<div className={`mega-menu ${item==='Spare Parts'?'spare-parts-menu':''} ${item==='Finance & Insurance'?'finance-menu':''}`}>
+          {menu&&openMenu===item&&<div className={`mega-menu ${item==='Spare Parts'?'spare-parts-menu':''} ${item==='Finance & Insurance'?'finance-menu':''} ${item==='Tools & Calculators'?'calculator-menu':''}`}>
             <div className='mega-menu-intro'><span>{item} directory</span><strong>Explore every option in one place</strong></div>
-            {menu.map(([heading,...links])=><div className='mega-menu-column' key={heading}><h3>{heading}</h3>{links.map((link)=><Link to={item==='Vehicles'?(vehicleMenuRoutes[link]||href):item==='Finance & Insurance'?(financeMenuRoutes[link]||href):href} onClick={closeMobile} key={link}>{link}</Link>)}</div>)}
+            {menu.map(([heading,...links])=><div className='mega-menu-column' key={heading}><h3>{heading}</h3>{links.map((link)=>comingSoonMenuLinks.has(link) ? <span className='mega-coming-soon' key={link}>{link}<small>Coming Soon</small></span> : <Link to={item==='Vehicles'?(vehicleMenuRoutes[link]||href):item==='Finance & Insurance'?(financeMenuRoutes[link]||href):item==='Tools & Calculators'?(calculatorMenuRoutes[link]||href):href} onClick={closeMobile} key={link}>{link}</Link>)}</div>)}
           </div>}
         </div>
-      })}<Link className={pathname.startsWith('/contact')?'active':''} to='/contact' onClick={closeMobile}>Contact Us</Link><div className='mobile-nav-actions'>
-        <HeaderSearch mobile onNavigate={closeMobile}/>
-        <Link className='mobile-enquiry-button' to={homeEnquiryLink('General enquiry','Automotive requirement','header')} onClick={closeMobile}><Icon name='enquiry'/> Enquire</Link>
-        <div className='mobile-nav-utility'>
-          <a className='mobile-phone-link' href='tel:+919876543210'><Icon name='phone'/><span>+91 98765 43210</span></a>
-          <LocationPicker/>
-          <AccountMenu/>
-        </div>
-      </div></nav>
+      })}<Link className={pathname.startsWith('/contact')?'active':''} to='/contact' onClick={closeMobile}>Contact Us</Link></nav>
       <div className='header-actions'><HeaderSearch/><Link className='red-button compact' to={homeEnquiryLink('General enquiry','Automotive requirement','header')}><Icon name='enquiry'/> Enquire</Link></div>
     </div></header>
-    {!hideSecondaryNav&&<nav className={'vehicle-nav'+(isSparePartsPage?' parts-secondary-nav':'')+(isServicesPage?' services-secondary-nav':'')} aria-label={isSparePartsPage?'Vehicle categories':isServicesPage?'Vehicle service categories':'Vehicle categories'}>
-      <div className={'site-container vehicle-nav-inner '+(pathname==='/'?'home-nav':'')+(isSparePartsPage?' parts-nav':'')+(isServicesPage?' services-nav':'')}>
+    {!hideSecondaryNav&&<nav className={'vehicle-nav'+(isSparePartsPage?' parts-secondary-nav':'')+(isServicesPage?' services-secondary-nav':'')+(isCalculatorPage?' calculator-secondary-nav':'')} aria-label={isCalculatorPage?'Vehicle calculator tools':isSparePartsPage?'Vehicle categories':isServicesPage?'Vehicle service categories':'Vehicle categories'}>
+      <div className={'site-container vehicle-nav-inner '+(pathname==='/'?'home-nav':'')+(isSparePartsPage?' parts-nav':'')+(isServicesPage?' services-nav':'')+(isCalculatorPage?' calculator-nav':'')}>
         {secondaryNav.map(([icon,label,url,fallbackIcon])=>{
           const urlCategory=new URLSearchParams(url.split('?')[1]||'').get('category')||''
-          const isActive=label==='EV Vehicles'&&isEvPath?true:isEvPath?false:urlCategory?selectedCategory===urlCategory:(selectedCategory===''&&(pathname===url||pathname.startsWith(url+'/')))
+          const isActive=isCalculatorPage?(pathname===url||(pathname==='/calculators'&&url==='/calculators/emi-calculator')):label==='EV Vehicles'&&isEvPath?true:isEvPath?false:urlCategory?selectedCategory===urlCategory:(selectedCategory===''&&(pathname===url||pathname.startsWith(url+'/')))
           return <Link className={(isActive?'active ':'')+(label==='EV Vehicles'?'ev-nav-item':'')} to={url} key={label}>
             {icon?<img src={icon} alt='' aria-hidden='true'/>:<Icon name={fallbackIcon}/>}<span>{label}</span>
           </Link>
@@ -515,14 +517,14 @@ export function Header() {
     </nav>}
   </>
 }
-function HeroSlider({ page }) {
+function HeroSlider() {
   const [active,setActive]=useState(0)
   const [paused,setPaused]=useState(false)
-  const homeSlides=page?[[(page.heroImage||bannerOne),(page.eyebrow||slides[0][1]),page.title,(page.description||slides[0][3]),(page.ctaLabel||slides[0][4]),page.title,(page.ctaUrl||page.ctaLink||slides[0][6])],...slides.slice(1)]:slides
+  const homeSlides=slides
   useEffect(()=>{if(paused)return;const timer=setInterval(()=>setActive((value)=>(value+1)%homeSlides.length),5000);return()=>clearInterval(timer)},[paused,homeSlides.length])
   const move=(step)=>setActive((value)=>(value+step+homeSlides.length)%homeSlides.length)
   return <section className='hero' aria-label='Featured automobile categories' aria-roledescription='carousel' onMouseEnter={()=>setPaused(true)} onMouseLeave={()=>setPaused(false)} onFocus={()=>setPaused(true)} onBlur={()=>setPaused(false)}>
-    {homeSlides.map(([image,kicker,title,copy,cta,alt,to],index)=><article className={`hero-slide ${index===active?'active':''}`} aria-hidden={index!==active} aria-label={`${index+1} of ${homeSlides.length}: ${title}`} key={`${image}-${index}`}>
+    {homeSlides.map(([image,kicker,title,copy,cta,alt,to],index)=><article className={`hero-slide ${index===0?'is-first-banner':''} ${index===2?'is-third-banner':''} ${index>=3&&index<=8?'is-segment-banner':''} ${index===active?'active':''}`} aria-hidden={index!==active} aria-label={`${index+1} of ${homeSlides.length}: ${title}`} key={`${image}-${index}`}>
       <img className='hero-banner-image' src={image} alt={alt} loading={index===0?'eager':'lazy'} fetchPriority={index===0?'high':'auto'} decoding='async'/>
       <div className='hero-overlay'>
         <p className='red-kicker'>{kicker}</p>
@@ -675,7 +677,7 @@ function Home() {
     const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches
     track.scrollBy({left:direction*distance,behavior:reducedMotion?'auto':'smooth'})
   }
-  const homeVehicles=homeData.featuredVehicles.length?homeData.featuredVehicles.map(item=>[item.name,item.category?.name||item.vehicleType,`₹${Number(item.price||0).toLocaleString('en-IN')}`,item.imageUrl||carsCategory,'New']):vehicles
+  const homeTrendingProducts=homeData.featuredVehicles.slice(0,10).map((item)=>({id:item._id||item.slug||item.name,name:carProductName(item),category:item.category?.name||item.vehicleType||'Vehicle',price:Number(item.price||0)>0?`Rs ${Number(item.price).toLocaleString('en-IN')}`:'Enquire Price',image:item.imageUrl||carsCategory,rating:item.rating||'4.8',copy:[item.brand?.name,item.fuelType,item.transmission,item.modelYear].filter(Boolean).join(' - ')||'Verified listing with expert enquiry support.',to:'/vehicles/product/'+(item.slug||item._id)}))
   const eligibleCarVehicles=allCarVehicles.filter((item)=>item.condition!=='used'&&isCarVehicle(item))
   const uniqueCarVehicles=eligibleCarVehicles.filter((item,index,items)=>items.findIndex((candidate)=>carProductName(candidate).toLowerCase()===carProductName(item).toLowerCase())===index)
   const carImageByName=new Map(eligibleCarVehicles.filter((item)=>item.imageUrl).map((item)=>[carProductName(item).toLowerCase(),item.imageUrl]))
@@ -690,8 +692,7 @@ function Home() {
     copy:[item.brand?.name,item.fuelType,item.transmission,item.modelYear].filter(Boolean).join(' · ')||'Verified car listing with expert purchase support.',
     to:'/vehicles/product/'+(item.slug||item._id),
   }))
-  const availableCarFallbacks=fallbackCarProducts.filter((fallback)=>!liveCarCards.some((item)=>item.name.toLowerCase()===fallback.name.toLowerCase()))
-  const carProducts=(liveCarCards.length>=10?liveCarCards:[...liveCarCards,...availableCarFallbacks.slice(0,10-liveCarCards.length)]).slice(0,10)
+  const carProducts=liveCarCards.slice(0,10)
   const uniqueConstructionVehicles=allConstructionVehicles.filter((item,index,items)=>item.condition!=='used'&&items.findIndex((candidate)=>candidate.condition!=='used'&&candidate.name.trim().toLowerCase()===item.name.trim().toLowerCase())===index)
   const liveConstructionCards=uniqueConstructionVehicles.map((item)=>({
     id:item._id||item.slug||item.name,
@@ -714,7 +715,7 @@ function Home() {
     to:`/vehicles/construction-vehicles/${item.slug}`,
     tone:constructionToneFor(item),
   }))
-  const constructionProducts=[...liveConstructionCards,...constructionFallbackCards.filter((fallback)=>!liveConstructionCards.some((item)=>item.name===fallback.name))].slice(0,10)
+  const constructionProducts=liveConstructionCards.slice(0,10)
   const liveBikeProducts=homeData.featuredVehicles.filter((item)=>[item.group,item.vehicleType,item.category?.slug,item.category?.parentId?.slug,item.category?.name].filter(Boolean).some((value)=>/(bike|scooter|two.?wheeler)/i.test(String(value))))
   const liveBikeCards=liveBikeProducts.slice(0,10).map((item)=>({
     name:item.name,
@@ -725,7 +726,7 @@ function Home() {
     copy:[item.engineCapacity,item.fuelType,item.modelYear].filter(Boolean).join(' · ')||'Verified two-wheeler listing with expert enquiry support.',
     to:'/vehicles/product/'+(item.slug||item._id),
   }))
-  const bikeProducts=[...liveBikeCards,...fallbackBikeProducts.filter((fallback)=>!liveBikeCards.some((item)=>item.name===fallback.name))].slice(0,10)
+  const bikeProducts=liveBikeCards.slice(0,10)
   const liveCommercialProducts=homeData.featuredVehicles.filter((item)=>[item.group,item.vehicleType,item.category?.slug,item.category?.parentId?.slug,item.category?.name].filter(Boolean).some((value)=>/(commercial|truck|pickup|cargo|bus|van|carrier)/i.test(String(value))))
   const liveCommercialCards=liveCommercialProducts.slice(0,10).map((item)=>({
     name:item.name,
@@ -736,7 +737,7 @@ function Home() {
     copy:[item.payloadCapacity,item.fuelType,item.modelYear].filter(Boolean).join(' · ')||'Verified commercial vehicle with expert business support.',
     to:'/vehicles/product/'+(item.slug||item._id),
   }))
-  const commercialProducts=[...liveCommercialCards,...fallbackCommercialProducts.filter((fallback)=>!liveCommercialCards.some((item)=>item.name===fallback.name))].slice(0,10)
+  const commercialProducts=liveCommercialCards.slice(0,10)
   const liveElectricCarProducts=homeData.featuredVehicles.filter((item)=>{
     const vehicleDetails=[item.group,item.vehicleType,item.fuelType,item.category?.slug,item.category?.parentId?.slug,item.category?.name].filter(Boolean).join(' ')
     return /(electric|\bev\b)/i.test(vehicleDetails)&&/(car|suv|sedan|hatchback|four.?wheeler)/i.test(vehicleDetails)
@@ -750,20 +751,15 @@ function Home() {
     copy:[item.drivingRange,item.batteryCapacity,item.modelYear].filter(Boolean).join(' · ')||'Verified electric car with expert purchase support.',
     to:'/vehicles/product/'+(item.slug||item._id),
   }))
-  const electricCarProducts=[...liveElectricCarCards,...fallbackElectricCarProducts.filter((fallback)=>!liveElectricCarCards.some((item)=>item.name===fallback.name))].slice(0,10)
-  const homeBrands=brandDirectory.map(item=>({...item,logoUrl:item.logo}))
+  const electricCarProducts=liveElectricCarCards.slice(0,10)
+  const homeBrands=homeData.featuredBrands.map((item)=>({name:item.name,mark:(item.name||'?').slice(0,2).toUpperCase(),logoUrl:item.logoUrl}))
   const quick=[
     ['car','Vehicle marketplace','Explore Vehicles','Discover vehicles across every segment.','Explore Now','/vehicles','vehicles'],
     ['tools','Expert vehicle care','Enquire Service','Connect with a trusted workshop service.','Enquire',homeEnquiryLink('Service enquiry','Vehicle service requirement','service'),'service'],
     ['parts','Genuine components','Find Spare Parts','Find the right genuine spare parts.','Enquire Parts','/spare-parts','parts'],
   ]
-  const homeBlogs=homeData.latestBlogs.length?homeData.latestBlogs.map((item,index)=>[item.title,item.tags?.[0]||'Automotive',item.imageUrl||[familyCarsRainyRoadBanner,electricSuvRainDrivingBanner,carSparePartsServiceBanner,automobileTyresAlloyWheelsBanner][index%4],item.slug]):[
-    ['Top 10 Fuel Efficient Cars in India','Buying Guide',familyCarsRainyRoadBanner,''],
-    ['EV vs Petrol: Which Is Right for You?','EV Guide',electricSuvRainDrivingBanner,''],
-    ['Essential Car Service and Spare Parts','Maintenance',carSparePartsServiceBanner,''],
-    ['How to Choose the Right Tyres','Spare Parts',automobileTyresAlloyWheelsBanner,''],
-  ]
-  return <div className={`public-home ${ui.publicPage}`} id='top'><Header/><main className={ui.main}><HeroSlider page={homeData.page}/><Finder/>
+  const homeBlogs=homeData.latestBlogs.map((item,index)=>[item.title,item.tags?.[0]||'Automotive',item.imageUrl||[familyCarsRainyRoadBanner,electricSuvRainDrivingBanner,carSparePartsServiceBanner,automobileTyresAlloyWheelsBanner][index%4],item.slug])
+  return <div className={`public-home ${ui.publicPage}`} id='top'><Header/><main className={ui.main}><HeroSlider/><Finder/>
     <section
       className='content-section site-container explore-vehicle-slider'
       id='explore-vehicles'
@@ -855,8 +851,8 @@ function Home() {
     </section>
     <section className='content-section site-container trending-section' id='trending-vehicles'>
       <SectionHeading eyebrow='Most searched this week' title='Trending Vehicles' link='View All Vehicles' onPrevious={()=>scrollProductTrack(trendingTrackRef,-1)} onNext={()=>scrollProductTrack(trendingTrackRef,1)}/>
-      <div className='vehicle-grid trending-vehicle-grid home-product-scroll-track' ref={trendingTrackRef}>{trendingVehicles.slice(0,10).map((item)=>
-        <HomeVehicleCard item={item} cta='Explore' cardClassName='vehicle-card' imageClassName='vehicle-image' key={item.name}/>
+      <div className='vehicle-grid trending-vehicle-grid home-product-scroll-track' ref={trendingTrackRef}>{homeTrendingProducts.map((item)=>
+        <HomeVehicleCard item={item} cta='Explore' cardClassName='vehicle-card' imageClassName='vehicle-image' key={item.id||item.name}/>
       )}<HomeMoreProductCard to='/vehicles' label='More Vehicle Products' category='vehicle'/></div>
     </section>
     <section className='home-service-showcase site-container' aria-labelledby='home-service-showcase-title'>
@@ -985,11 +981,11 @@ function Home() {
         </aside>
       </article>
     </section>
-    <section className='content-section site-container' id='blog'><SectionHeading eyebrow='Expert insights, news and tips' title='Latest from News' link='View All News'/><div className='blog-grid'>{homeBlogs.map(([title,tag,image,slug])=><article key={title}>
+    <section className='content-section site-container' id='blog'><SectionHeading eyebrow='Expert insights, news and tips' title='Latest from News' link='View All News'/><div className='blog-grid'>{homeBlogs.length?homeBlogs.map(([title,tag,image,slug])=><article key={title}>
       <div><img src={image} alt={title}/><span>{tag}</span></div>
       <h3>{title}</h3><p>Helpful automobile insights from our experts.</p>
       <Link to={slug?`/blog/${slug}`:'/blog'}>Read Article <Icon name='arrow'/></Link>
-    </article>)}</div></section>
+    </article>):<div className='market-empty'>No news articles are published from admin yet.</div>}</div></section>
     <section className='home-care-promos ev-highlight-promo site-container' id='home-care'>
       <article className='ev-highlight-banner'>
         <div className='ev-highlight-copy'>

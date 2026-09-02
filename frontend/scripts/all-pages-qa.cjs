@@ -67,7 +67,7 @@ function responseFor(url, method) {
   const path = new URL(url).pathname.replace(/^\/api/, '')
   if (method !== 'GET') return { message: 'QA request completed successfully.' }
   if (path === '/home') return { page: null, featuredBrands: [], featuredVehicles: vehicles, featuredServices: [service], featuredParts: [part], latestBlogs: [blog] }
-  if (path === '/health') return { database: 'connected', databaseName: 'goautomobile-qa' }
+  if (path === '/health') return { database: 'connected', databaseName: 'brightautohub-qa' }
   if (path === '/dashboard') return { counts: {}, summary: {}, recentVehicles: [], recentBlogs: [], recentServices: [], recentParts: [] }
   if (path === '/public/part-categories' || path === '/public/vehicle-categories') return []
   if (path === '/public/products/vehicles/demo-vehicle') return vehicles[0]

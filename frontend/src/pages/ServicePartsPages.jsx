@@ -26,8 +26,8 @@ import volkswagenLogo from '../assets/Images/Home/Brand Logos/volkswagen.svg'
 import bajajLogo from '../assets/Images/Home/Brand Logos/bajaj.svg'
 import tvsLogo from '../assets/Images/Home/Brand Logos/tvs.svg'
 import ashokLeylandLogo from '../assets/Images/Home/Brand Logos/ashok-leyland.svg'
-import './service-parts.css'
-import './service-parts-extra.css'
+import '../styles/pages/service-parts.css'
+import '../styles/pages/service-parts-extra.css'
 import { ui } from '../lib/uiClasses.js'
 
 const priceOnEnquiry='Price on enquiry'
@@ -211,7 +211,7 @@ const uniqueBrandList=(values,fallback)=>{
     const key=name.toLowerCase()
     if(name&&!seen.has(key)){seen.add(key);brands.push(name)}
   }
-  return brands.length?brands:fallback
+  return brands
 }
 const serviceBrandList=(items)=>uniqueBrandList(items.flatMap(item=>item?.brands||[]),defaultServiceBrands)
 const partBrandList=(items)=>uniqueBrandList(items.map(partBrandName),defaultPartBrands)
@@ -222,14 +222,6 @@ const partCategories=[
   {name:'Filters',count:'1000+ Parts',image:oilCloseup},{name:'Belts',count:'400+ Parts',image:engineImage},
   {name:'Batteries',count:'200+ Parts',image:diagnosticsImage},{name:'Tyres',count:'700+ Parts',image:tyreImage},
   {name:'Lubricants',count:'300+ Parts',image:oilImage},{name:'Accessories',count:'800+ Parts',image:cars},
-]
-const fallbackParts=[
-  {name:'Premium Oil Filter',category:'Filters',price:320,imageUrl:oilCloseup},
-  {name:'Front Brake Pad Set',category:'Brake Parts',price:1250,imageUrl:brakeImage},
-  {name:'Long-Life Car Battery',category:'Electrical Parts',price:4850,imageUrl:diagnosticsImage},
-  {name:'Iridium Spark Plug Set',category:'Engine Parts',price:680,imageUrl:engineImage},
-  {name:'Performance Tyre Pair',category:'Tyres',price:8450,imageUrl:tyreImage},
-  {name:'Synthetic Engine Oil',category:'Lubricants',price:2450,imageUrl:oilImage},
 ]
 const partProductVisuals=[oilCloseup,brakeImage,diagnosticsImage,engineImage,tyreImage,oilImage]
 const sparePartPages=[
@@ -246,12 +238,12 @@ export function ServicesPage({data}){
   const [searchParams]=useSearchParams()
   const queryCategory=searchParams.get('category')||''
   const activeSlug=categorySlug||slugify(queryCategory)
-  const activeServiceCategory=activeSlug?serviceCategories.find(([name])=>slugify(name)===activeSlug||name.toLowerCase()===queryCategory.toLowerCase()):null
+  const serviceCategoryCards=(data.serviceCategories||[]).map((item,index)=>{const profile=serviceProfile(item.name,index);return [item.name,item.description||profile.summary,'service',item.icon||profile.image]})
+  const activeServiceCategory=activeSlug?serviceCategoryCards.find(([name])=>slugify(name)===activeSlug||name.toLowerCase()===queryCategory.toLowerCase()):null
   const activeCategoryName=activeServiceCategory?.[0]||''
   const activeProfile=activeServiceCategory?serviceProfile(activeCategoryName):null
   const liveItems=data.services||[]
-  const fallbackServices=serviceCategories.map(([name],index)=>{const profile=serviceProfile(name,index);return {_id:'fallback-service-'+index,name,description:profile.description,category:name,price:[899,1499,1199,999][index%4],imageUrl:profile.image,features:profile.features}})
-  const serviceSource=liveItems.length?liveItems:fallbackServices
+  const serviceSource=liveItems
   const displayServices=activeSlug?serviceSource.filter(item=>{
     const profile=serviceProfile(item)
     const values=[item.name,categoryName(item.category),profile.summary,profile.description].filter(Boolean).map(slugify)
@@ -268,30 +260,11 @@ export function ServicesPage({data}){
   },[activeCategoryName,pageDescription])
 
   return <main className='service-reference-page min-h-screen overflow-x-clip bg-white text-[#151c27]'>
-    <section className='sp-hero service-page-hero'>
-      <div className='sp-hero-copy'>
-        <p className='sp-breadcrumb'>Home <span>&gt;</span> Services {activeCategoryName&&<><span>&gt;</span> {activeCategoryName}</>}</p><small>{activeCategoryName?'SERVICE CATEGORY':'COMPLETE VEHICLE CARE'}</small>
-        <h1>{pageTitle}.<em>{activeCategoryName?'Expert Support.':'Trusted Care.'}</em></h1>
-        <p>{pageDescription}</p>
-        <div className='sp-trust-pills'>{['Verified Workshops','Genuine Parts','Doorstep Pickup','Transparent Pricing'].map((item,index)=><span key={item}><PageIcon name={['shield','part','car','service'][index]}/>{item}</span>)}</div>
-      </div>
-      <img src={activeProfile?.image||serviceHero} alt={`${pageTitle} workshop support`}/>
-    </section>
 
-    <section className='market-wrap sp-finder service-booking-panel'>
-      <div className='service-type-tabs'>{[['car','Car Service'],['service','Bike Service'],['car','Commercial Service'],['tools','Tractor Service'],['part','Construction Service']].map(([icon,label],index)=><button className={index===0?'active':''} type='button' key={label}><PageIcon name={icon}/>{label}</button>)}</div>
-      <div className='sp-filter-grid five-fields'>
-        {['Select Brand','Select Model','Select City','Select Service'].map(label=><label key={label}><span>{label}</span><select aria-label={label}><option>{label}</option></select></label>)}
-        <label><span>Preferred Date</span><input aria-label='Preferred service date' type='date'/></label>
-        <Link to={enquiryLink('service',activeCategoryName||'Vehicle service booking',activeCategoryName)}>Request Service</Link>
-      </div>
-    </section>
-
-    <section className='market-wrap sp-stat-row'>{[['car','2500+','Service Centers'],['support','25L+','Happy Customers'],['service','40L+','Vehicles Serviced'],['location','1200+','Cities Covered'],['calendar','24/7','Support Available']].map(([icon,value,label])=><div key={label}><span><PageIcon name={icon}/></span><strong>{value}</strong><small>{label}</small></div>)}</section>
 
     <section className='market-wrap sp-section'>
       <SectionHeading title={activeCategoryName?'More Service Categories':'Browse Services by Category'} copy='Choose a dedicated service page for routine maintenance, specialist repairs and roadside support.' action='View all services' to='/services'/>
-      <div className='service-category-grid'>{serviceCategories.map(([name,copy,icon,image],index)=>{const profile=serviceProfile(name,index);const slug=slugify(name);return <Link className={activeSlug===slug?'active':''} to={`/services/${slug}`} key={name}><img src={image||profile.image} alt={name+' vehicle service workshop'} loading='lazy'/><span><PageIcon name={icon}/></span><div><h3>{name}</h3><p>{profile.summary||copy}</p><small>{profile.features[0]}</small></div></Link>})}</div>
+      <div className='service-category-grid'>{serviceCategoryCards.map(([name,copy,icon,image],index)=>{const profile=serviceProfile(name,index);const slug=slugify(name);return <Link className={activeSlug===slug?'active':''} to={`/services/${slug}`} key={name}><img src={image||profile.image} alt={name+' vehicle service workshop'} loading='lazy'/><span><PageIcon name={icon}/></span><div><h3>{name}</h3><p>{profile.summary||copy}</p><small>{profile.features[0]}</small></div></Link>})}</div>
     </section>
 
     {activeServiceCategory&&<section className='market-wrap sp-section compact-section service-category-detail'>
@@ -347,8 +320,8 @@ export function PartsPage({data}){
   const selectedPage=sparePartPages.find(page=>page.slug===categorySlug||page.name.toLowerCase()===legacyCategory.toLowerCase())
   const activeCategory=selectedPage?.name||legacyCategory
   const liveItems=data.parts||[]
-  const products=liveItems.length?liveItems:fallbackParts
-  const categoryGroups=data.partCategories?.length?data.partCategories:[{_id:'popular-parts',name:'Popular Parts',description:'Common service and replacement parts.',icon:brakeImage,children:partCategories.map((item,index)=>({...item,_id:'fallback-category-'+index,icon:item.image,description:item.count}))}]
+  const products=liveItems
+  const categoryGroups=data.partCategories||[]
   const matchingGroups=activeCategory?categoryGroups.filter(group=>group.name?.toLowerCase()===activeCategory.toLowerCase()):categoryGroups
   const visibleCategoryGroups=matchingGroups.length?matchingGroups:categoryGroups
   const selectedGroup=categoryGroups.find(group=>group.name?.toLowerCase()===activeCategory.toLowerCase())
@@ -383,21 +356,6 @@ export function PartsPage({data}){
   },[pageTitle,pageDescription])
 
   return <main className='parts-reference-page min-h-screen overflow-x-clip bg-white text-[#151c27]'>
-    <section className='market-wrap parts-page-intro'>
-      <p className='parts-page-breadcrumb'><Link to='/'>Home</Link><span>/</span><Link to='/spare-parts'>Spare Parts</Link>{selectedPage&&<><span>/</span><b>{selectedPage.name}</b></>}</p>
-      <small>GENUINE COMPONENTS</small>
-      <h1>{pageTitle}</h1>
-      <p>{pageDescription}</p>
-    </section>
-
-    <section className='market-wrap sp-finder parts-finder-panel'>
-      <h2>{selectedPage?`Find ${selectedPage.name} for Your Vehicle`:'Find Parts for Your Vehicle'}</h2>
-      <div className='sp-filter-grid four-fields'>
-        {['Select Vehicle Type','Select Brand','Select Model','Select Variant'].map(label=><label key={label}><span>{label}</span><select aria-label={label}><option>{label}</option></select></label>)}
-        <Link to={enquiryLink('part',selectedPage?.title||'Vehicle-specific spare parts',activeCategory)}>Enquire Parts</Link>
-      </div>
-      <p>Popular searches: <span>Oil Filter</span><span>Brake Pads</span><span>Headlight</span><span>Battery</span><span>Clutch Plate</span></p>
-    </section>
 
     <section className='market-wrap sp-section'>
       <SectionHeading title={selectedPage?`${selectedPage.name} Categories`:'Browse Every Spare Parts Category'} copy={selectedPage?`Browse every available ${selectedPage.name.toLowerCase()} category.`:'Database-driven parts for two wheelers, cars, commercial, construction, EV and farm vehicles.'} action='Ask for any category' to={enquiryLink('part',selectedPage?.title||'Spare part category',activeCategory)}/>

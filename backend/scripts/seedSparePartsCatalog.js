@@ -2,10 +2,10 @@ import 'dotenv/config'
 import mongoose from 'mongoose'
 import { seedSparePartsCatalog } from '../src/adminApi.js'
 
-const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/goautomobile'
+const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/brightautohub'
 
 try {
-  await mongoose.connect(uri)
+  await mongoose.connect(uri, { dbName: process.env.MONGODB_DB_NAME || 'brightautohub' })
   const result = await seedSparePartsCatalog()
   console.log(`Spare-parts catalogue seeded: ${result.groups} groups, ${result.categories} categories, ${result.products} products.`)
 } catch (error) {

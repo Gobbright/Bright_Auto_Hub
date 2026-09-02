@@ -31,8 +31,7 @@ export default function Dashboard({ onNavigate, refreshKey = 0 }) {
 
   return (
     <div className="dashboard-page">
-      <div className="dashboard-welcome">
-        <div><p className="eyebrow">GoAuto control centre</p><h2>Everything is ready to manage.</h2><p>Vehicles, services, pages and stories—all controlled from this single admin panel.</p></div>
+      <div className="manager-actions-row">
         <div className="dashboard-actions"><button className="admin-primary" type="button" onClick={() => onNavigate('vehicles', true)}><AdminIcon name="plus" /> Add vehicle</button><button className="admin-secondary" type="button" onClick={() => onNavigate('services', true)}>Add service</button><button className="admin-secondary" type="button" onClick={() => onNavigate('parts', true)}>Add part</button></div>
       </div>
 

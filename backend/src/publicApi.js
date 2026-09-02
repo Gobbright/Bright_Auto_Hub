@@ -5,7 +5,7 @@ import { randomBytes, scryptSync, timingSafeEqual } from 'node:crypto'
 const locationCache = new Map()
 let locationQueue = Promise.resolve()
 let lastLocationRequestAt = 0
-const locationAttribution = { label: 'Â© OpenStreetMap contributors', url: 'https://www.openstreetmap.org/copyright' }
+const locationAttribution = { label: 'OpenStreetMap contributors', url: 'https://www.openstreetmap.org/copyright' }
 const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds))
 const cleanText = (value, limit = 500) => String(value || '').trim().slice(0, limit)
 
@@ -191,25 +191,32 @@ export const registerPublicApi = (app) => {
 
   app.get('/api/public/site/:slug', async (request, response, next) => {
     try {
-      const page = await SitePage.findOne({ slug: request.params.slug, status: 'published' }).lean()
+      let page = await SitePage.findOne({ slug: request.params.slug, status: 'published' }).lean()
+      if (!page && request.params.slug === 'used-vehicles') page = await SitePage.findOne({ slug: 'used-cars', status: 'published' }).lean()
       if (!page) return response.status(404).json({ message: 'Page not found' })
-      const [vehicles, brands, parts, services, blogs, partCategoryDocuments] = await Promise.all([
+      if (request.params.slug === 'used-vehicles' && page.slug === 'used-cars') page = { ...page, slug: 'used-vehicles', name: 'Used Vehicles', title: 'Used Vehicles', description: 'Verified pre-owned bikes, cars and all vehicle categories in one place.' }
+      const [vehicles, brands, parts, services, blogs, partCategoryDocuments, serviceCategoryDocuments] = await Promise.all([
         Vehicle.find({ status: 'active' }).sort({ featured: -1, updatedAt: -1 }).populate('brand', 'name logoUrl').populate({ path: 'category', select: 'name slug parentId', populate: { path: 'parentId', select: 'name slug' } }).lean(),
         Brand.find({ status: 'active' }).sort({ featured: -1, name: 1 }).lean(), Part.find({ status: 'active' }).sort({ featured: -1, updatedAt: -1 }).lean(),
         Service.find({ status: 'active' }).sort({ featured: -1, updatedAt: -1 }).populate('categoryId', 'name slug parentId').lean(), Blog.find({ status: 'published' }).sort({ publishedAt: -1 }).lean(),
         Category.find({ group: 'Spare Parts', status: 'active' }).sort({ sortOrder: 1, name: 1 }).lean(),
+        Category.find({ group: 'Services', status: 'active' }).sort({ sortOrder: 1, name: 1 }).lean(),
       ])
-      const partCategoriesByParent = new Map()
-      for (const item of partCategoryDocuments) {
-        const key = item.parentId?.toString() || 'root'
-        partCategoriesByParent.set(key, [...(partCategoriesByParent.get(key) || []), item])
+      const buildCategoryTree = (documents) => {
+        const byParent = new Map()
+        for (const item of documents) {
+          const key = item.parentId?.toString() || 'root'
+          byParent.set(key, [...(byParent.get(key) || []), item])
+        }
+        const build = (parent = 'root') => (byParent.get(parent) || []).map((item) => ({
+          ...item,
+          children: build(item._id.toString()),
+        }))
+        return build()
       }
-      const buildPartCategories = (parent = 'root') => (partCategoriesByParent.get(parent) || []).map((item) => ({
-        ...item,
-        children: buildPartCategories(item._id.toString()),
-      }))
-      const partRoot = buildPartCategories().find((item) => item.slug === 'spare-parts')
-      response.json({ page, vehicles, brands, parts, services, blogs, partCategories: partRoot?.children || [] })
+      const partRoot = buildCategoryTree(partCategoryDocuments).find((item) => item.slug === 'spare-parts')
+      const serviceRoot = buildCategoryTree(serviceCategoryDocuments).find((item) => item.slug === 'services')
+      response.json({ page, vehicles, brands, parts, services, blogs, partCategories: partRoot?.children || [], serviceCategories: serviceRoot?.children || [] })
     } catch (error) { next(error) }
   })
 

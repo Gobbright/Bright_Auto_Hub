@@ -1,2 +1,2 @@
-import './admin.css'
+import '../../styles/pages/admin/admin.css'
 export { default } from './AdminLayout.jsx'

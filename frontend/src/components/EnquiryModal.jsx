@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { api } from '../lib/api.js'
-import './enquiry-modal.css'
+import '../styles/components/enquiry-modal.css'
 
 const readStored = (key) => {
   try { return JSON.parse(localStorage.getItem(key)) || null } catch { return null }
@@ -24,14 +24,15 @@ export default function EnquiryModal() {
       const source = url.searchParams.get('source') || 'website'
       const category = url.searchParams.get('category') || ''
       const service = url.searchParams.get('item') || subject
+      const isFinance = /finance|insurance|loan/i.test(`${subject} ${source} ${category} ${service}`)
       const location = readStored('selectedLocation') || { label: 'All India', shortLabel: 'All India' }
-      setContext({ subject, source, category, service, location, pageUrl: window.location.href, pageTitle: document.title })
+      setContext({ subject, source, category, service, isFinance, location, pageUrl: window.location.href, pageTitle: document.title })
       setForm({
         name: profile.name || '',
         phone: profile.phone || '',
         email: profile.email || '',
         service,
-        message: service ? `Please send me the latest price and availability for ${service}.` : '',
+        message: service ? (isFinance ? `Please contact me about ${service}.` : `Please send me the latest price and availability for ${service}.`) : '',
       })
       setNotice('')
       setSuccess(false)
@@ -103,9 +104,9 @@ export default function EnquiryModal() {
         coordinates: { lat: selectedLocation.lat, lon: selectedLocation.lon },
         accountId: profile.id,
         accountEmail: profile.email,
-        context: [`Selected service / item: ${form.service}`, 'Price request: Price on enquiry', context?.category && `Category: ${context.category}`, `Source: ${context?.source || 'website'}`, `Submitted from: ${context?.pageUrl || window.location.href}`].filter(Boolean).join('\n'),
+        context: [`Selected service / item: ${form.service}`, context?.isFinance ? 'Request type: Finance or insurance callback' : 'Price request: Price on enquiry', context?.category && `Category: ${context.category}`, `Source: ${context?.source || 'website'}`, `Submitted from: ${context?.pageUrl || window.location.href}`].filter(Boolean).join('\n'),
       })
-      setNotice((result.message || 'Your enquiry has been submitted successfully.') + ' Price details will be sent by our team shortly.')
+      setNotice((result.message || 'Your enquiry has been submitted successfully.') + (context?.isFinance ? ' Our team will call you with the next steps shortly.' : ' Price details will be sent by our team shortly.'))
       setSuccess(true)
     } catch (error) {
       setNotice(error.message || 'Unable to submit your enquiry. Please try again.')
@@ -114,17 +115,18 @@ export default function EnquiryModal() {
 
   if (!open) return null
   const isService = /service|workshop|maintenance|repair/i.test(`${context?.subject || ''} ${context?.source || ''}`)
+  const selectedLabel = context?.isFinance ? 'requirement' : (isService ? 'service' : 'item')
   return <div className='enquiry-modal-backdrop' role='presentation' onMouseDown={(event) => { if (event.target === event.currentTarget) close() }}>
     <section className='enquiry-modal' role='dialog' aria-modal='true' aria-labelledby='enquiry-modal-title'>
-      <button className='enquiry-modal-close' type='button' aria-label='Close enquiry form' onClick={close}>×</button>
+      <button className='enquiry-modal-close' type='button' aria-label='Close enquiry form' onClick={close}>&times;</button>
       <div className='enquiry-modal-intro'>
         <small>QUICK ENQUIRY</small>
         <h2 id='enquiry-modal-title'>Tell us what you need.</h2>
-        <p>Your selected {isService ? 'service' : 'item'} is already filled. Submit your details and our team will contact you.</p>
+        <p>Your selected {selectedLabel} is already filled. Submit your details and our team will contact you.</p>
         <span>{context?.service}</span>
       </div>
       {success ? <div className='enquiry-modal-success' role='status'>
-        <b>✓</b>
+        <b aria-hidden='true'>&#10003;</b>
         <h3>Enquiry submitted</h3>
         <p>{notice}</p>
         <small>Reference saved in the admin enquiry inbox.</small>
@@ -133,7 +135,7 @@ export default function EnquiryModal() {
         <label>Full name<input ref={firstInputRef} name='name' value={form.name} onChange={update} autoComplete='name' placeholder='Enter your name' required/></label>
         <label>Mobile number<input name='phone' value={form.phone} onChange={update} autoComplete='tel' inputMode='tel' placeholder='Enter your mobile number' required/></label>
         <label className='wide'>Email address<input name='email' type='email' value={form.email} onChange={update} autoComplete='email' placeholder='Enter your email address' required/></label>
-        <label className='wide'>Selected {isService ? 'service' : 'item / requirement'}<input className='selected-service' name='service' value={form.service} onChange={update} readOnly/></label>
+        <label className='wide'>Selected {context?.isFinance ? 'requirement' : (isService ? 'service' : 'item / requirement')}<input className='selected-service' name='service' value={form.service} onChange={update} readOnly/></label>
         <label className='wide'>Message<textarea name='message' value={form.message} onChange={update} rows='4' placeholder='Add vehicle model, location or any other requirement...' required/></label>
         <div className='enquiry-modal-meta'><span>Your details are used only to handle this enquiry.</span><span>{context?.location?.shortLabel || context?.location?.label || 'All India'}</span></div>
         <button className='enquiry-modal-submit' type='submit' disabled={sending}>{sending ? 'Submitting enquiry...' : 'Submit Enquiry'}</button>

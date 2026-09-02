@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { api } from '../lib/api.js'
 import PublicFooter from '../components/PublicFooter.jsx'
+import { vehicleCategoryGroups } from '../lib/vehicleCategories.js'
 import { Header, Icon } from './Home.jsx'
 import cars from '../assets/Images/Home/Vehicle Category/4_Wheelers.png'
 import bikes from '../assets/Images/Home/Vehicle Category/2_Wheelers.png'
@@ -12,8 +13,6 @@ import ev from '../assets/Images/Home/Vehicle Category/EV_Vehicles.png'
 import compareHero from '../assets/Images/compare vechicles/car-comparison-blue-red-vs-hero.png'
 import compareOutline from '../assets/Images/compare vechicles/vehicle-comparison-outline-vs-banner.png'
 import compareSpeed from '../assets/Images/compare vechicles/car-comparison-speed-light-banner.png'
-import venueCompare from '../assets/Images/compare vechicles/hyundai-venue-black-suv.png'
-import seltosCompare from '../assets/Images/compare vechicles/kia-seltos-red-suv.png'
 import compareSupport from '../assets/Images/compare vechicles/vehicle-comparison-chat-support.png'
 import compareSelector from '../assets/Images/compare vechicles/black-red-suv-comparison-selector.png'
 import compareOffer from '../assets/Images/compare vechicles/vehicle-comparison-offer-discount.png'
@@ -27,8 +26,8 @@ import calculatorHero from '../assets/Images/Home/images/vehicle-price-search-in
 import contactSupport from '../assets/Images/contact us/automotive-customer-support-headset.png'
 import advertisementImage from '../assets/Images/img-123.png'
 import { PartsPage, ServicesPage } from './ServicePartsPages.jsx'
-import './marketplace.css'
-import './marketplace-extra.css'
+import '../styles/pages/marketplace.css'
+import '../styles/pages/marketplace-extra.css'
 import { ui } from '../lib/uiClasses.js'
 
 const meta = {
@@ -37,7 +36,8 @@ const meta = {
   calculators: ['Vehicle Calculators','Plan your vehicle budget with simple, practical tools.'],
   'spare-parts': ['Genuine Spare Parts','Built for performance. Delivered with confidence.'],
   services: ['Expert Vehicle Service','Trusted care for every kind of vehicle.'],
-  'used-cars': ['Great Cars. Better Prices.','Verified pre-owned cars with straightforward pricing.'],
+  'used-vehicles': ['Used Vehicles','Verified pre-owned bikes, cars and all vehicle categories with straightforward enquiry support.'],
+  'used-cars': ['Used Vehicles','Verified pre-owned bikes, cars and all vehicle categories with straightforward enquiry support.'],
   blog: ['Bright Auto Hub Journal','News, reviews and ownership advice for smarter journeys.'],
   contact: ["We're Here to Help You",'Questions or assistance? Our team is ready.'],
 }
@@ -48,10 +48,6 @@ const vehicleGroups = [
   {name:'Farm Vehicles',label:'Agriculture',slug:'farm-vehicles',image:tractor,copy:'Tractors and dependable equipment for productive farms.',categorySlugs:['tractors','mini-tractors','farm-equipment']},
   {name:'Construction Vehicles',label:'Heavy Equipment',slug:'construction-vehicles',image:excavator,copy:'Powerful machines for construction and infrastructure.',categorySlugs:['jcb','excavators','backhoe-loaders','wheel-loaders','cranes','construction-equipment']},
   {name:'Electric Vehicles',label:'Clean Mobility',slug:'ev-vehicles',image:ev,copy:'Electric mobility across personal, public and commercial use.',categorySlugs:['electric-bikes','electric-scooters','electric-cars','electric-3-wheelers','electric-trucks','electric-buses','electric-vans']},
-]
-const fallbackCompareVehicles = [
-  {_id:'compare-venue',name:'Hyundai Venue',fuelType:'Petrol',price:794000,imageUrl:venueCompare,modelYear:2026,specifications:{Mileage:'18 kmpl',Power:'118 bhp',Seats:'5'}},
-  {_id:'compare-seltos',name:'Kia Seltos',fuelType:'Petrol',price:1119000,imageUrl:seltosCompare,modelYear:2026,specifications:{Mileage:'17 kmpl',Power:'158 bhp',Seats:'5'}},
 ]
 const unique = (values) => [...new Set(values.filter(Boolean))].sort((a, b) => String(a).localeCompare(String(b)))
 const COMPARE_STORAGE_KEY = 'bright-auto-compare-vehicles'
@@ -117,15 +113,15 @@ function VehiclesPage({ data, used=false }) {
     const matches=filtered.filter(item=>item.group===group.slug||item.category?.parentId?.slug===group.slug||(!item.category?.parentId&&group.categorySlugs.includes(item.category?.slug)))
     return matches
   }
-  if(used)return <><Hero page={data.page}/><section className='market-wrap market-search'><div className='filter-row'><input aria-label='Search used cars' value={query} onChange={e=>setQuery(e.target.value)} placeholder='Search used cars...'/><select aria-label='Filter used cars by brand'><option>All Brands</option></select><select aria-label='Filter used cars by fuel type'><option>All Fuel Types</option></select><button type='button'>Search Used Cars</button></div></section><Stats/><section className='market-wrap section-space'><Heading title='Popular Used Cars' text={`${filtered.length} options ready to explore`}/><VehicleCards items={filtered} used/></section><Promo title='Every car checked. Every document verified.'/></>
-  return <><Hero page={data.page}/><section className='market-wrap market-search'><div className='filter-row'><input aria-label='Search every vehicle' value={query} onChange={e=>setQuery(e.target.value)} placeholder='Search every vehicle...'/><select aria-label='Filter vehicles by brand'><option>All Brands</option></select><select aria-label='Filter vehicles by fuel type'><option>All Fuel Types</option></select><button type='button'>Explore Vehicles</button></div></section><Stats/><section className='market-wrap section-space vehicle-catalog'><Heading title='Explore Every Category' text='Choose from every major vehicle segment in one place.'/><div className='vehicle-group-grid'>{vehicleGroups.map(group=><Link className='vehicle-group-card' to={`/vehicles/${group.slug}`} key={group.slug}><div><small>{group.label}</small><h3>{group.name}</h3><p>{group.copy}</p><span>Explore category &rarr;</span></div><img src={group.image} alt={group.name}/></Link>)}</div>{vehicleGroups.map(group=>{const products=productsFor(group);return <section className='vehicle-product-section' id={`catalog-${group.slug}`} key={group.slug}><Heading title={group.name} text={`${products.length} vehicles available`}/>{products.length?<VehicleCards items={products} limit={9} moreTo={`/vehicles/${group.slug}`} moreLabel={`View More ${group.name}`} moreCount={products.length}/>:<div className='market-empty'>No vehicles match this search in {group.name}.</div>}</section>})}</section><Promo title='Need help choosing the right vehicle?'/></>
+  if(used)return <><VehicleSubcategoryTopNav used/><section className='market-wrap market-search used-vehicle-search'><div className='filter-row'><input aria-label='Search used vehicles' value={query} onChange={e=>setQuery(e.target.value)} placeholder='Search used vehicles...'/><select aria-label='Filter used vehicles by brand'><option>All Brands</option></select><select aria-label='Filter used vehicles by fuel type'><option>All Fuel Types</option></select><button type='button'>Search Used Vehicles</button></div></section><Stats/><nav className='market-wrap used-category-tabs' aria-label='Used vehicle categories'>{vehicleGroups.map(group=><a href={'#used-catalog-'+group.slug} key={group.slug}>{group.name}</a>)}</nav><section className='market-wrap section-space vehicle-catalog'>{vehicleGroups.map(group=>{const products=productsFor(group);return <section className='vehicle-product-section' id={`used-catalog-${group.slug}`} key={group.slug}><Heading title={`Used ${group.name}`} text={`${products.length} used vehicles available`}/>{products.length?<VehicleCards items={products} used/>:<div className='market-empty'>No used vehicles match this search in {group.name}.</div>}</section>})}</section><Promo title='Every vehicle checked. Every document verified.'/></>
+  return <><VehicleSubcategoryTopNav/><section className='market-wrap market-search vehicle-search-top'><div className='filter-row'><input aria-label='Search every vehicle' value={query} onChange={e=>setQuery(e.target.value)} placeholder='Search every vehicle...'/><select aria-label='Filter vehicles by brand'><option>All Brands</option></select><select aria-label='Filter vehicles by fuel type'><option>All Fuel Types</option></select><button type='button'>Explore Vehicles</button></div></section><Stats/><section className='market-wrap section-space vehicle-catalog'><Heading title='Explore Every Category' text='Choose from every major vehicle segment in one place.'/><div className='vehicle-group-grid'>{vehicleGroups.map(group=><Link className='vehicle-group-card' to={`/vehicles/${group.slug}`} key={group.slug}><div><small>{group.label}</small><h3>{group.name}</h3><p>{group.copy}</p><span>Explore category -&gt;</span></div><img src={group.image} alt={group.name}/></Link>)}</div>{vehicleGroups.map(group=>{const products=productsFor(group);return <section className='vehicle-product-section' id={`catalog-${group.slug}`} key={group.slug}><Heading title={group.name} text={`${products.length} vehicles available`}/>{products.length?<VehicleCards items={products} limit={9} moreTo={`/vehicles/${group.slug}`} moreLabel={`View More ${group.name}`} moreCount={products.length}/>:<div className='market-empty'>No vehicles match this search in {group.name}.</div>}</section>})}</section><Promo title='Need help choosing the right vehicle?'/></>
 }
 
 function ComparePage({ data }) {
-  const saved = readCompareVehicles()
+  const saved = readCompareVehicles().filter((item) => !item.isFallback && !String(item._id || '').startsWith('compare-'))
   const incoming = data.vehicles || []
-  const merged = [...saved, ...incoming, ...fallbackCompareVehicles].filter((item, index, all) => all.findIndex((candidate) => candidate._id === item._id || candidate.slug === item.slug || candidate.name === item.name) === index)
-  const list = merged.length ? merged : fallbackCompareVehicles
+  const merged = [...saved, ...incoming].filter((item, index, all) => all.findIndex((candidate) => candidate._id === item._id || candidate.slug === item.slug || candidate.name === item.name) === index)
+  const list = merged
   const keyFor = (vehicle) => String(vehicle?._id || vehicle?.slug || vehicle?.name || '')
   const categoryValue = (vehicle) => vehicle?.category?.name || vehicle?.categoryId?.name || vehicle?.vehicleType || vehicle?.group || ''
   const brandValue = (vehicle) => typeof vehicle?.brand === 'string' ? vehicle.brand : vehicle?.brand?.name || ''
@@ -141,11 +137,7 @@ function ComparePage({ data }) {
   const filteredByCategory = useMemo(() => list.filter((vehicle) => !picker.category || categoryValue(vehicle) === picker.category), [list, picker.category])
   const filteredByBrand = useMemo(() => filteredByCategory.filter((vehicle) => !picker.brand || brandValue(vehicle) === picker.brand), [filteredByCategory, picker.brand])
   const filteredByProduct = useMemo(() => filteredByBrand.filter((vehicle) => !picker.product || productValue(vehicle) === picker.product), [filteredByBrand, picker.product])
-  const categoryOptions = useMemo(() => unique([
-    list.map(categoryValue),
-    ...vehicleGroups.map((group) => group.name),
-    'Cars', 'Bikes', 'Commercial Vehicles', 'Farm Vehicles', 'Construction Vehicles', 'Electric Vehicles'
-  ]).filter(Boolean), [list])
+  const categoryOptions = useMemo(() => unique(list.map(categoryValue)).filter(Boolean), [list])
   const brandOptions = useMemo(() => unique(filteredByCategory.map(brandValue)), [filteredByCategory])
   const productOptions = useMemo(() => unique(filteredByBrand.map(productValue)), [filteredByBrand])
   const variantOptions = useMemo(() => unique(filteredByProduct.map(variantValue).filter(Boolean)), [filteredByProduct])
@@ -332,18 +324,18 @@ function ContactPage({data}){
   return <><Hero page={page}/><section className='market-wrap contact-layout'><form onSubmit={submit}><Heading title={enquiryItem?'Complete Your Enquiry':'Send Us an Enquiry'} text={enquiryItem?`You are enquiring about ${enquiryItem}.`:'We normally reply within 30 minutes.'}/>{enquiryItem&&<div className='enquiry-context-card'><small>AUTOMATIC ENQUIRY DETAILS</small><strong>{enquiryItem}</strong>{enquiryCategory&&<span>{enquiryCategory}</span>}<p><Icon name='location'/> {selectedLocation.shortLabel||selectedLocation.label} <b> - </b> Source: {sourcePage}</p></div>}{['name','email','phone'].map(x=><input aria-label={x[0].toUpperCase()+x.slice(1)} autoComplete={x==='name'?'name':x==='email'?'email':'tel'} type={x==='email'?'email':x==='phone'?'tel':'text'} required={x!=='phone'} placeholder={x[0].toUpperCase()+x.slice(1)} value={form[x]} onChange={e=>setForm({...form,[x]:e.target.value})} key={x}/>)}<select aria-label='Enquiry subject' value={form.subject} onChange={e=>setForm({...form,subject:e.target.value})}><option>General enquiry</option><option>Vehicle enquiry</option><option>Service enquiry</option><option>Spare parts enquiry</option><option>Offer enquiry</option></select><textarea aria-label='Enquiry message' required rows='6' placeholder='Tell us what you need...' value={form.message} onChange={e=>setForm({...form,message:e.target.value})}/><button type='submit'><Icon name='enquiry'/> Submit Enquiry</button>{notice&&<p className='form-notice' role='status' aria-live='polite'>{notice}</p>}</form><aside><img className='contact-support-image' src={contactSupport} alt='Bright Auto Hub automotive customer support'/><Heading title='Get in Touch' text='Real people. Reliable answers.'/><h3>Call us</h3><a href='tel:+919876543210'>+91 98765 43210</a><h3>Email us</h3><a href='mailto:support@brightautohub.com'>support@brightautohub.com</a><h3>Selected location</h3><p>{selectedLocation.label}</p><hr/><h3>Hours</h3><p>Monday - Sunday  -  24/7 support</p></aside></section></>
 }
 
-function Hero({page,dark=false}){return <section className={`market-hero ${dark?'dark':''}`}><div className='market-wrap'><p>BRIGHT AUTO HUB</p><h1>{page.title}</h1><span>{page.description}</span><div><b>OK Verified listings</b><b>OK Best price promise</b><b>OK Expert support</b></div></div><img src={page.heroImage||cars} alt={`${page.title} - Bright Auto Hub`}/></section>}
-export function Heading({title,text}){return <div className='market-heading'><div><h2>{title}</h2><p>{text}</p></div><a href='#top' aria-label='Back to top'>Back to top  up</a></div>}
+function Hero({page,dark=false}){return <section className={`market-hero ${dark?'dark':''}`}><div className='market-wrap'><p>BRIGHT AUTO HUB</p><h1>{page.title}</h1><span>{page.description}</span>{!page.hideHeroBadges&&<div><b>Verified listings</b><b>Best price promise</b><b>Expert support</b></div>}</div><img src={page.heroImage||cars} alt={`${page.title} - Bright Auto Hub`}/></section>}
+export function Heading({title,text}){return <div className='market-heading'><div><h2>{title}</h2><p>{text}</p></div><a href='#top' aria-label='Back to top'>Back to top</a></div>}
 function Stats(){return <section className='market-wrap market-stats'>{[['2M+','Happy customers'],['1,500+','Trusted workshops'],['100K+','Genuine parts'],['24/7','Expert support']].map(([a,b])=><div key={b}><strong>{a}</strong><span>{b}</span></div>)}</section>}
-function Promo({title}){return <section className='market-wrap market-promo'><div><p>EXPERT ASSISTANCE</p><h2>{title}</h2></div><Link to={enquiryLink('general',title)}>Talk to an Expert &rarr;</Link></section>}
+function Promo({title}){return <section className='market-wrap market-promo'><div><p>EXPERT ASSISTANCE</p><h2>{title}</h2></div><Link to={enquiryLink('general',title)}>Talk to an Expert -&gt;</Link></section>}
 
 export default function MarketplacePage({kind}) {
   const [data,setData]=useState(null)
-  const fallback=useMemo(()=>({page:{slug:kind,title:meta[kind][0],description:meta[kind][1]},vehicles:[],brands:[],parts:[],services:[],blogs:[],partCategories:[]}),[kind])
+  const fallback=useMemo(()=>({page:{slug:kind,title:meta[kind][0],description:meta[kind][1]},vehicles:[],brands:[],parts:[],services:[],blogs:[],partCategories:[],serviceCategories:[]}),[kind])
   useEffect(()=>{const [title,description]=meta[kind];document.title=`${title} | Bright Auto Hub`;document.querySelector('meta[name="description"]')?.setAttribute('content',description)},[kind])
   useEffect(()=>{let live=true;api.get(`/public/site/${kind}`).then(x=>live&&setData(x)).catch(()=>live&&setData(fallback));return()=>{live=false}},[kind,fallback])
   if(!data)return <MarketplaceShell active={kind}><div className='market-loading'>Loading Bright Auto Hub...</div></MarketplaceShell>
-  const body=kind==='vehicles'?<VehiclesPage data={data}/>:kind==='used-cars'?<VehiclesPage data={data} used/>:kind==='compare'?<ComparePage data={data}/>:kind==='calculators'?<CalculatorsPage data={data}/>:kind==='spare-parts'?<PartsPage data={data}/>:kind==='services'?<ServicesPage data={data}/>:kind==='blog'?<ReferenceBlogPage data={data}/>:<ContactPage data={data}/>
+  const body=kind==='vehicles'?<VehiclesPage data={data}/>:(kind==='used-vehicles'||kind==='used-cars')?<VehiclesPage data={data} used/>:kind==='compare'?<ComparePage data={data}/>:kind==='calculators'?<CalculatorsPage data={data}/>:kind==='spare-parts'?<PartsPage data={data}/>:kind==='services'?<ServicesPage data={data}/>:kind==='blog'?<ReferenceBlogPage data={data}/>:<ContactPage data={data}/>
   return <MarketplaceShell active={kind}>{body}</MarketplaceShell>
 }
 

@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { api } from '../lib/api.js'
 import { MarketplaceShell } from './MarketplacePage.jsx'
 import BlogDetailPage from './BlogDetailPage.jsx'
-import './public-content.css'
+import '../styles/pages/public-content.css'
 
 export default function PublicContent({ kind, type }) {
   const { slug } = useParams()

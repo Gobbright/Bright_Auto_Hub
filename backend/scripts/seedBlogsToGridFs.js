@@ -71,7 +71,7 @@ const uploadImage = async (bucket, source, alt, context) => {
 const articleContent = (title, excerpt, tag) => `<p>${excerpt}</p><h2>Why this matters</h2><p>${title} is easier to understand when real requirements, safety, running costs and long-term ownership are considered together. This guide focuses on practical decisions instead of specifications alone.</p><h2>What to check</h2><p>Start with your everyday usage, expected distance, passenger or payload needs, service availability and total budget. Compare the options consistently and verify the details that affect your journey most.</p><h2>Make a confident decision</h2><p>Use this ${tag.toLowerCase()} guide as a shortlist, then speak with a Bright Auto Hub expert for personalised vehicle, service or spare-parts guidance.</p>`
 
 const run = async () => {
-  await mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/goautomobile')
+  await mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/brightautohub', { dbName: process.env.MONGODB_DB_NAME || 'brightautohub' })
   const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, { bucketName: 'media' })
   const gallery = []
   for (const [filename, alt] of detailVisuals) {

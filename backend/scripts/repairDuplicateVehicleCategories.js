@@ -2,7 +2,7 @@ import 'dotenv/config'
 import mongoose from 'mongoose'
 import '../src/adminApi.js'
 
-const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/goautomobile'
+const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/brightautohub'
 const Category = mongoose.model('AdminCategory')
 const Vehicle = mongoose.model('AdminVehicle')
 const slugify = (value = '') => value.toString().trim().toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
@@ -16,7 +16,7 @@ const firstFiveUniqueNames = (items) => {
   }).slice(0, 5)
 }
 
-await mongoose.connect(uri)
+await mongoose.connect(uri, { dbName: process.env.MONGODB_DB_NAME || 'brightautohub' })
 let repairedCategories = 0
 let clonedVehicles = 0
 try {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import Home from './pages/Home.jsx'
 import Login from './pages/Login.jsx'
@@ -9,6 +9,7 @@ import MarketplacePage from './pages/MarketplacePage.jsx'
 import VehicleCategoryPage from './pages/VehicleCategoryPage.jsx'
 import ProductDetailPage from './pages/ProductDetailPage.jsx'
 import FinanceInsurancePage from './pages/FinanceInsurancePage.jsx'
+import CalculatorsPage from './pages/CalculatorsPage.jsx'
 import SearchPage from './pages/SearchPage.jsx'
 import LegalPage from './pages/LegalPage.jsx'
 import { api } from './lib/api.js'
@@ -22,8 +23,8 @@ const pageLabelForPath = (pathname = '') => {
   if (pathname === '/') return 'Home'
   if (pathname === '/vehicles') return 'Vehicles'
   if (pathname === '/compare') return 'Compare Vehicles'
-  if (pathname === '/calculators') return 'Calculators'
-  if (pathname === '/used-cars') return 'Used Cars'
+  if (pathname === '/calculators') return 'Tools & Calculators'
+  if (pathname === '/used-vehicles' || pathname === '/used-cars') return 'Used Vehicles'
   if (pathname === '/spare-parts') return 'Spare Parts'
   if (pathname === '/services') return 'Services'
   if (pathname === '/contact') return 'Contact'
@@ -40,6 +41,7 @@ const pageLabelForPath = (pathname = '') => {
   if (pathname.startsWith('/spare-parts/')) return toTitleCase(pathname.split('/').filter(Boolean).at(-1) || 'Spare Parts')
   if (pathname.startsWith('/services/')) return toTitleCase(pathname.split('/').filter(Boolean).at(-1) || 'Services')
   if (pathname.startsWith('/finance-insurance/')) return toTitleCase(pathname.split('/').filter(Boolean).at(-1) || 'Finance & Insurance')
+  if (pathname.startsWith('/calculators/')) return toTitleCase(pathname.split('/').filter(Boolean).at(-1) || 'Tools & Calculators')
   if (pathname.startsWith('/legal/')) return 'Legal Page'
   return toTitleCase(pathname.split('/').filter(Boolean).at(-1) || 'Home')
 }
@@ -49,34 +51,106 @@ export default function App() {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [pathname])
+  const trackerRef = useRef({ sessionId: '', pagePath: '', pageTitle: '', pageUrl: '', startedAt: 0, clicks: 0, enabled: false })
+  const readTrackingUser = () => {
+    try {
+      const profile = JSON.parse(window.localStorage.getItem('publicUserProfile') || '{}')
+      if (profile?.name || profile?.email) return { name: profile.name || profile.email, email: profile.email || '' }
+    } catch {
+      // Continue with dashboard or guest data when profile storage is unavailable.
+    }
+    const dashboardName = window.localStorage.getItem('dashboardUserName') || ''
+    return { name: dashboardName || 'Guest', email: '' }
+  }
+  const trackingSessionId = () => {
+    try {
+      const existing = window.sessionStorage.getItem('goauto:website-session')
+      if (existing) return existing
+      const created = window.crypto?.randomUUID ? window.crypto.randomUUID() : `session-${Date.now()}-${Math.random().toString(16).slice(2)}`
+      window.sessionStorage.setItem('goauto:website-session', created)
+      return created
+    } catch {
+      return `session-${Date.now()}`
+    }
+  }
+  const sendWebsiteActivity = (payload, preferBeacon = false) => {
+    const body = JSON.stringify({ source: 'website', ...payload })
+    if (preferBeacon && navigator.sendBeacon) {
+      const blob = new Blob([body], { type: 'application/json' })
+      if (navigator.sendBeacon('/api/website-activities/track', blob)) return Promise.resolve()
+    }
+    return api.post('/website-activities/track', JSON.parse(body)).catch(() => {})
+  }
+  const finishWebsitePage = (preferBeacon = false) => {
+    const current = trackerRef.current
+    if (!current.enabled || !current.startedAt) return
+    const endedAt = new Date()
+    const durationSeconds = Math.max(1, Math.round((endedAt.getTime() - current.startedAt) / 1000))
+    const user = readTrackingUser()
+    sendWebsiteActivity({
+      event: 'page-duration',
+      sessionId: current.sessionId,
+      userName: user.name,
+      userEmail: user.email,
+      pageTitle: current.pageTitle,
+      pageUrl: current.pageUrl,
+      pagePath: current.pagePath,
+      durationSeconds,
+      clickCount: current.clicks,
+      startedAt: new Date(current.startedAt).toISOString(),
+      endedAt: endedAt.toISOString(),
+      referrer: document.referrer || '',
+      details: `Spent ${durationSeconds}s and clicked ${current.clicks} item(s).`,
+    }, preferBeacon)
+    trackerRef.current = { ...current, startedAt: 0, clicks: 0 }
+  }
   useEffect(() => {
     if (pathname.startsWith('/admin') || pathname === '/dashboard') return undefined
-    const timer = window.setTimeout(() => {
-      const pageTitle = stripSiteSuffix(document.title) || pageLabelForPath(pathname)
-      const pagePath = `${window.location.pathname}${window.location.search}`
-      const fingerprint = `${pagePath}|${pageTitle}`
+    let cancelled = false
+    const startTracking = async () => {
       try {
-        const existing = JSON.parse(window.sessionStorage.getItem('goauto:last-pageview') || 'null')
-        if (existing && existing.fingerprint === fingerprint && Date.now() - Number(existing.time || 0) < 1500) return
-        window.sessionStorage.setItem('goauto:last-pageview', JSON.stringify({ fingerprint, time: Date.now() }))
+        const setting = await api.get('/website-activities/settings')
+        if (cancelled || !setting.enabled) {
+          trackerRef.current = { ...trackerRef.current, enabled: false, startedAt: 0, clicks: 0 }
+          return
+        }
+        const user = readTrackingUser()
+        const pageTitle = stripSiteSuffix(document.title) || pageLabelForPath(pathname)
+        const pagePath = `${window.location.pathname}${window.location.search}`
+        const sessionId = trackingSessionId()
+        trackerRef.current = { enabled: true, sessionId, pagePath, pageTitle, pageUrl: window.location.href, startedAt: Date.now(), clicks: 0 }
+        await sendWebsiteActivity({
+          event: 'pageview',
+          sessionId,
+          userName: user.name,
+          userEmail: user.email,
+          pageTitle,
+          pageUrl: window.location.href,
+          pagePath,
+          referrer: document.referrer || '',
+          details: pageLabelForPath(pathname),
+        })
       } catch {
-        // Ignore storage failures and still send the event.
+        trackerRef.current = { ...trackerRef.current, enabled: false, startedAt: 0, clicks: 0 }
       }
-      api.post('/website-activities/track', {
-        event: 'pageview',
-        pageTitle,
-        pageUrl: window.location.href,
-        pagePath,
-        referrer: document.referrer || '',
-        source: 'website',
-        details: pageLabelForPath(pathname),
-      }).catch(() => {})
-    }, 0)
-    return () => window.clearTimeout(timer)
+    }
+    const handlePageHide = () => finishWebsitePage(true)
+    const handleVisibilityChange = () => { if (document.visibilityState === 'hidden') finishWebsitePage(true) }
+    startTracking()
+    window.addEventListener('pagehide', handlePageHide)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => {
+      cancelled = true
+      finishWebsitePage(true)
+      window.removeEventListener('pagehide', handlePageHide)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
   }, [pathname, search])
   useEffect(() => {
     if (pathname.startsWith('/admin') || pathname === '/dashboard') return undefined
     const handleWebsiteClick = (event) => {
+      const current = trackerRef.current
+      if (!current.enabled) return
       const clickedElement = event.target instanceof Element ? event.target.closest('a, button') : null
       if (!clickedElement || clickedElement.closest('[data-no-track]')) return
 
@@ -90,19 +164,23 @@ export default function App() {
       )
       if (!target) return
 
-      const pageTitle = stripSiteSuffix(document.title) || pageLabelForPath(pathname)
-      const pagePath = `${window.location.pathname}${window.location.search}`
-      api.post('/website-activities/track', {
+      const user = readTrackingUser()
+      const nextClicks = current.clicks + 1
+      trackerRef.current = { ...current, clicks: nextClicks }
+      sendWebsiteActivity({
         event: 'click',
-        pageTitle,
+        sessionId: current.sessionId,
+        userName: user.name,
+        userEmail: user.email,
+        pageTitle: current.pageTitle || stripSiteSuffix(document.title) || pageLabelForPath(pathname),
         pageUrl: window.location.href,
-        pagePath,
+        pagePath: current.pagePath || `${window.location.pathname}${window.location.search}`,
         action: tagName === 'a' ? 'link' : 'button',
         target,
+        clickCount: nextClicks,
         referrer: document.referrer || '',
-        source: 'website',
         details: clickedElement.getAttribute('href') || clickedElement.getAttribute('type') || '',
-      }).catch(() => {})
+      })
     }
 
     document.addEventListener('click', handleWebsiteClick, true)
@@ -135,8 +213,10 @@ export default function App() {
     <Route path="/vehicles/:group" element={<VehicleCategoryPage />} />
     <Route path="/vehicles/:group/:category" element={<VehicleCategoryPage />} />
     <Route path="/compare" element={<MarketplacePage kind="compare" />} />
-    <Route path="/calculators" element={<MarketplacePage kind="calculators" />} />
-    <Route path="/used-cars" element={<MarketplacePage kind="used-cars" />} />
+    <Route path="/calculators" element={<CalculatorsPage />} />
+    <Route path="/calculators/:calculator" element={<CalculatorsPage />} />
+    <Route path="/used-vehicles" element={<MarketplacePage kind="used-vehicles" />} />
+    <Route path="/used-cars" element={<Navigate to="/used-vehicles" replace />} />
     <Route path="/spare-parts" element={<MarketplacePage kind="spare-parts" />} />
     <Route path="/spare-parts/:categorySlug" element={<MarketplacePage kind="spare-parts" />} />
     <Route path="/services" element={<MarketplacePage kind="services" />} />
@@ -148,8 +228,8 @@ export default function App() {
     <Route path="/pages/:slug" element={<PublicContent kind="content" />} />
     <Route path="/blog" element={<MarketplacePage kind="blog" />} />
     <Route path="/blog/:slug" element={<PublicContent kind="blogs" />} />
-    <Route path="/admin" element={isLoggedIn ? <AdminLayout onLogout={logout} /> : <Navigate to="/login" replace />} />
-    <Route path="/dashboard" element={<Navigate to="/admin" replace />} />
+    <Route path="/admin/*" element={isLoggedIn ? <AdminLayout onLogout={logout} /> : <Navigate to="/login" replace />} />
+    <Route path="/dashboard" element={<Navigate to="/admin/dashboard" replace />} />
     <Route path="*" element={<Navigate to="/" replace />} />
     <Route path='/vehicles/product/:identifier' element={<ProductDetailPage kind='vehicles' />} />
     <Route path='/finance-insurance' element={<FinanceInsurancePage />} />

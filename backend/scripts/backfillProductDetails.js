@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import '../src/adminApi.js'
 
-const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/goautomobile'
+const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/brightautohub'
 
 const Vehicle = mongoose.model('AdminVehicle')
 const Part = mongoose.model('AdminPart')
@@ -67,7 +67,7 @@ async function backfill(Model, makeDetails) {
 }
 
 try {
-  await mongoose.connect(uri)
+  await mongoose.connect(uri, { dbName: process.env.MONGODB_DB_NAME || 'brightautohub' })
   const [vehicles, parts, services] = await Promise.all([
     backfill(Vehicle, vehicleDetails),
     backfill(Part, partDetails),

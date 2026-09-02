@@ -1,0 +1,11 @@
+{
+  "name": "brightautohub-root",
+  "private": true,
+  "scripts": {
+    "postinstall": "npm --prefix frontend install && npm --prefix backend install",
+    "build": "npm --prefix frontend run build",
+    "start": "npm --prefix backend start",
+    "dev": "npm --prefix backend run dev",
+    "check": "npm --prefix backend run check"
+  }
+}

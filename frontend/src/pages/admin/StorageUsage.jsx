@@ -34,8 +34,7 @@ export default function StorageUsage() {
   const usedPercent = filesystem.total ? Math.min(100, (filesystem.used / filesystem.total) * 100) : 0
 
   return <div className='manager-page storage-usage-page'>
-    <div className='page-intro'>
-      <div><p className='eyebrow'>Website + MongoDB</p><h2>Storage &amp; Collections</h2><p>Track local website assets, GridFS images, database records and collection-level storage from one dashboard.</p></div>
+    <div className='manager-actions-row'>
       <button className='admin-secondary' type='button' onClick={load}><AdminIcon name='refresh'/> Refresh Usage</button>
     </div>
 
@@ -65,7 +64,7 @@ export default function StorageUsage() {
     </section>
 
     <section className='data-panel database-breakdown'>
-      <div className='database-breakdown-heading'><div><p className='eyebrow'>All MongoDB collections</p><h3>{data?.database || 'goautomobile'}</h3></div><span>{totals.collections || 0} collections</span></div>
+      <div className='database-breakdown-heading'><div><p className='eyebrow'>All MongoDB collections</p><h3>{data?.database || 'brightautohub'}</h3></div><span>{totals.collections || 0} collections</span></div>
       <div className='table-scroll'><table className='resource-table'><thead><tr><th>Collection</th><th>Documents</th><th>Data size</th><th>Allocated</th><th>Indexes</th><th>Total size</th></tr></thead><tbody>{(data?.collections || []).map((item) => <tr key={item.name}><td><span className='cell-primary'>{item.name}</span></td><td>{Number(item.count || 0).toLocaleString('en-IN')}</td><td>{sizeLabel(item.dataSize)}</td><td>{sizeLabel(item.storageSize)}</td><td>{sizeLabel(item.indexSize)}</td><td><strong>{sizeLabel(item.totalSize)}</strong></td></tr>)}</tbody></table></div>
     </section>
   </div>

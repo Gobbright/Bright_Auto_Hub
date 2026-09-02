@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { MarketplaceShell } from './MarketplacePage.jsx'
-import './legal-page.css'
+import '../styles/pages/legal-page.css'
 
 const policies = {
   'privacy-policy': {

@@ -26,27 +26,6 @@ export const defaultCategoryTree = [
     ],
   },
   {
-    name: 'Pre-Owned Vehicles',
-    children: ['Pre-Owned Cars', 'Pre-Owned Bikes', 'Pre-Owned Commercial Vehicles', 'Pre-Owned Trucks', 'Pre-Owned Tractors', 'Pre-Owned Construction Equipment'],
-  },
-  {
-    name: 'Sell Vehicle',
-    children: ['Sell Car', 'Sell Bike', 'Sell Commercial Vehicle', 'Sell Truck', 'Sell Tractor', 'Sell Construction Equipment'],
-  },
-  {
-    name: 'Exchange',
-    children: ['Exchange Car', 'Exchange Bike', 'Exchange Commercial Vehicle', 'Exchange Tractor', 'Exchange JCB', 'Get Exchange Value'],
-  },
-  {
-    name: 'Compare',
-    children: [
-      'Compare Bikes', 'Compare Scooters', 'Compare Electric Bikes', 'Compare Cars', 'Compare Electric Cars',
-      'Compare Commercial Vehicles', 'Compare Trucks', 'Compare Mini Trucks', 'Compare Pickup Vehicles',
-      'Compare Buses', 'Compare 3 Wheelers', 'Compare Tractors', 'Compare Farm Equipment', 'Compare JCB',
-      'Compare Construction Equipment',
-    ],
-  },
-  {
     name: 'Spare Parts',
     description: 'Vehicle-specific genuine spare parts and fitment support.',
     icon: '/images/spare-parts-catalog/brake-system-spare-parts.jpg',
@@ -62,15 +41,11 @@ export const defaultCategoryTree = [
     ],
   },
   {
-    name: 'Tools & Calculators',
-    children: ['EMI Calculator', 'Vehicle Loan Calculator', 'Fuel Cost Calculator', 'Mileage Calculator', 'EV Running Cost Calculator', 'On-Road Price Calculator', 'Vehicle Valuation', 'Exchange Value Calculator'],
-  },
-  {
     name: 'Finance & Insurance',
     children: ['Vehicle Loan', 'Car Loan', 'Bike Loan', 'Commercial Vehicle Loan', 'Tractor Loan', 'Vehicle Insurance', 'Insurance Renewal'],
   },
   {
-    name: 'Dealers & Locations',
-    children: ['Find Vehicle Dealers', 'Find Spare Part Dealers', 'Find Service Centers', 'Find Nearby Locations'],
+    name: 'Tools & Calculators',
+    children: ['EMI Calculator', 'Vehicle Loan Calculator', 'Fuel Cost Calculator', 'Mileage Calculator', 'EV Running Cost Calculator', 'On-Road Price Calculator', 'Vehicle Valuation', 'Exchange Value Calculator'],
   },
 ]

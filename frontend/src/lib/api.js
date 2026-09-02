@@ -1,11 +1,17 @@
-const DEFAULT_API_URL = import.meta.env.PROD ? 'https://api.brightautohub.gobrightglobal.com/api' : 'http://localhost:5000/api'
-const API_URL = import.meta.env.VITE_API_URL || DEFAULT_API_URL
+const DEFAULT_API_URL = import.meta.env.PROD ? 'https://api-brightautohub.gobrightglobal.com/api' : 'http://localhost:5000/api'
+const API_URL = String(import.meta.env.VITE_API_URL || DEFAULT_API_URL).replace(/\/+$/, '')
 
 const request = async (path, options = {}) => {
-  const response = await fetch(`${API_URL}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...options.headers },
-    ...options,
-  })
+  const endpoint = path.startsWith('/') ? path : '/' + path
+  let response
+  try {
+    response = await fetch(`${API_URL}${endpoint}`, {
+      headers: { 'Content-Type': 'application/json', ...options.headers },
+      ...options,
+    })
+  } catch {
+    throw new Error('Unable to reach Bright Auto Hub API. Check that api-brightautohub.gobrightglobal.com is live and using HTTPS.')
+  }
   if (response.status === 204) return null
   const data = await response.json().catch(() => ({}))
   if (!response.ok) throw new Error(data.message || 'Unable to complete the request')

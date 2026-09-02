@@ -11,7 +11,7 @@ const scriptDirectory = path.dirname(fileURLToPath(import.meta.url))
 const projectRoot = path.resolve(scriptDirectory, '..', '..')
 const sourceLogoDirectory = path.join(projectRoot, 'frontend', 'src', 'assets', 'Images', 'Home', 'Brand Logos')
 const publicLogoDirectory = path.join(projectRoot, 'frontend', 'public', 'images', 'brands', 'admin')
-const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/goautomobile'
+const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/brightautohub'
 
 const localLogoAliases = {
   'ashok-leyland': 'ashok-leyland.svg', bajaj: 'bajaj.svg', hero: 'hero.svg', honda: 'honda.svg',
@@ -219,7 +219,7 @@ const uploadToGridFs = async (bucket, filesCollection, brand, asset, filename) =
 }
 
 const run = async () => {
-  await mongoose.connect(mongoUri)
+  await mongoose.connect(mongoUri, { dbName: process.env.MONGODB_DB_NAME || 'brightautohub' })
   await mkdir(publicLogoDirectory, { recursive: true })
   const Brand = mongoose.model('AdminBrand')
   const brands = await Brand.find({}).sort({ name: 1 })

@@ -5,7 +5,7 @@ import { addVehicleToCompare, MarketplaceShell } from './MarketplacePage.jsx'
 import vehicleFallback from '../assets/Images/Home/Vehicle Category/4_Wheelers.png'
 import partFallback from '../assets/Images/Home/images/automobile-tyres-alloy-wheels-banner.png'
 import serviceFallback from '../assets/Images/service-spare-parts/expert-car-service-workshop.jpg'
-import './product-detail.css'
+import '../styles/pages/product-detail.css'
 
 const configs = {
   vehicles: { label: 'Vehicle', backLabel: 'All Vehicles', backUrl: '/vehicles', source: 'vehicle', fallback: vehicleFallback, priceLabel: 'Latest price' },
@@ -22,6 +22,7 @@ const printable = (value) => {
   if (typeof value === 'object' && value) return value.name || ''
   return value
 }
+const textFromHtml = (value = '') => String(value || '').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim()
 const present = (value) => value !== undefined && value !== null && value !== ''
 const itemKey = (item = {}) => String(item._id || item.slug || item.name || '')
 const itemCategoryLabel = (item = {}) => categoryName(item.categoryId) || categoryName(item.category) || item.categoryGroup || item.vehicleType || item.group || ''
@@ -29,6 +30,21 @@ const itemBrandLabel = (item = {}) => typeof item.brand === 'string' ? item.bran
 const productRoute = (kind, item = {}) => {
   const segment = kind === 'parts' ? 'spare-parts' : kind
   return `/${segment}/product/${item.slug || item._id}`
+}
+const productImagesFor = (product = {}, fallback = '') => {
+  const images = []
+  const add = (url, alt = '') => {
+    const cleanUrl = String(url || '').trim()
+    if (cleanUrl && !images.some((image) => image.url === cleanUrl)) images.push({ url: cleanUrl, alt: String(alt || '').trim() })
+  }
+  add(product.imageUrl, product.name)
+  ;(Array.isArray(product.galleryImages) ? product.galleryImages : []).forEach((image) => add(image?.url, image?.alt || product.name))
+  ;(Array.isArray(product.colorImages) ? product.colorImages : []).forEach((image) => {
+    add(image?.url, image?.alt || image?.color || product.name)
+    ;(Array.isArray(image?.galleryImages) ? image.galleryImages : []).forEach((galleryImage) => add(galleryImage?.url, galleryImage?.alt || image?.color || product.name))
+  })
+  if (!images.length) add(fallback, product.name || 'Product image')
+  return images.slice(0, 5)
 }
 const enquiryRoute = (config, item = {}) => '/contact?' + new URLSearchParams({
   subject: config.label + ' enquiry',
@@ -82,7 +98,7 @@ function productFacts(kind, product) {
 }
 
 const toList = (value) => Array.isArray(value) ? value.filter(Boolean).map(String) : present(value) ? [String(value)] : []
-const detailObject = (value) => value && typeof value === 'object' && !Array.isArray(value) ? value : {}
+const detailObject = (value) => value && typeof value === 'object' && !Array.isArray(value) ? value : typeof value === 'string' && value.trim() ? { html: value } : {}
 const normalizeDetailCards = (cards) => Array.isArray(cards) ? cards.map((card) => ({
   title: String(card?.title || '').trim(),
   text: String(card?.text || card?.copy || '').trim(),
@@ -135,19 +151,22 @@ function defaultMoreDetails(kind, product, specifications, features) {
     ],
   }
 }
-export default function ProductDetailPage({ kind }) {
-  const { identifier } = useParams()
+export default function ProductDetailPage({ kind, data = null }) {
+  const params = useParams()
+  const identifier = params.identifier || data?.slug || data?._id || 'preview'
   const config = configs[kind]
-  const [product, setProduct] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [product, setProduct] = useState(data)
+  const [loading, setLoading] = useState(!data)
   const [error, setError] = useState('')
   const [relatedProducts, setRelatedProducts] = useState([])
+  const [activeImageIndex, setActiveImageIndex] = useState(0)
   const isEvProduct=kind==='vehicles'&&/(electric|\bev\b)/i.test([
     product?.group,product?.vehicleType,product?.fuelType,product?.category?.name,product?.category?.slug,
     product?.categoryId?.name,product?.categoryId?.slug,
   ].filter(Boolean).join(' '))
 
   useEffect(() => {
+    if (data) { setProduct(data); setLoading(false); setError(''); return undefined }
     let active = true
     setLoading(true)
     setError('')
@@ -156,16 +175,23 @@ export default function ProductDetailPage({ kind }) {
       .catch((requestError) => { if (active) setError(requestError.message) })
       .finally(() => { if (active) setLoading(false) })
     return () => { active = false }
-  }, [identifier, kind])
+  }, [data, identifier, kind])
 
   useEffect(() => {
-    document.title = product ? product.name + ' | Bright Auto Hub' : config.label + ' | Bright Auto Hub'
-    const description = product?.description || 'View complete product information and send an enquiry to Bright Auto Hub.'
+    document.title = product ? product.seoTitle || product.name + ' | Bright Auto Hub' : config.label + ' | Bright Auto Hub'
+    const description = product?.seoDescription || textFromHtml(product?.description) || 'View complete product information and send an enquiry to Bright Auto Hub.'
     document.querySelector('meta[name=description]')?.setAttribute('content', description)
+    let keywordMeta = document.querySelector('meta[name=keywords]')
+    if (!keywordMeta) { keywordMeta = document.createElement('meta'); keywordMeta.setAttribute('name', 'keywords'); document.head.appendChild(keywordMeta) }
+    keywordMeta.setAttribute('content', product?.seoKeywords || '')
   }, [config.label, product])
 
   useEffect(() => {
-    if (!product) { setRelatedProducts([]); return undefined }
+    setActiveImageIndex(0)
+  }, [kind, product?._id, product?.slug])
+
+  useEffect(() => {
+    if (!product || data) { setRelatedProducts([]); return undefined }
     let live = true
     const listKey = listKeyForKind[kind]
     api.get('/public/site/' + siteSlugForKind[kind])
@@ -182,7 +208,7 @@ export default function ProductDetailPage({ kind }) {
       })
       .catch(() => live && setRelatedProducts([]))
     return () => { live = false }
-  }, [kind, product])
+  }, [data, kind, product])
 
   const facts = useMemo(() => product ? productFacts(kind, product).filter(([, value]) => present(value)) : [], [kind, product])
   const specifications = useMemo(() => {
@@ -191,6 +217,9 @@ export default function ProductDetailPage({ kind }) {
   }, [product])
   const features = kind === 'services' ? product?.features || [] : []
   const moreDetails = useMemo(() => product ? defaultMoreDetails(kind, product, specifications, features) : null, [features, kind, product, specifications])
+  const detailsHtml = useMemo(() => product ? detailObject(product.details).html || '' : '', [product])
+  const productImages = useMemo(() => product ? productImagesFor(product, config.fallback) : [], [config.fallback, product])
+  const activeImage = productImages[Math.min(activeImageIndex, Math.max(productImages.length - 1, 0))] || { url: config.fallback, alt: config.label }
   const enquiryUrl = product ? '/contact?' + new URLSearchParams({
     subject: config.label + ' enquiry',
     item: product.name,
@@ -203,11 +232,13 @@ export default function ProductDetailPage({ kind }) {
   if (loading) return <MarketplaceShell active={shellActive}><div className='product-detail-state'><span className='product-detail-loader'/><h1>Loading product...</h1></div></MarketplaceShell>
   if (error || !product) return <MarketplaceShell active={shellActive}><div className='product-detail-state error'><small>PRODUCT UNAVAILABLE</small><h1>We could not find this product.</h1><p>{error}</p><Link to={config.backUrl}>Back to {config.backLabel}</Link></div></MarketplaceShell>
 
-  const chips = kind === 'vehicles'
+  const chips = Array.from(new Set((kind === 'vehicles'
     ? [product.vehicleType, product.fuelType, product.transmission, product.condition]
     : kind === 'parts'
       ? [categoryName(product.categoryId) || product.category, product.brand, product.stock > 0 ? 'In stock' : 'Contact for stock']
-      : [product.category, product.duration, ...(product.vehicleTypes || [])]
+      : [product.category, product.duration, ...(product.vehicleTypes || [])])
+    .filter(Boolean)
+    .map((chip) => String(chip))))
 
   return <MarketplaceShell active={shellActive}>
     <main className={'product-detail-page'+(isEvProduct?' ev-product-detail-page':'')}>
@@ -218,13 +249,16 @@ export default function ProductDetailPage({ kind }) {
       <section className='market-wrap product-detail-wrap product-detail-hero'>
         <div className='product-detail-visual'>
           <span>{product.featured ? 'FEATURED' : kind === 'parts' ? 'GENUINE PRODUCT' : 'VERIFIED LISTING'}</span>
-          <img src={product.imageUrl || config.fallback} alt={product.name} onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = config.fallback }} />
+          <figure className='product-detail-main-image'>
+            <img src={activeImage.url || config.fallback} alt={activeImage.alt || product.name} onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = config.fallback }} />
+          </figure>
+          {productImages.length > 1 && <div className='product-detail-thumbs' aria-label='Product images'>{productImages.map((image, index) => <button className={index === activeImageIndex ? 'active' : ''} type='button' aria-label={'View product image ' + (index + 1)} aria-pressed={index === activeImageIndex} onClick={() => setActiveImageIndex(index)} key={image.url + '-' + index}><img src={image.url} alt={image.alt || product.name} onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = config.fallback }} /></button>)}</div>}
         </div>
         <div className='product-detail-summary'>
           <p className='product-detail-kicker'>{config.label.toUpperCase()} · LIVE FROM ADMIN</p>
           <h1>{product.name}</h1>
-          <div className='product-detail-chips'>{chips.filter(Boolean).map((chip) => <span key={chip}>{String(chip)}</span>)}</div>
-          <p className='product-detail-description'>{product.description || 'Contact our automotive team for complete information, availability and expert assistance.'}</p>
+          <div className='product-detail-chips'>{chips.map((chip) => <span key={chip}>{chip}</span>)}</div>
+          <div className='product-detail-description' dangerouslySetInnerHTML={{ __html: product.description || '<p>Contact our automotive team for complete information, availability and expert assistance.</p>' }} />
           <div className='product-detail-price'>
             <small>{config.priceLabel}</small>
             <strong>{priceOnEnquiry}</strong>
@@ -262,6 +296,7 @@ export default function ProductDetailPage({ kind }) {
           <h2>{moreDetails.title}</h2>
           <p>{moreDetails.intro}</p>
         </div>
+        {detailsHtml && <div className='product-more-details-rich' dangerouslySetInnerHTML={{ __html: detailsHtml }} />}
         <div className='product-more-details-grid'>
           {moreDetails.cards.map((card, index) => <article key={`${card.title || 'detail'}-${index}`}>
             <span>{String(index + 1).padStart(2, '0')}</span>
@@ -278,7 +313,7 @@ export default function ProductDetailPage({ kind }) {
           const route = productRoute(kind, item)
           return <article className='product-related-card' key={item._id || item.slug || item.name}>
             <Link className='product-related-media' to={route}><img src={item.imageUrl || config.fallback} alt={item.name} onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = config.fallback }} /></Link>
-            <div className='product-related-copy'><small>{itemCategoryLabel(item) || config.label}</small><h3>{item.name}</h3><p>{item.description || 'Ask our team for latest price, availability and fitment guidance.'}</p><strong>{priceOnEnquiry}</strong><div><Link to={route}>View</Link><Link to={enquiryRoute(config, item)}>Enquire</Link></div></div>
+            <div className='product-related-copy'><small>{itemCategoryLabel(item) || config.label}</small><h3>{item.name}</h3><p>{textFromHtml(item.description) || 'Ask our team for latest price, availability and fitment guidance.'}</p><strong>{priceOnEnquiry}</strong><div><Link to={route}>View</Link><Link to={enquiryRoute(config, item)}>Enquire</Link></div></div>
           </article>
         })}</div>
       </section>}

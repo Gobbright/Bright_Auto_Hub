@@ -8,7 +8,7 @@ import { sparePartSeeds, sparePartsTree } from './data/sparePartsCatalog.js'
 
 const options = { timestamps: true, versionKey: false }
 const slugify = (value = '') => value.toString().trim().toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
-const primaryVehicleCategorySlugs = ['2-wheelers', '4-wheelers', 'commercial-vehicles', 'farm-vehicles', 'construction-vehicles', 'ev-vehicles']
+const primaryVehicleCategorySlugs = ['bikes', 'cars', 'commercial-vehicles', 'farm-vehicles', 'construction-vehicles', 'ev-vehicles']
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
 const imageExtensions = new Set(['.avif', '.gif', '.ico', '.jpeg', '.jpg', '.png', '.svg', '.webp'])
 
@@ -44,17 +44,20 @@ Category.schema.index({ slug: 1, parentId: 1 }, { unique: true })
 
 const Brand = mongoose.models.AdminBrand || mongoose.model('AdminBrand', new mongoose.Schema({
   name: { type: String, required: true, trim: true }, slug: { type: String, required: true, unique: true }, logoUrl: { type: String, default: '' },
+  categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'AdminCategory', default: null }, category: { type: String, default: '' },
   website: { type: String, default: '' }, description: { type: String, default: '' }, status: { type: String, enum: ['active', 'draft'], default: 'active' }, featured: { type: Boolean, default: false },
 }, options))
-
+const galleryImageField = { type: [{ url: { type: String, required: true }, alt: { type: String, default: '' }, filename: { type: String, default: '' }, width: { type: Number, default: 0 }, height: { type: Number, default: 0 }, size: { type: Number, default: 0 } }], default: [] }
+const colorImageField = { type: [{ color: { type: String, default: '' }, url: { type: String, required: true }, alt: { type: String, default: '' }, galleryImages: galleryImageField.type }], default: [] }
 const Vehicle = mongoose.models.AdminVehicle || mongoose.model('AdminVehicle', new mongoose.Schema({
   name: { type: String, required: true, trim: true }, slug: { type: String, required: true, unique: true },
   brand: { type: mongoose.Schema.Types.ObjectId, ref: 'AdminBrand', default: null }, category: { type: mongoose.Schema.Types.ObjectId, ref: 'AdminCategory', default: null },
   vehicleType: { type: String, enum: ['Car', 'Bike', 'Scooter', 'Commercial', 'Farm', 'Construction', 'Electric', 'Other'], default: 'Car' },
-  variant: { type: String, default: '' }, registrationNumber: { type: String, default: '' }, color: { type: String, default: '' }, seatingCapacity: { type: Number, default: 0 },
+  variant: { type: String, default: '' }, registrationNumber: { type: String, default: '' }, color: { type: String, default: '' }, colorImages: colorImageField, seatingCapacity: { type: Number, default: 0 },
   modelYear: { type: Number, default: () => new Date().getFullYear() }, fuelType: { type: String, default: 'Petrol' }, price: { type: Number, default: 0 },
   condition: { type: String, enum: ['new', 'used'], default: 'new' }, transmission: { type: String, default: 'Manual' }, mileage: { type: Number, default: 0 }, location: { type: String, default: '' },
-  imageUrl: { type: String, default: '' }, description: { type: String, default: '' }, specifications: { type: mongoose.Schema.Types.Mixed, default: {} }, details: { type: mongoose.Schema.Types.Mixed, default: {} },
+  imageUrl: { type: String, default: '' }, description: { type: String, default: '' }, specifications: { type: mongoose.Schema.Types.Mixed, default: {} }, details: { type: mongoose.Schema.Types.Mixed, default: {} }, seoTitle: { type: String, default: '' }, seoKeywords: { type: String, default: '' }, seoDescription: { type: String, default: '' },
+  galleryImages: galleryImageField,
   status: { type: String, enum: ['active', 'draft'], default: 'draft' }, featured: { type: Boolean, default: false },
 }, options))
 
@@ -68,7 +71,7 @@ const Content = mongoose.models.AdminContent || mongoose.model('AdminContent', n
 const Blog = mongoose.models.AdminBlog || mongoose.model('AdminBlog', new mongoose.Schema({
   title: { type: String, required: true, trim: true }, slug: { type: String, required: true, unique: true }, excerpt: { type: String, default: '' },
   content: { type: String, default: '' }, imageUrl: { type: String, default: '' }, imageAlt: { type: String, default: '' },
-  galleryImages: { type: [{ url: { type: String, required: true }, alt: { type: String, default: '' } }], default: [] },
+  galleryImages: galleryImageField,
   author: { type: String, default: 'GoAuto Team' }, tags: [String], readingTime: { type: Number, default: 5 },
   status: { type: String, enum: ['published', 'draft'], default: 'draft' }, publishedAt: { type: Date, default: null },
 }, options))
@@ -78,14 +81,16 @@ const Part = mongoose.models.AdminPart || mongoose.model('AdminPart', new mongoo
   categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'AdminCategory', default: null },
   categoryGroup: { type: String, default: '' },
   partNumber: { type: String, default: '' }, brand: { type: String, default: '' }, price: { type: Number, default: 0 }, originalPrice: { type: Number, default: 0 },
-  imageUrl: { type: String, default: '' }, description: { type: String, default: '' }, details: { type: mongoose.Schema.Types.Mixed, default: {} }, compatibleVehicleTypes: [String], stock: { type: Number, default: 0 }, status: { type: String, enum: ['active', 'draft'], default: 'active' }, featured: { type: Boolean, default: false },
+  imageUrl: { type: String, default: '' }, description: { type: String, default: '' }, details: { type: mongoose.Schema.Types.Mixed, default: {} }, seoTitle: { type: String, default: '' }, seoKeywords: { type: String, default: '' }, seoDescription: { type: String, default: '' }, compatibleVehicleTypes: [String], stock: { type: Number, default: 0 }, status: { type: String, enum: ['active', 'draft'], default: 'active' }, featured: { type: Boolean, default: false },
+  galleryImages: galleryImageField,
 }, options))
 
 const Service = mongoose.models.AdminService || mongoose.model('AdminService', new mongoose.Schema({
   name: { type: String, required: true, trim: true }, slug: { type: String, required: true, unique: true }, category: { type: String, default: 'General Service' },
   categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'AdminCategory', default: null },
   price: { type: Number, default: 0 }, duration: { type: String, default: '' }, imageUrl: { type: String, default: '' }, description: { type: String, default: '' },
-  features: [String], vehicleTypes: [String], brands: [String], details: { type: mongoose.Schema.Types.Mixed, default: {} }, status: { type: String, enum: ['active', 'draft'], default: 'active' }, featured: { type: Boolean, default: false },
+  features: [String], vehicleTypes: [String], brands: [String], details: { type: mongoose.Schema.Types.Mixed, default: {} }, seoTitle: { type: String, default: '' }, seoKeywords: { type: String, default: '' }, seoDescription: { type: String, default: '' }, status: { type: String, enum: ['active', 'draft'], default: 'active' }, featured: { type: Boolean, default: false },
+  galleryImages: galleryImageField,
 }, options))
 
 const SitePage = mongoose.models.AdminSitePage || mongoose.model('AdminSitePage', new mongoose.Schema({
@@ -120,22 +125,96 @@ const Activity = mongoose.models.AdminActivity || mongoose.model('AdminActivity'
   details: { type: String, default: '' },
 }, options))
 const WebsiteActivity = mongoose.models.AdminWebsiteActivity || mongoose.model('AdminWebsiteActivity', new mongoose.Schema({
-  event: { type: String, enum: ['pageview', 'click'], default: 'pageview' },
+  event: { type: String, enum: ['pageview', 'click', 'page-duration'], default: 'pageview' },
+  sessionId: { type: String, default: '' },
+  userName: { type: String, default: 'Guest' },
+  userEmail: { type: String, default: '' },
   pageTitle: { type: String, default: '' },
   pageUrl: { type: String, default: '' },
   pagePath: { type: String, default: '' },
   action: { type: String, default: '' },
   target: { type: String, default: '' },
   referrer: { type: String, default: '' },
+  durationSeconds: { type: Number, default: 0 },
+  clickCount: { type: Number, default: 0 },
+  startedAt: { type: Date, default: null },
+  endedAt: { type: Date, default: null },
+  dateKey: { type: String, default: '' },
   source: { type: String, default: 'website' },
   ip: { type: String, default: '' },
   userAgent: { type: String, default: '' },
   details: { type: String, default: '' },
 }, options))
+const TrackingSetting = mongoose.models.AdminTrackingSetting || mongoose.model('AdminTrackingSetting', new mongoose.Schema({
+  key: { type: String, required: true, unique: true },
+  enabled: { type: Boolean, default: false },
+  startedAt: { type: Date, default: null },
+  stoppedAt: { type: Date, default: null },
+}, options))
 
 const resources = { categories: Category, brands: Brand, vehicles: Vehicle, content: Content, blogs: Blog, parts: Part, services: Service, pages: SitePage, enquiries: Enquiry, activities: Activity, 'website-activities': WebsiteActivity }
+const backupModels = { categories: Category, brands: Brand, vehicles: Vehicle, content: Content, blogs: Blog, parts: Part, services: Service, pages: SitePage, enquiries: Enquiry, activities: Activity, websiteActivities: WebsiteActivity, trackingSettings: TrackingSetting }
 
 const cleanText = (value = '', limit = 180) => value.toString().trim().slice(0, limit)
+const cleanNumber = (value = 0) => Number.isFinite(Number(value)) ? Math.max(0, Math.round(Number(value))) : 0
+const dateKeyFor = (value = new Date()) => {
+  const date = value instanceof Date ? value : new Date(value)
+  return Number.isNaN(date.getTime()) ? new Date().toISOString().slice(0, 10) : date.toISOString().slice(0, 10)
+}
+const trackingSettingFor = async () => TrackingSetting.findOneAndUpdate({ key: 'website-activity' }, { $setOnInsert: { enabled: false } }, { new: true, upsert: true })
+const productResources = ['vehicles', 'parts', 'services']
+
+const parseSpecificationText = (value) => {
+  if (!value || typeof value !== 'string') return value || {}
+  const trimmed = value.trim()
+  if (!trimmed) return {}
+  if (/^[{[]/.test(trimmed)) {
+    try { return JSON.parse(trimmed) } catch {}
+  }
+  return Object.fromEntries(trimmed.split(/\r?\n/).map((line) => {
+    const separator = line.indexOf(':') >= 0 ? line.indexOf(':') : line.indexOf('-')
+    if (separator <= 0) return null
+    const key = line.slice(0, separator).trim()
+    const entry = line.slice(separator + 1).trim()
+    return key && entry ? [key, entry] : null
+  }).filter(Boolean))
+}
+const normalizeDetailsText = (value) => {
+  if (!value || typeof value !== 'string') return value || {}
+  const trimmed = value.trim()
+  if (!trimmed) return {}
+  if (/^[{[]/.test(trimmed)) {
+    try { return JSON.parse(trimmed) } catch {}
+  }
+  return { intro: trimmed }
+}
+const normalizeGalleryImages = (value, label = 'Images') => {
+  let images = value
+  if (typeof images === 'string') {
+    try { images = images.trim() ? JSON.parse(images) : [] } catch { throw new Error(`${label} must be valid JSON.`) }
+  }
+  if (images === undefined || images === null || images === '') return []
+  if (!Array.isArray(images)) throw new Error(`${label} must be an image list.`)
+  return images.map((image) => ({ url: String(image?.url || '').trim(), alt: cleanText(image?.alt, 140), filename: cleanText(image?.filename, 160), width: cleanNumber(image?.width), height: cleanNumber(image?.height), size: cleanNumber(image?.size) })).filter((image) => image.url)
+}
+const normalizeColorImages = (value) => {
+  let images = value
+  if (typeof images === 'string') {
+    try { images = images.trim() ? JSON.parse(images) : [] } catch { throw new Error('Colour images must be valid JSON.') }
+  }
+  if (images === undefined || images === null || images === '') return []
+  if (!Array.isArray(images)) throw new Error('Colour images must be an image list.')
+  return images.map((image) => ({
+    color: cleanText(image?.color, 60),
+    url: String(image?.url || '').trim(),
+    alt: cleanText(image?.alt, 140),
+    filename: cleanText(image?.filename, 160),
+    width: cleanNumber(image?.width),
+    height: cleanNumber(image?.height),
+    size: cleanNumber(image?.size),
+    galleryImages: normalizeGalleryImages(image?.galleryImages || [], 'Colour gallery images').slice(0, 3),
+  })).filter((image) => image.url)
+}
 
 const payloadFor = (resource, payload, existing = {}) => {
   const { _id, createdAt, updatedAt, __v, ...safePayload } = payload
@@ -149,14 +228,27 @@ const payloadFor = (resource, payload, existing = {}) => {
     }
     if (!Array.isArray(value.galleryImages)) throw new Error('Content images must be an image list.')
     value.galleryImages = value.galleryImages.map((image) => ({ url: String(image?.url || '').trim(), alt: String(image?.alt || '').trim() })).filter((image) => image.url)
+    if (value.galleryImages.length > 4) throw new Error('Add up to 4 additional images for each blog post.')
     if (value.status === 'published' && !value.publishedAt && !existing.publishedAt) value.publishedAt = new Date()
   }
-  if (resource === 'vehicles' && typeof value.specifications === 'string') {
-    try { value.specifications = value.specifications.trim() ? JSON.parse(value.specifications) : {} } catch { throw new Error('Specifications must be valid JSON.') }
+  if (productResources.includes(resource)) {
+    value.galleryImages = normalizeGalleryImages(value.galleryImages, 'Product images')
+    if (resource === 'vehicles') {
+      value.colorImages = normalizeColorImages(value.colorImages)
+      if (!String(value.imageUrl || '').trim()) throw new Error('Add at least 1 main vehicle image.')
+      if (value.galleryImages.length > 4) throw new Error('Add up to 5 vehicle images total.')
+    } else {
+      if (value.galleryImages.length < 2) throw new Error('Add at least 2 additional product images so the single product page has 3 images total.')
+      if (value.galleryImages.length > 4) throw new Error('Add up to 4 additional product images so the single product page has no more than 5 images total.')
+    }
   }
-  if (['vehicles', 'parts', 'services'].includes(resource) && typeof value.details === 'string') {
-    try { value.details = value.details.trim() ? JSON.parse(value.details) : {} } catch { throw new Error('More details must be valid JSON.') }
+  if (resource === 'vehicles' && typeof value.specifications === 'string') value.specifications = parseSpecificationText(value.specifications)
+  if (productResources.includes(resource)) {
+    value.seoTitle = cleanText(value.seoTitle, 90)
+    value.seoKeywords = cleanText(value.seoKeywords, 240)
+    value.seoDescription = cleanText(value.seoDescription, 180)
   }
+  if (['vehicles', 'parts', 'services'].includes(resource) && typeof value.details === 'string') value.details = normalizeDetailsText(value.details)
   if (resource === 'services') {
     if (typeof value.features === 'string') value.features = value.features.split(',').map((item) => item.trim()).filter(Boolean)
     if (typeof value.vehicleTypes === 'string') value.vehicleTypes = value.vehicleTypes.split(',').map((item) => item.trim()).filter(Boolean)
@@ -172,6 +264,15 @@ const payloadFor = (resource, payload, existing = {}) => {
 
 const preparedPayloadFor = async (resource, payload, existing = {}) => {
   const value = payloadFor(resource, payload, existing)
+  if (resource === 'brands') {
+    if (!value.categoryId) throw new Error('Select a vehicle top category for this brand.')
+    const [category, vehicleRoot] = await Promise.all([
+      Category.findById(value.categoryId),
+      Category.findOne({ slug: 'vehicles', parentId: null }),
+    ])
+    if (!category || category.status !== 'active' || category.group !== 'Vehicles' || String(category.parentId || '') !== String(vehicleRoot?._id || '')) throw new Error('Select an active vehicle top category.')
+    value.category = category.name
+  }
   if (resource === 'parts' && value.categoryId) {
     const category = await Category.findById(value.categoryId).populate('parentId', 'name')
     if (!category || category.status !== 'active') throw new Error('Select an active spare-parts category.')
@@ -196,6 +297,53 @@ const storageDocument = (file, request) => ({
   metadata: file.metadata || {},
   url: request.protocol + '://' + request.get('host') + '/api/storage/files/' + file._id,
 })
+
+const storageExtensionFor = (contentType = '', filename = '') => {
+  const byType = { 'image/jpeg': '.jpg', 'image/png': '.png', 'image/webp': '.webp', 'image/svg+xml': '.svg' }
+  const ext = path.extname(String(filename || '')).toLowerCase()
+  return byType[contentType] || (imageExtensions.has(ext) ? ext : '.jpg')
+}
+const seoStorageFilename = ({ filename = 'image', title = '', alt = '', context = '', contentType = '' } = {}) => {
+  const originalName = String(filename || '').replace(/\.[^.]+$/, '')
+  const baseSource = [alt, title, context, originalName].map((item) => String(item || '').trim()).find(Boolean) || 'image'
+  const base = slugify(baseSource) || 'image'
+  return base.slice(0, 100) + storageExtensionFor(contentType, filename)
+}
+const storageIdFromUrl = (value = '') => {
+  const match = String(value || '').match(/\/api\/storage\/files\/([a-f0-9]{24})(?:[/?#]|$)/i)
+  return match?.[1] || ''
+}
+const collectRecordImageUrls = (record = {}) => {
+  const doc = record?.toObject ? record.toObject() : (record || {})
+  const urls = new Set(['imageUrl', 'logoUrl', 'icon', 'heroImage'].map((field) => doc[field]).filter(Boolean))
+  if (Array.isArray(doc.galleryImages)) doc.galleryImages.forEach((image) => image?.url && urls.add(image.url))
+  if (Array.isArray(doc.colorImages)) doc.colorImages.forEach((image) => {
+    if (image?.url) urls.add(image.url)
+    ;(Array.isArray(image?.galleryImages) ? image.galleryImages : []).forEach((galleryImage) => galleryImage?.url && urls.add(galleryImage.url))
+  })
+  return urls
+}
+const deleteStorageUrls = async (urls = []) => {
+  const ids = [...new Set([...urls].map(storageIdFromUrl).filter((id) => mongoose.isValidObjectId(id)))]
+  if (!ids.length) return
+  const bucket = storageBucket()
+  for (const id of ids) {
+    try { await bucket.delete(new mongoose.Types.ObjectId(id)) }
+    catch (error) { if (!/FileNotFound|not found/i.test(error?.message || '')) console.warn('Unable to delete GridFS image ' + id + ':', error.message) }
+  }
+}
+const deleteRemovedRecordImages = async (before, after) => {
+  const afterUrls = collectRecordImageUrls(after)
+  const removed = [...collectRecordImageUrls(before)].filter((url) => !afterUrls.has(url))
+  await deleteStorageUrls(removed)
+}
+const streamToBuffer = (stream) => new Promise((resolve, reject) => {
+  const chunks = []
+  stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)))
+  stream.on('end', () => resolve(Buffer.concat(chunks)))
+  stream.on('error', reject)
+})
+const backupName = (type) => `bright-auto-hub-${type}-backup-${new Date().toISOString().slice(0, 10)}.json`
 
 const walkCategoryTree = async (items, parentId = null, group = '', updateExisting = false) => {
   for (const [index, entry] of items.entries()) {
@@ -263,7 +411,7 @@ export const seedAdminData = async () => {
     { slug: 'calculators', name: 'Vehicle Calculators', title: 'Plan Your Vehicle Budget', description: 'Estimate EMI, fuel cost and ownership needs before you enquire.', heroImage: '/images/services/diagnostics-tools.jpg' },
     { slug: 'spare-parts', name: 'Spare Parts', title: 'Genuine Parts. Built to Perform.', description: 'Quality parts for bikes, cars, commercial and heavy vehicles.', heroImage: '/images/spare-parts-catalog/brake-system-spare-parts.jpg' },
     { slug: 'services', name: 'Vehicle Services', title: 'Expert Vehicle Service. Trusted Care.', description: 'Book transparent, dependable service from trusted professionals.', heroImage: '/images/services/car-service-workshop.jpg' },
-    { slug: 'used-cars', name: 'Used Cars', title: 'Great Cars. Better Prices.', description: 'Verified pre-owned cars with straightforward pricing.', heroImage: '/images/catalog/vehicles/cars/suv/tata-nexon.jpg' },
+    { slug: 'used-vehicles', name: 'Used Vehicles', title: 'Used Vehicles', description: 'Verified pre-owned bikes, cars, commercial, farm, construction and EV listings.', heroImage: '/images/catalog/vehicles/cars/suv/tata-nexon.jpg' },
     { slug: 'blog', name: 'Automotive Journal', title: 'Stories for Smarter Journeys', description: 'News, reviews, buying guides and ownership advice.', heroImage: '/images/services/premium-service-center.jpg' },
     { slug: 'contact', name: 'Contact Us', title: "We're Here to Help You", description: 'Our support team is ready to help with every automotive need.', heroImage: '/images/services/general-vehicle-service.jpg' },
     { slug: 'finance-insurance', name: 'Finance & Insurance', title: 'Vehicle Finance and Insurance Support', description: 'Get guided support for loans, insurance renewals and ownership paperwork.', heroImage: '/images/services/premium-service-center.jpg' },
@@ -287,15 +435,29 @@ export const seedAdminData = async () => {
     )
   }
 
-  const brandSeeds = ['Bajaj', 'TVS', 'Honda', 'Hero', 'Royal Enfield', 'Hyundai', 'Maruti Suzuki', 'Tata Motors', 'Mahindra', 'Toyota', 'Kia', 'MG Motor', 'JCB', 'Tata Hitachi', 'Caterpillar', 'Ashok Leyland', 'Eicher', 'Force', 'John Deere', 'Swaraj']
-  for (const [index, name] of brandSeeds.entries()) {
+  const brandSeeds = [
+    ['Bajaj', 'Bikes'], ['TVS', 'Bikes'], ['Honda', 'Bikes'], ['Hero', 'Bikes'], ['Royal Enfield', 'Bikes'],
+    ['Hyundai', 'Cars'], ['Maruti Suzuki', 'Cars'], ['Tata Motors', 'Cars'], ['Mahindra', 'Cars'], ['Toyota', 'Cars'], ['Kia', 'Cars'], ['MG Motor', 'Cars'],
+    ['JCB', 'Construction Vehicles'], ['Tata Hitachi', 'Construction Vehicles'], ['Caterpillar', 'Construction Vehicles'],
+    ['Ashok Leyland', 'Commercial Vehicles'], ['Eicher', 'Commercial Vehicles'], ['Force', 'Commercial Vehicles'],
+    ['John Deere', 'Farm Vehicles'], ['Swaraj', 'Farm Vehicles'],
+  ]
+  const brandLogoExtensions = {
+    bajaj: 'svg', tvs: 'svg', honda: 'svg', hero: 'svg', 'royal-enfield': 'png', hyundai: 'svg', 'maruti-suzuki': 'svg', 'tata-motors': 'svg', mahindra: 'svg', toyota: 'svg', kia: 'svg', 'mg-motor': 'svg', jcb: 'svg', 'tata-hitachi': 'png', caterpillar: 'svg', 'ashok-leyland': 'svg', eicher: 'png', force: 'png', 'john-deere': 'svg', swaraj: 'png',
+  }
+  const brandVehicleRoot = await Category.findOne({ slug: 'vehicles', parentId: null })
+  const brandTopCategories = Object.fromEntries((await Category.find({ parentId: brandVehicleRoot?._id, group: 'Vehicles' })).map((item) => [item.name, item]))
+  for (const [index, [name, categoryName]] of brandSeeds.entries()) {
+    const slug = slugify(name)
+    const category = brandTopCategories[categoryName]
+    const logoUrl = `/images/brands/admin/${slug}.${brandLogoExtensions[slug] || 'png'}`
     await Brand.findOneAndUpdate(
-      { slug: slugify(name) },
-      { $set: { name, status: 'active', featured: index < 12 }, $setOnInsert: { slug: slugify(name) } },
+      { slug },
+      { $set: { name, categoryId: category?._id || null, category: category?.name || categoryName, status: 'active', featured: index < 12 }, $setOnInsert: { slug } },
       { upsert: true, new: true, setDefaultsOnInsert: true },
     )
+    await Brand.updateOne({ slug, $or: [{ logoUrl: '' }, { logoUrl: { $exists: false } }] }, { $set: { logoUrl } })
   }
-
   if ([0, 6].includes(await Vehicle.countDocuments())) {
     const brands = Object.fromEntries((await Brand.find()).map((item) => [item.name, item._id]))
     const vehicleRoot = await Category.findOne({ slug: 'vehicles', parentId: null })
@@ -318,16 +480,20 @@ export const seedAdminData = async () => {
 
   const brands = Object.fromEntries((await Brand.find()).map((item) => [item.name, item._id]))
   const vehicleRoot = await Category.findOne({ slug: 'vehicles', parentId: null })
-  const carsParent = await Category.findOne({ slug: 'cars', parentId: vehicleRoot?._id, group: 'Vehicles' })
-  const usedCarSeeds = [
-    ['Hyundai Creta Used 2023', 'Hyundai', 'SUV', 'Petrol', 'Manual', 2023, 28500, 'New Delhi', '/images/catalog/vehicles/cars/suv/hyundai-creta.jpg'],
-    ['Tata Nexon Used 2022', 'Tata Motors', 'SUV', 'Petrol', 'AMT', 2022, 34200, 'Mumbai', '/images/catalog/vehicles/cars/suv/tata-nexon.jpg'],
-    ['Maruti Suzuki Swift Used 2021', 'Maruti Suzuki', 'Hatchback', 'Petrol', 'Manual', 2021, 41800, 'Bengaluru', '/images/catalog/vehicles/cars/hatchback/maruti-suzuki-swift.jpg'],
-    ['Honda City Used 2020', 'Honda', 'Sedan', 'Petrol', 'CVT', 2020, 52000, 'Chennai', '/images/catalog/vehicles/cars/sedan/honda-city.jpg'],
-    ['Kia Seltos Used 2023', 'Kia', 'SUV', 'Diesel', 'Automatic', 2023, 23600, 'Hyderabad', '/images/catalog/vehicles/cars/suv/kia-seltos.jpg'],
+  const usedVehicleSeeds = [
+    ['Hyundai Creta Used 2023', 'Hyundai', 'Cars', 'SUV', 'Car', 'Petrol', 'Manual', 2023, 28500, 'New Delhi', '/images/catalog/vehicles/cars/suv/hyundai-creta.jpg'],
+    ['Tata Nexon Used 2022', 'Tata Motors', 'Cars', 'SUV', 'Car', 'Petrol', 'AMT', 2022, 34200, 'Mumbai', '/images/catalog/vehicles/cars/suv/tata-nexon.jpg'],
+    ['Maruti Suzuki Swift Used 2021', 'Maruti Suzuki', 'Cars', 'Hatchback', 'Car', 'Petrol', 'Manual', 2021, 41800, 'Bengaluru', '/images/catalog/vehicles/cars/hatchback/maruti-suzuki-swift.jpg'],
+    ['Bajaj Pulsar Used 2022', 'Bajaj', 'Bikes', 'Bikes', 'Bike', 'Petrol', 'Manual', 2022, 19800, 'Pune', '/images/catalog/vehicles/bikes/bajaj-pulsar-n160.jpg'],
+    ['TVS iQube Used 2023', 'TVS', 'Bikes', 'Electric Scooters', 'Scooter', 'Electric', 'Automatic', 2023, 9200, 'Coimbatore', '/images/catalog/vehicles/bikes/tvs-iqube.jpg'],
+    ['Tata Ace Used 2021', 'Tata Motors', 'Commercial Vehicles', 'Mini Trucks', 'Commercial', 'Diesel', 'Manual', 2021, 62400, 'Ahmedabad', '/images/catalog/vehicles/commercial/tata-ace-gold.jpg'],
+    ['Mahindra 575 DI Used 2020', 'Mahindra', 'Farm Vehicles', 'Tractors', 'Farm', 'Diesel', 'Manual', 2020, 4100, 'Madurai', '/images/catalog/vehicles/farm/mahindra-575-di.jpg'],
+    ['JCB 3DX Used 2019', 'JCB', 'Construction Vehicles', 'Backhoe Loaders', 'Construction', 'Diesel', 'Manual', 2019, 7600, 'Jaipur', '/images/catalog/vehicles/construction/jcb-3dx.jpg'],
+    ['MG ZS EV Used 2022', 'MG Motor', 'EV Vehicles', 'Electric Cars', 'Electric', 'Electric', 'Automatic', 2022, 24800, 'Kochi', '/images/catalog/vehicles/ev/mg-zs-ev.jpg'],
   ]
-  for (const [name, brandName, categoryName, fuelType, transmission, modelYear, mileage, location, imageUrl] of usedCarSeeds) {
-    const category = await Category.findOne({ name: categoryName, parentId: carsParent?._id, group: 'Vehicles' })
+  for (const [name, brandName, parentName, categoryName, vehicleType, fuelType, transmission, modelYear, mileage, location, imageUrl] of usedVehicleSeeds) {
+    const parent = await Category.findOne({ name: parentName, parentId: vehicleRoot?._id, group: 'Vehicles' })
+    const category = await Category.findOne({ name: categoryName, parentId: parent?._id, group: 'Vehicles' })
     if (!category) continue
     const brand = brands[brandName] || await Brand.findOneAndUpdate(
       { slug: slugify(brandName) },
@@ -342,7 +508,7 @@ export const seedAdminData = async () => {
           slug: slugify(name),
           brand,
           category: category._id,
-          vehicleType: 'Car',
+          vehicleType,
           fuelType,
           transmission,
           modelYear,
@@ -350,8 +516,8 @@ export const seedAdminData = async () => {
           location,
           imageUrl,
           condition: 'used',
-          description: `${name} is a verified pre-owned car listing. Send an enquiry for inspection details, ownership history and latest price.`,
-          specifications: { Segment: categoryName, Ownership: 'Pre-owned', Availability: 'Enquiry' },
+          description: `${name} is a verified pre-owned vehicle listing. Send an enquiry for inspection details, ownership history and latest price.`,
+          specifications: { Segment: categoryName, Category: parentName, Ownership: 'Pre-owned', Availability: 'Enquiry' },
           status: 'active',
           featured: false,
         },
@@ -359,7 +525,6 @@ export const seedAdminData = async () => {
       { upsert: true, new: true, setDefaultsOnInsert: true },
     )
   }
-
   const serviceRoot = await Category.findOne({ slug: 'services', parentId: null })
   const serviceSeeds = [
     ['General Vehicle Service', 'General Service', 1499, '2 to 3 hours', '/images/services/general-service.jpg', ['Multi-point inspection', 'Oil and fluid check', 'Basic diagnostics'], ['Cars', 'Bikes', 'Commercial'], ['Maruti Suzuki', 'Hyundai', 'Tata', 'Mahindra']],
@@ -491,33 +656,70 @@ export const registerAdminApi = (app) => {
     } catch (error) { next(error) }
   })
 
+  app.get('/api/website-activities/settings', async (_request, response, next) => {
+    try {
+      const setting = await trackingSettingFor()
+      response.json({ enabled: Boolean(setting.enabled), startedAt: setting.startedAt, stoppedAt: setting.stoppedAt })
+    } catch (error) { next(error) }
+  })
+
+  app.post('/api/website-activities/settings', async (request, response, next) => {
+    try {
+      const enabled = Boolean(request.body?.enabled)
+      const setting = await TrackingSetting.findOneAndUpdate(
+        { key: 'website-activity' },
+        { $set: { enabled, ...(enabled ? { startedAt: new Date() } : { stoppedAt: new Date() }) } },
+        { new: true, upsert: true },
+      )
+      response.json({ enabled: Boolean(setting.enabled), startedAt: setting.startedAt, stoppedAt: setting.stoppedAt })
+    } catch (error) { next(error) }
+  })
+
   app.post('/api/website-activities/track', async (request, response, next) => {
     try {
+      const setting = await trackingSettingFor()
+      if (!setting.enabled) return response.status(202).json({ tracked: false, enabled: false })
       const {
         event = 'pageview',
+        sessionId = '',
+        userName = 'Guest',
+        userEmail = '',
         pageTitle = '',
         pageUrl = '',
         pagePath = '',
         action = '',
         target = '',
         referrer = '',
+        durationSeconds = 0,
+        clickCount = 0,
+        startedAt = null,
+        endedAt = null,
         source = 'website',
         details = '',
       } = request.body || {}
+      const endedDate = endedAt ? new Date(endedAt) : new Date()
       const activity = await WebsiteActivity.create({
         event,
+        sessionId: cleanText(sessionId, 120),
+        userName: cleanText(userName, 120) || 'Guest',
+        userEmail: cleanText(userEmail, 180),
         pageTitle: cleanText(pageTitle, 160),
         pageUrl: cleanText(pageUrl, 300),
         pagePath: cleanText(pagePath, 200),
         action: cleanText(action, 120),
         target: cleanText(target, 120),
         referrer: cleanText(referrer, 300),
+        durationSeconds: cleanNumber(durationSeconds),
+        clickCount: cleanNumber(clickCount),
+        startedAt: startedAt ? new Date(startedAt) : null,
+        endedAt: endedDate,
+        dateKey: dateKeyFor(endedDate),
         source: cleanText(source, 40) || 'website',
         details: cleanText(details, 240),
         ip: request.ip || request.socket?.remoteAddress || '',
         userAgent: request.get('user-agent') || '',
       })
-      response.status(201).json({ id: activity._id })
+      response.status(201).json({ id: activity._id, tracked: true, enabled: true })
     } catch (error) { next(error) }
   })
   app.get('/api/storage', async (request, response, next) => {
@@ -567,7 +769,7 @@ export const registerAdminApi = (app) => {
       const filesystemTotal = Number(databaseStats.fsTotalSize || 0)
       const filesystemUsed = Number(databaseStats.fsUsedSize || 0)
       response.json({
-        database: mongoose.connection.name || databaseStats.db || 'goautomobile',
+        database: mongoose.connection.name || databaseStats.db || 'brightautohub',
         totals: {
           documents: Number(databaseStats.objects || collections.reduce((sum, item) => sum + item.count, 0)),
           collections: collections.length,
@@ -591,6 +793,79 @@ export const registerAdminApi = (app) => {
     } catch (error) { next(error) }
   })
 
+  app.get('/api/storage/export/images', async (request, response, next) => {
+    try {
+      const bucket = storageBucket()
+      const files = await mongoose.connection.db.collection('media.files').find({}).sort({ uploadDate: -1 }).toArray()
+      const exportedFiles = await Promise.all(files.map(async (file) => {
+        const buffer = await streamToBuffer(bucket.openDownloadStream(file._id))
+        const contentType = file.metadata?.contentType || 'application/octet-stream'
+        return {
+          _id: String(file._id),
+          filename: file.filename,
+          contentType,
+          length: file.length,
+          uploadDate: file.uploadDate,
+          metadata: file.metadata || {},
+          dataUrl: `data:${contentType};base64,${buffer.toString('base64')}`,
+        }
+      }))
+      response.set('Content-Disposition', `attachment; filename="${backupName('images')}"`)
+      response.json({ type: 'gridfs-images', exportedAt: new Date().toISOString(), database: mongoose.connection.db.databaseName, bucket: 'media', count: exportedFiles.length, files: exportedFiles })
+    } catch (error) { next(error) }
+  })
+
+  app.post('/api/storage/import/images', async (request, response, next) => {
+    try {
+      const files = Array.isArray(request.body?.files) ? request.body.files : []
+      if (!files.length) return response.status(400).json({ message: 'Import file must contain a files array.' })
+      const imported = []
+      for (const item of files) {
+        const separator = item.dataUrl?.indexOf(',') ?? -1
+        const contentType = item.contentType || (separator > 5 ? item.dataUrl.slice(5, separator).replace(';base64', '') : '')
+        if (separator < 0 || !item.dataUrl?.startsWith('data:')) continue
+        const buffer = Buffer.from(item.dataUrl.slice(separator + 1), 'base64')
+        if (!buffer.length) continue
+        const metadata = { ...(item.metadata || {}), contentType, importedAt: new Date(), importedFrom: item._id || item.filename || 'backup' }
+        const filename = seoStorageFilename({ filename: item.filename, title: metadata.title, alt: metadata.alt, context: metadata.context || 'import', contentType })
+        const upload = storageBucket().openUploadStream(filename, { metadata })
+        await new Promise((resolve, reject) => Readable.from(buffer).pipe(upload).on('finish', resolve).on('error', reject))
+        const file = await mongoose.connection.db.collection('media.files').findOne({ _id: upload.id })
+        imported.push(storageDocument(file, request))
+      }
+      response.status(201).json({ imported: imported.length, files: imported })
+    } catch (error) { next(error) }
+  })
+
+  app.get('/api/storage/export/data', async (_request, response, next) => {
+    try {
+      const collections = {}
+      for (const [name, Model] of Object.entries(backupModels)) collections[name] = await Model.find({}).lean()
+      response.set('Content-Disposition', `attachment; filename="${backupName('data')}"`)
+      response.json({ type: 'catalog-data', exportedAt: new Date().toISOString(), database: mongoose.connection.db.databaseName, collections })
+    } catch (error) { next(error) }
+  })
+
+  app.post('/api/storage/import/data', async (request, response, next) => {
+    try {
+      const collections = request.body?.collections || {}
+      const totals = {}
+      for (const [name, docs] of Object.entries(collections)) {
+        const Model = backupModels[name]
+        if (!Model || !Array.isArray(docs)) continue
+        let count = 0
+        for (const doc of docs) {
+          if (!doc || typeof doc !== 'object') continue
+          const id = doc._id && mongoose.isValidObjectId(doc._id) ? doc._id : new mongoose.Types.ObjectId()
+          await Model.replaceOne({ _id: id }, { ...doc, _id: id }, { upsert: true })
+          count += 1
+        }
+        totals[name] = count
+      }
+      response.json({ imported: totals })
+    } catch (error) { next(error) }
+  })
+
   app.post('/api/storage', async (request, response, next) => {
     try {
       const { filename = 'image', dataUrl, title = '', alt = '', context = 'admin' } = request.body
@@ -602,8 +877,8 @@ export const registerAdminApi = (app) => {
       }
       const buffer = Buffer.from(dataUrl.slice(separator + 1), 'base64')
       if (!buffer.length || buffer.length > 2 * 1024 * 1024) return response.status(400).json({ message: 'Image must be smaller than 2 MB.' })
-      const safeFilename = filename.toString().replace(/[^a-zA-Z0-9._-]+/g, '-').slice(0, 120) || 'image'
-      const upload = storageBucket().openUploadStream(safeFilename, { metadata: { contentType, title, alt, context } })
+      const safeFilename = seoStorageFilename({ filename, title, alt, context, contentType })
+      const upload = storageBucket().openUploadStream(safeFilename, { metadata: { contentType, title, alt, context, originalFilename: filename } })
       await new Promise((resolve, reject) => {
         Readable.from(buffer).pipe(upload).on('finish', resolve).on('error', reject)
       })
@@ -705,6 +980,7 @@ export const registerAdminApi = (app) => {
       }
       let query = Model.find(filter).sort(request.params.resource === 'categories' ? { sortOrder: 1, name: 1 } : { createdAt: -1 })
       if (request.params.resource === 'vehicles') query = query.populate('brand', 'name').populate('category', 'name group parentId')
+      if (request.params.resource === 'brands') query = query.populate('categoryId', 'name slug group parentId')
       if (request.params.resource === 'parts' || request.params.resource === 'services') query = query.populate('categoryId', 'name group parentId')
       response.json(await query)
     } catch (error) { next(error) }
@@ -716,6 +992,7 @@ export const registerAdminApi = (app) => {
       if (!Model) return response.status(404).json({ message: 'Resource not found' })
       let query = Model.findById(request.params.id)
       if (request.params.resource === 'vehicles') query = query.populate('brand', 'name logoUrl').populate('category', 'name group parentId')
+      if (request.params.resource === 'brands') query = query.populate('categoryId', 'name slug group parentId')
       if (request.params.resource === 'parts' || request.params.resource === 'services') query = query.populate('categoryId', 'name group parentId')
       const item = await query
       if (!item) return response.status(404).json({ message: 'Item not found' })
@@ -737,7 +1014,10 @@ export const registerAdminApi = (app) => {
       if (!Model) return response.status(404).json({ message: 'Resource not found' })
       const existing = await Model.findById(request.params.id)
       if (!existing) return response.status(404).json({ message: 'Item not found' })
-      response.json(await Model.findByIdAndUpdate(request.params.id, await preparedPayloadFor(request.params.resource, request.body, existing), { new: true, runValidators: true }))
+      const payload = await preparedPayloadFor(request.params.resource, request.body, existing)
+      const updated = await Model.findByIdAndUpdate(request.params.id, payload, { new: true, runValidators: true })
+      await deleteRemovedRecordImages(existing, updated)
+      response.json(updated)
     } catch (error) { next(error) }
   })
 
@@ -755,6 +1035,7 @@ export const registerAdminApi = (app) => {
       if (request.params.resource === 'brands' && await Vehicle.exists({ brand: request.params.id })) return response.status(409).json({ message: 'This brand is assigned to vehicles. Reassign them before deleting it.' })
       const deleted = await Model.findByIdAndDelete(request.params.id)
       if (!deleted) return response.status(404).json({ message: 'Item not found' })
+      await deleteStorageUrls(collectRecordImageUrls(deleted))
       response.status(204).end()
     } catch (error) { next(error) }
   })

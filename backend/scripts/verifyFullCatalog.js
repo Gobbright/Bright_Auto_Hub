@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { readFile, stat } from 'node:fs/promises'
 import '../src/adminApi.js'
 
-const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/goautomobile'
+const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/brightautohub'
 const scriptDir = path.dirname(fileURLToPath(import.meta.url))
 const publicDir = path.resolve(scriptDir, '../../frontend/public')
 const manifestPath = path.join(publicDir, 'images', 'catalog', 'IMAGE-ATTRIBUTION.json')
@@ -13,7 +13,7 @@ const Category = mongoose.model('AdminCategory')
 const Vehicle = mongoose.model('AdminVehicle')
 const Part = mongoose.model('AdminPart')
 
-await mongoose.connect(uri)
+await mongoose.connect(uri, { dbName: process.env.MONGODB_DB_NAME || 'brightautohub' })
 try {
   const auditTree = async (rootSlug, Model, categoryField) => {
     const root = await Category.findOne({ slug: rootSlug, parentId: null })

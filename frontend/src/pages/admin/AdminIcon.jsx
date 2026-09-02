@@ -18,8 +18,11 @@ const paths = {
   trash: ['M4 7h16M9 7V4h6v3M7 7l1 14h8l1-14M10 11v6M14 11v6'],
   menu: ['M4 7h16M4 12h16M4 17h16'],
   close: ['m6 6 12 12M18 6 6 18'],
+  chevronDown: ['m6 9 6 6 6-6'],
+  back: ['M19 12H5', 'm12 5-7 7 7 7'],
   logout: ['M10 5H5v14h5M14 8l4 4-4 4M18 12H9'],
   refresh: ['M20 6v5h-5M4 18v-5h5', 'M6.1 9a7 7 0 0 1 11.5-2.5L20 11M4 13l2.4 4.5A7 7 0 0 0 18 15'],
+  copy: ['M8 8h10v12H8z', 'M6 16H4V4h12v2'],
 }
 
 export default function AdminIcon({ name, size = 18 }) {
